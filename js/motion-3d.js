@@ -774,6 +774,13 @@
      viajantes, inspirada exatamente na referência enviada por Mattheus e
      colorida em Azul Elétrico + Roxo/Violeta.
      ------------------------------------------------------------------------ */
+  /* ------------------------------------------------------------------------
+     BLOCO 5 (V7 - Awwwards Standard): Onda Futurista 3D de Linhas Suaves &
+     Partículas Luminosas Lentas (Substitui o antigo emaranhado de órbitas)
+     Data/Hora: 02/11/2026 15:28
+     Finalidade: Criar um horizonte fluido 3D cinematográfico em câmera lenta,
+     sem poluição visual, com perspectiva real, nós luminosos e reação suave ao mouse.
+     ------------------------------------------------------------------------ */
   function initOrbitalConstellationBg() {
     const canvas = document.getElementById("orbitalConstellationCanvas");
     if (!canvas) return;
@@ -782,8 +789,10 @@
     let w = window.innerWidth;
     let h = window.innerHeight;
     let dpr = Math.min(window.devicePixelRatio || 1, 1.75);
-    let pointerX = 0;
-    let pointerY = 0;
+    let targetTiltX = 0;
+    let targetTiltY = 0;
+    let currentTiltX = 0;
+    let currentTiltY = 0;
 
     function resizeBg() {
       w = window.innerWidth;
@@ -796,125 +805,147 @@
     resizeBg();
     window.addEventListener("resize", resizeBg);
     window.addEventListener("pointermove", function (e) {
-      pointerX = (e.clientX / Math.max(1, w) - 0.5) * 0.25;
-      pointerY = (e.clientY / Math.max(1, h) - 0.5) * 0.18;
+      targetTiltX = (e.clientX / Math.max(1, w) - 0.5) * 90;
+      targetTiltY = (e.clientY / Math.max(1, h) - 0.5) * 45;
     });
 
-    /* Gera 26 órbitas 3D inclinadas com diferentes raios, velocidades e nós */
-    const orbits = [];
-    for (let i = 0; i < 26; i++) {
-      const isInner = i < 10;
-      orbits.push({
-        rx: isInner ? (120 + i * 22) : (260 + (i - 10) * 32),
-        rz: isInner ? (85 + i * 16) : (165 + (i - 10) * 20),
-        tiltX: -0.95 + (i % 7) * 0.31,
-        tiltZ: -0.8 + ((i * 3) % 9) * 0.21,
-        speed: (0.14 + (i % 5) * 0.055) * (i % 2 === 0 ? 1 : -1),
-        phase: (i * 0.87) % (Math.PI * 2),
-        hasRingNode: i % 2 === 0,
-        useCyan: i % 3 !== 0
-      });
-    }
+    /* Configuração da Grade 3D da Onda */
+    const COLS = 54;
+    const ROWS = 32;
+    const FOV = 740;
 
-    function rot3D(x, y, z, rx, ry, rz) {
-      /* Rotação Z */
-      const cz = Math.cos(rz);
-      const sz = Math.sin(rz);
-      const x1 = x * cz - y * sz;
-      const y1 = x * sz + y * cz;
-      /* Rotação X */
-      const cx = Math.cos(rx);
-      const sx = Math.sin(rx);
-      const y2 = y1 * cx - z * sx;
-      const z2 = y1 * sx + z * cx;
-      /* Rotação Y global */
-      const cy = Math.cos(ry);
-      const sy = Math.sin(ry);
-      const x3 = x1 * cy - z2 * sy;
-      const z3 = x1 * sy + z2 * cy;
-      return { x: x3, y: y2, z: z3 };
-    }
+    function renderSmoothWave(now) {
+      /* Velocidade ultra-lenta e majestosa (câmera lenta cinematográfica) */
+      const t = now * 0.00038;
+      currentTiltX += (targetTiltX - currentTiltX) * 0.035;
+      currentTiltY += (targetTiltY - currentTiltY) * 0.035;
 
-    function renderConstellation(now) {
-      const t = now * 0.001;
       ctx.save();
       ctx.scale(dpr, dpr);
       ctx.clearRect(0, 0, w, h);
 
-      const cx = w * 0.5;
-      const cy = h * 0.48;
-      const responsiveScale = Math.min(1.08, Math.max(0.54, w / 1360));
-      const globalRotY = t * 0.09 + pointerX;
-      const globalRotX = 0.24 + pointerY;
+      const cx = w * 0.5 + currentTiltX * 0.35;
+      const cy = h * 0.62 + currentTiltY * 0.25;
+      const spreadX = Math.max(1300, w * 1.5);
+      const startX = -spreadX * 0.5;
+      const stepX = spreadX / (COLS - 1);
+      const startZ = 160;
+      const depthSpan = 1100;
+      const stepZ = depthSpan / (ROWS - 1);
 
-      /* Brilho energético central azul/roxo (núcleo da constelação) */
-      const coreGrad = ctx.createRadialGradient(cx, cy, 4, cx, cy, 290 * responsiveScale);
-      coreGrad.addColorStop(0, rgbaNeon(0.28));
-      coreGrad.addColorStop(0.42, rgbaAccent(0.18));
-      coreGrad.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = coreGrad;
-      ctx.beginPath();
-      ctx.arc(cx, cy, 290 * responsiveScale, 0, Math.PI * 2);
-      ctx.fill();
+      /* Matriz 2D de pontos projetados para desenhar curvas e partículas */
+      const grid = [];
 
-      /* Desenha os arcos elípticos curvos e os cometas viajantes */
-      orbits.forEach(function (orb, idx) {
+      for (let r = 0; r < ROWS; r++) {
+        const rowPoints = [];
+        const z = startZ + r * stepZ;
+        const zNorm = r / (ROWS - 1); // 0 (frente) a 1 (fundo)
+
+        for (let c = 0; c < COLS; c++) {
+          const x = startX + c * stepX;
+          const cNorm = c / (COLS - 1);
+
+          /* Ondulação suave com múltiplos harmônicos lentos */
+          const waveA = Math.sin(cNorm * 6.5 + t * 2.0) * 64;
+          const waveB = Math.cos(zNorm * 5.5 - t * 1.6) * 48;
+          const waveC = Math.sin((cNorm * 4.2 + zNorm * 4.6) + t * 1.2) * 36;
+          const y = waveA + waveB + waveC;
+
+          /* Projeção de perspectiva 3D */
+          const scale = FOV / (FOV + z);
+          const px = cx + x * scale;
+          const py = cy + (y + 120) * scale;
+
+          /* Alpha baseado na profundidade (efeito neblina suave no horizonte) */
+          const depthFade = Math.sin(zNorm * Math.PI) * 0.85 + 0.15;
+          const edgeFade = Math.sin(cNorm * Math.PI);
+          const alpha = Math.max(0.02, Math.min(0.85, depthFade * edgeFade));
+
+          rowPoints.push({
+            x: px,
+            y: py,
+            scale: scale,
+            alpha: alpha,
+            elevation: (y + 148) / 296 // 0 (vale) a 1 (crista)
+          });
+        }
+        grid.push(rowPoints);
+      }
+
+      /* 1. Traçar as Linhas Suaves da Onda (Conexões horizontais por linha) */
+      for (let r = 0; r < ROWS; r++) {
+        const pts = grid[r];
+        if (!pts || pts.length < 2) continue;
+
         ctx.beginPath();
-        const segs = 40;
-        const arcSpan = Math.PI * 1.45;
-        const startAng = orb.phase + t * orb.speed * 0.45;
+        ctx.moveTo(pts[0].x, pts[0].y);
 
-        for (let s = 0; s <= segs; s++) {
-          const a = startAng + (s / segs) * arcSpan;
-          const lx = Math.cos(a) * orb.rx * responsiveScale;
-          const lz = Math.sin(a) * orb.rz * responsiveScale;
-          const p = rot3D(lx, 0, lz, orb.tiltX + globalRotX, globalRotY, orb.tiltZ);
-          const persp = 900 / (900 + p.z * 0.55);
-          const sx = cx + p.x * persp;
-          const sy = cy + p.y * persp;
-          if (s === 0) ctx.moveTo(sx, sy);
-          else ctx.lineTo(sx, sy);
+        for (let c = 1; c < COLS; c++) {
+          const prev = pts[c - 1];
+          const curr = pts[c];
+          const mx = (prev.x + curr.x) * 0.5;
+          const my = (prev.y + curr.y) * 0.5;
+          ctx.quadraticCurveTo(prev.x, prev.y, mx, my);
         }
+        ctx.lineTo(pts[COLS - 1].x, pts[COLS - 1].y);
 
-        ctx.strokeStyle = orb.useCyan ? rgbaNeon(0.31) : rgbaAccent(0.34);
-        ctx.lineWidth = idx < 8 ? 1.35 : 0.98;
+        const rNorm = r / (ROWS - 1);
+        const lineAlpha = (1.0 - rNorm * 0.7) * 0.18;
+        ctx.strokeStyle = rgbaNeon(lineAlpha);
+        ctx.lineWidth = Math.max(0.65, 1.35 * (1.0 - rNorm * 0.5));
         ctx.stroke();
+      }
 
-        /* Partícula/cometa e anel concêntrico ◎ na ponta viva da órbita */
-        const headAng = startAng + arcSpan * ((0.5 + 0.5 * Math.sin(t * orb.speed * 1.7 + idx)) % 1);
-        const hx = Math.cos(headAng) * orb.rx * responsiveScale;
-        const hz = Math.sin(headAng) * orb.rz * responsiveScale;
-        const hp = rot3D(hx, 0, hz, orb.tiltX + globalRotX, globalRotY, orb.tiltZ);
-        const hPersp = 900 / (900 + hp.z * 0.55);
-        const px = cx + hp.x * hPersp;
-        const py = cy + hp.y * hPersp;
-
-        if (orb.hasRingNode) {
-          const rOuter = (5.5 + (idx % 3) * 1.8) * hPersp;
-          ctx.beginPath();
-          ctx.arc(px, py, rOuter, 0, Math.PI * 2);
-          ctx.strokeStyle = "rgba(226, 232, 240, 0.52)";
-          ctx.lineWidth = 1.1;
-          ctx.stroke();
-
-          ctx.beginPath();
-          ctx.arc(px, py, Math.max(1.6, rOuter * 0.36), 0, Math.PI * 2);
-          ctx.fillStyle = orb.useCyan ? cachedNeonHex : "#FFFFFF";
-          ctx.fill();
-        } else {
-          ctx.beginPath();
-          ctx.arc(px, py, 2.2 * hPersp, 0, Math.PI * 2);
-          ctx.fillStyle = cachedAccentHex;
-          ctx.fill();
+      /* 2. Traçar Conexões Longitudinais Intercaladas (Gera a Malha Futurista) */
+      for (let c = 0; c < COLS; c += 2) {
+        ctx.beginPath();
+        ctx.moveTo(grid[0][c].x, grid[0][c].y);
+        for (let r = 1; r < ROWS; r++) {
+          const pt = grid[r][c];
+          ctx.lineTo(pt.x, pt.y);
         }
-      });
+        ctx.strokeStyle = rgbaAccent(0.05);
+        ctx.lineWidth = 0.6;
+        ctx.stroke();
+      }
+
+      /* 3. Desenhar Nós e Partículas Luminosas no Padrão Awwwards */
+      for (let r = 0; r < ROWS; r++) {
+        const pts = grid[r];
+        for (let c = 0; c < COLS; c++) {
+          const pt = pts[c];
+          if (pt.alpha < 0.05) continue;
+
+          const dotRadius = Math.max(0.75, 2.4 * pt.scale);
+
+          ctx.beginPath();
+          ctx.arc(pt.x, pt.y, dotRadius, 0, Math.PI * 2);
+
+          if (pt.elevation > 0.65) {
+            /* Cristas da onda acendem em branco pérola luminoso */
+            ctx.fillStyle = "rgba(255, 255, 255, " + (pt.alpha * 0.95) + ")";
+          } else {
+            /* Vales e encostas no tom Neon ativo */
+            ctx.fillStyle = rgbaNeon(pt.alpha * 0.75);
+          }
+          ctx.fill();
+
+          /* Brilho halo extra nos nós de crista mais próximos */
+          if (pt.elevation > 0.78 && pt.scale > 0.62 && (c % 2 === 0)) {
+            ctx.beginPath();
+            ctx.arc(pt.x, pt.y, dotRadius * 2.6, 0, Math.PI * 2);
+            ctx.fillStyle = rgbaNeon(pt.alpha * 0.25);
+            ctx.fill();
+          }
+        }
+      }
 
       ctx.restore();
-      requestAnimationFrame(renderConstellation);
+      requestAnimationFrame(renderSmoothWave);
     }
 
     refreshAccentCache();
-    requestAnimationFrame(renderConstellation);
+    requestAnimationFrame(renderSmoothWave);
   }
 
   /* ------------------------------------------------------------------------
