@@ -31,7 +31,7 @@ window.MattheusPortfolio.PROFILE = {
   whatsappNumber: "5561982106653",
   github: "https://github.com/moraesmattheus",
   linkedin: "https://www.linkedin.com/in/mattheusmoraes/",
-  easycodeUrl: "https://moraesmattheus.github.io/pyra/"
+  easycodeUrl: "https://easy-code.tech/"
 };
 
 /* --------------------------------------------------------------------------
@@ -44,7 +44,7 @@ window.MattheusPortfolio.STUDIO_CASES = {
   sites: {
     projectId: "site-vania",
     urlDisplay: "vaniafariaimoveis.com · Site Institucional & EasyCode Ao Vivo",
-    liveUrl: "https://moraesmattheus.github.io/pyra/",
+    liveUrl: "https://easy-code.tech/",
     valueTitle: "Criação de Sites que Vendem pelo Valor Percebido",
     valueCopy: "Sites institucionais de alto padrão, landing pages rápidas e plataformas interativas pensadas para transmitir autoridade imediata e converter visitantes em clientes.",
     conciergeTopic: "Criação de Site de Alto Padrão",
@@ -105,7 +105,7 @@ window.MattheusPortfolio.PROJECTS = [
     statusClass: "status-live-pill",
     year: "2026",
     image: "assets/img/easycode.png",
-    liveUrl: "https://moraesmattheus.github.io/pyra/",
+    liveUrl: "https://easy-code.tech/",
     repoUrl: "https://github.com/moraesmattheus/pyra",
     studioKey: "easycode",
     summary: "Plataforma completa para aprender programação do zero com execução real de Python, JavaScript e SQL direto no navegador via WebAssembly, suporte 100% offline (PWA), 32 aulas, mundos e sistema de XP.",
