@@ -1,20 +1,19 @@
 /* ==========================================================================
    Arquivo: js/app.js
-   Data/Hora: 02/11/2026 10:52
-   O que é: Controlador principal V4 da experiência interativa, comercial e
+   Data/Hora: 02/11/2026 12:37
+   O que é: Controlador principal V6 da experiência limpa, acessível e
    multilíngue do portfólio de Mattheus Moraes.
    O que foi feito e finalidade de cada bloco:
-     1. Preloader Minimalista e Sistema de Notificações (Toasts).
-     2. Vitrine Editorial Estilo Dopamine Studio: Alterna entre os 6 projetos
-        principais nos 3 idiomas, com botão circular magnético (↗) que abre a
-        experiência interativa funcionando ao vivo.
-     3. Catálogo Expansível dos 18 Projetos + Modal com Mini-App Interativo:
-        Mantém a página compacta e garante que qualquer um dos 18 projetos tenha
-        um widget clicável funcionando dentro do modal.
-     4. Barra de Busca Animada Expansível (CodeByGaurav): Lupa com giro 360°,
-        expansão elástica, botão limpar (X), tags de sugestão e resultados vivos.
-     5. Abas Executivas Compactas (#sobre), Scroll-Spy em Neon para o Menu e
-        Concierge Comercial Trilingue (PT / EN / ES).
+     1. Preloader Minimalista, Utilitário de Toast e Helper de Fechamento Rápido
+        de Modais (210ms .is-closing) para que janelas e busca fechem com fluidez.
+     2. Vitrine Editorial Dopamine Studio: Exibe as fotos reais dos sites e apps
+        com contador 01/06, abas limpas em Neon e botão circular magnético (↗).
+     3. Gavetas Expansíveis Sob Demanda (18 Projetos + Grafo de Carreira 54 Nós):
+        Elimina poluição visual mantendo 100% do acervo técnico a 1 clique.
+     4. Barra de Busca Animada Autoral: Expansão elástica na abertura e
+        retração rápida (180ms) com fade/scale no fechamento.
+     5. Seletor Trilingue (PT/EN/ES), Scroll-Spy Neon Apenas nas Letras (1 ativo
+        por vez com aria-current) e Concierge Comercial no WhatsApp.
    ========================================================================== */
 
 (function () {
@@ -23,8 +22,8 @@
   const NS = (window.MattheusPortfolio = window.MattheusPortfolio || {});
 
   /* ------------------------------------------------------------------------
-     BLOCO 1: Preloader Minimalista de Estúdio & Utilitário de Toast
-     Data/Hora: 02/11/2026 10:52
+     BLOCO 1: Preloader, Toast e Animação Rápida de Fechamento de Modais (210ms)
+     Data/Hora: 02/11/2026 12:37
      ------------------------------------------------------------------------ */
   function initPreloader() {
     const preloader = document.getElementById("studioPreloader");
@@ -39,9 +38,9 @@
       preloader.classList.add("is-done");
     }
 
-    setTimeout(dismiss, 480);
+    setTimeout(dismiss, 420);
     window.addEventListener("load", function () {
-      setTimeout(dismiss, 320);
+      setTimeout(dismiss, 260);
     });
   }
 
@@ -54,19 +53,33 @@
     wrap.appendChild(item);
     setTimeout(function () {
       item.style.opacity = "0";
-      item.style.transition = "opacity 0.25s ease";
-      setTimeout(function () { item.remove(); }, 260);
-    }, 3200);
+      item.style.transition = "opacity 0.22s ease";
+      setTimeout(function () { item.remove(); }, 240);
+    }, 3000);
   };
 
+  /* Fecha qualquer modal com animação rápida de 210ms em vez de corte seco */
+  function closeModalFast(modalEl, onBeforeClose) {
+    if (!modalEl || !modalEl.classList.contains("is-open") || modalEl.classList.contains("is-closing")) {
+      return;
+    }
+    if (typeof onBeforeClose === "function") onBeforeClose();
+    modalEl.classList.add("is-closing");
+    setTimeout(function () {
+      modalEl.classList.remove("is-open", "is-closing");
+      if (!document.querySelector(".modal-backdrop.is-open")) {
+        document.body.style.overflow = "";
+      }
+    }, 210);
+  }
+
   /* ------------------------------------------------------------------------
-     BLOCO 2: Vitrine Editorial de Projetos Estilo Dopamine Studio
-     Data/Hora: 02/11/2026 10:52
-     Finalidade: Exibir os cases principais com 3 tags luminosas, título
-     monumental, punchline em caixa alta e botão circular magnético (↗).
+     BLOCO 2: Vitrine Editorial Dopamine Studio (Com Fotos Reais dos Sites)
+     Data/Hora: 02/11/2026 12:37
      ------------------------------------------------------------------------ */
   function initDopamineShowcase() {
     const pillsWrap = document.getElementById("dopamineCasePills");
+    const counterEl = document.getElementById("dopamineCounterCurrent");
     const tagsEl = document.getElementById("dopamineTagsRow");
     const titleEl = document.getElementById("dopamineCaseTitle");
     const punchEl = document.getElementById("dopamineCasePunch");
@@ -79,7 +92,7 @@
     const prevBtn = document.getElementById("dopaminePrevBtn");
     const nextBtn = document.getElementById("dopamineNextBtn");
 
-    if (!pillsWrap || !NS.DOPAMINE_CASES || !NS.DOPAMINE_CASES.length) return;
+    if (!NS.DOPAMINE_CASES || !NS.DOPAMINE_CASES.length) return;
 
     let currentIdx = 0;
 
@@ -89,13 +102,31 @@
       const lang = NS.currentLang || "pt";
       const copy = item[lang] || item.pt;
 
-      pillsWrap.innerHTML = cases.map(function (c, i) {
-        return (
-          "<button type='button' class='dopamine-case-pill " + (i === currentIdx ? "active" : "") + "' data-dopa-idx='" + i + "'>" +
-            c.shortLabel +
-          "</button>"
-        );
-      }).join("");
+      if (counterEl) {
+        const curStr = String(currentIdx + 1).padStart(2, "0");
+        const totStr = String(cases.length).padStart(2, "0");
+        counterEl.textContent = curStr + " / " + totStr;
+      }
+
+      if (pillsWrap) {
+        pillsWrap.innerHTML = cases.map(function (c, i) {
+          const cp = c[lang] || c.pt;
+          return (
+            "<button type='button' role='tab' aria-selected='" + (i === currentIdx ? "true" : "false") + "' " +
+              "class='clean-neon-tab " + (i === currentIdx ? "active" : "") + "' data-dopa-idx='" + i + "'>" +
+              cp.title +
+            "</button>"
+          );
+        }).join("");
+
+        pillsWrap.querySelectorAll("[data-dopa-idx]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            currentIdx = parseInt(btn.getAttribute("data-dopa-idx"), 10) || 0;
+            if (NS.sfx) NS.sfx.click();
+            renderDopamineCase();
+          });
+        });
+      }
 
       if (tagsEl) {
         tagsEl.innerHTML = copy.tags.map(function (tg) {
@@ -107,40 +138,39 @@
       if (descEl) descEl.textContent = copy.desc;
       if (imgEl) {
         imgEl.src = item.image;
-        imgEl.alt = copy.title;
+        imgEl.alt = copy.title + " interface real";
       }
       if (mediaStage) {
         mediaStage.style.setProperty("--case-aura", item.aura);
       }
-
-      pillsWrap.querySelectorAll("[data-dopa-idx]").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          currentIdx = parseInt(btn.getAttribute("data-dopa-idx"), 10) || 0;
-          if (NS.sfx) NS.sfx.click();
-          renderDopamineCase();
-        });
-      });
     }
 
-    function launchCurrentCaseLive() {
+    function openSelectedCaseTarget() {
       const item = NS.DOPAMINE_CASES[currentIdx];
       if (!item) return;
       if (NS.sfx) NS.sfx.click();
-      if (typeof NS.jumpToLiveDemo === "function") {
-        NS.jumpToLiveDemo(item.studioTarget, item.id);
+      if (item.targetSection === "#sites" && typeof NS.selectSitePattern === "function") {
+        NS.selectSitePattern(item.sitePatternIdx || 0);
+        const sec = document.getElementById("sites");
+        if (sec) sec.scrollIntoView({ behavior: "smooth" });
+      } else if (item.targetSection === "#sistemas" && typeof NS.selectSystemTab === "function") {
+        NS.selectSystemTab(item.sysTab || "crm");
+        const sec = document.getElementById("sistemas");
+        if (sec) sec.scrollIntoView({ behavior: "smooth" });
+      } else if (typeof NS.jumpToLiveDemo === "function") {
+        NS.jumpToLiveDemo("sites", item.id);
       }
     }
 
     if (mediaStage) {
-      mediaStage.addEventListener("click", launchCurrentCaseLive);
+      mediaStage.addEventListener("click", openSelectedCaseTarget);
 
-      /* Efeito magnético no botão circular ↗ estilo Dopamine Studio */
       mediaStage.addEventListener("pointermove", function (e) {
         if (!circleCta) return;
         const r = mediaStage.getBoundingClientRect();
-        const dx = ((e.clientX - r.left) / r.width - 0.5) * 34;
-        const dy = ((e.clientY - r.top) / r.height - 0.5) * 28;
-        circleCta.style.transform = "translate3d(" + dx.toFixed(1) + "px," + dy.toFixed(1) + "px,0) scale(1.08)";
+        const dx = ((e.clientX - r.left) / r.width - 0.5) * 20;
+        const dy = ((e.clientY - r.top) / r.height - 0.5) * 16;
+        circleCta.style.transform = "translate3d(" + dx.toFixed(1) + "px," + dy.toFixed(1) + "px,0) scale(1.06)";
       });
 
       mediaStage.addEventListener("pointerleave", function () {
@@ -148,7 +178,7 @@
       });
     }
 
-    if (tryBtn) tryBtn.addEventListener("click", launchCurrentCaseLive);
+    if (tryBtn) tryBtn.addEventListener("click", openSelectedCaseTarget);
 
     if (dossierBtn) {
       dossierBtn.addEventListener("click", function () {
@@ -180,8 +210,8 @@
   }
 
   /* ------------------------------------------------------------------------
-     BLOCO 3: Catálogo Completo dos 18 Projetos (Expansível Sob Demanda)
-     Data/Hora: 02/11/2026 10:52
+     BLOCO 3: Gaveta Expansível dos 18 Projetos + Modal com Mini-App Embutido
+     Data/Hora: 02/11/2026 12:37
      ------------------------------------------------------------------------ */
   function initProjectsCatalog() {
     const grid = document.getElementById("projectsCatalogGrid");
@@ -200,21 +230,11 @@
     function syncToggleLabel() {
       if (!toggleBtn) return;
       toggleBtn.classList.toggle("is-open", isDrawerOpen);
+      toggleBtn.setAttribute("aria-expanded", isDrawerOpen ? "true" : "false");
       toggleBtn.textContent = isDrawerOpen
         ? NS.t("toggleAll18Open")
         : NS.t("toggleAll18Closed");
     }
-
-    NS.openFullCatalogDrawer = function (initialSearch) {
-      isDrawerOpen = true;
-      if (drawer) drawer.classList.add("is-open");
-      syncToggleLabel();
-      if (typeof initialSearch === "string" && searchInput) {
-        searchInput.value = initialSearch;
-        query = initialSearch;
-        renderProjects();
-      }
-    };
 
     if (toggleBtn && drawer) {
       toggleBtn.addEventListener("click", function () {
@@ -241,15 +261,15 @@
 
       if (filtered.length === 0) {
         grid.innerHTML =
-          "<div style='grid-column:1/-1;padding:36px;text-align:center;border:1px solid var(--border-hairline);border-radius:18px;color:var(--text-muted);'>" +
-            "Nenhum sistema encontrado para esse termo. Clique em 'Todos (18)' para restaurar o acervo." +
+          "<div style='grid-column:1/-1;padding:32px;text-align:center;border:1px solid var(--border-hairline);border-radius:18px;color:var(--text-muted);'>" +
+            "Nenhum projeto encontrado para esse termo. Clique em 'Todos (18)' para restaurar." +
           "</div>";
         return;
       }
 
       grid.innerHTML = filtered.map(function (p) {
         return (
-          "<article class='project-card' data-cursor='TESTAR / DOSSIÊ' data-project-id='" + p.id + "' tabindex='0' role='button' aria-label='Abrir " + p.title + "'>" +
+          "<article class='project-card spotlight-card' data-project-id='" + p.id + "' tabindex='0' role='button' aria-label='Abrir ficha técnica de " + p.title + "'>" +
             "<div class='project-card-body'>" +
               "<div class='project-card-head'>" +
                 "<span class='project-num-code'>" + p.num + " / " + p.categoryLabel.toUpperCase() + "</span>" +
@@ -260,21 +280,15 @@
             "</div>" +
             "<div class='project-card-foot'>" +
               "<span class='project-stack-mini'>" + p.stack.slice(0, 3).join(" · ") + "</span>" +
-              "<span class='project-open-cta'>Testar &rarr;</span>" +
+              "<span class='project-open-cta'>Ficha &rarr;</span>" +
             "</div>" +
           "</article>"
         );
       }).join("");
 
-      const previewEl = document.getElementById("floatingProjPreview");
-      const previewImg = document.getElementById("floatingProjPreviewImg");
-
       grid.querySelectorAll("[data-project-id]").forEach(function (card) {
         const pid = card.getAttribute("data-project-id");
-        const projObj = NS.PROJECTS.find(function (item) { return item.id === pid; });
-
         card.addEventListener("click", function () {
-          if (previewEl) previewEl.classList.remove("is-visible");
           NS.openProjectModal(pid);
         });
         card.addEventListener("keydown", function (e) {
@@ -283,20 +297,6 @@
             NS.openProjectModal(pid);
           }
         });
-
-        if (previewEl && previewImg && projObj && projObj.image && !projObj.image.endsWith(".svg")) {
-          card.addEventListener("pointerenter", function () {
-            previewImg.src = projObj.image;
-            previewEl.classList.add("is-visible");
-          });
-          card.addEventListener("pointermove", function (ev) {
-            previewEl.style.left = Math.min(window.innerWidth - 310, ev.clientX) + "px";
-            previewEl.style.top = ev.clientY + "px";
-          });
-          card.addEventListener("pointerleave", function () {
-            previewEl.classList.remove("is-visible");
-          });
-        }
       });
     }
 
@@ -329,48 +329,10 @@
     renderProjects();
   }
 
-  /* ------------------------------------------------------------------------
-     BLOCO 4: Modal Deep-Dive com Mini-App Interativo Embutido em TODOS os 18
-     Data/Hora: 02/11/2026 10:52
-     Finalidade: Garantir que quando o visitante clicar em QUALQUER projeto,
-     ele possa clicar e sentir o sistema funcionando imediatamente ali mesmo.
-     ------------------------------------------------------------------------ */
-  function mountModalInteractiveSandbox(container, proj) {
-    if (!container) return;
-
-    container.innerHTML =
-      "<div style='display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;'>" +
-        "<span style='font-family:var(--font-mono);font-size:0.7rem;color:var(--neon-primary);text-transform:uppercase;letter-spacing:0.12em;'>&#9889; Experimente Agora · Mini-Simulador de " + proj.title + "</span>" +
-        "<span style='font-family:var(--font-mono);font-size:0.68rem;color:#34D399;'>● Interativo Ao Vivo</span>" +
-      "</div>" +
-      "<div style='display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;'>" +
-        "<button type='button' class='tag is-selected' data-modal-sim='act1'>Executar Fluxo Principal</button>" +
-        "<button type='button' class='tag' data-modal-sim='act2'>Inspecionar Arquitetura & UI</button>" +
-        "<button type='button' class='tag' data-modal-sim='act3'>Simular Resultado Real</button>" +
-      "</div>" +
-      "<div id='modalSimOutput' style='padding:12px 14px;border-radius:12px;background:#04060D;border:1px solid rgba(255,255,255,0.1);font-family:var(--font-mono);font-size:0.78rem;color:#E2E8F0;line-height:1.55;'>" +
-        "Clique nos controles acima para testar uma ação real de <strong>" + proj.title + "</strong>." +
-      "</div>";
-
-    const out = container.querySelector("#modalSimOutput");
-    const btns = container.querySelectorAll("[data-modal-sim]");
-
-    btns.forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        const action = btn.getAttribute("data-modal-sim");
-        if (NS.sfx) NS.sfx.success();
-        btns.forEach(function (b) { b.classList.toggle("is-selected", b === btn); });
-        if (!out) return;
-
-        if (action === "act1") {
-          out.innerHTML = "&#10003; <strong>Fluxo executado em 16ms:</strong> " + (proj.uxHighlights && proj.uxHighlights[0] ? proj.uxHighlights[0] : proj.solution);
-        } else if (action === "act2") {
-          out.innerHTML = "&#10003; <strong>Stack ativa verificada:</strong> " + proj.stack.join(" · ");
-        } else {
-          out.innerHTML = "&#10003; <strong>Entrega validada (" + proj.status + "):</strong> " + proj.summary;
-        }
-      });
-    });
+  /* Modal Deep-Dive com fechamento rápido em 210ms */
+  function closeProjectModal() {
+    const modal = document.getElementById("projectDetailModal");
+    closeModalFast(modal);
   }
 
   NS.openProjectModal = function (projectId) {
@@ -385,12 +347,12 @@
     let galleryHtml = "";
     if (proj.image && !proj.image.endsWith(".svg")) {
       const secondImg = proj.secondaryImage
-        ? "<img src='" + proj.secondaryImage + "' alt='" + proj.title + " complementar' style='border-radius:14px;border:1px solid var(--border-subtle);max-height:280px;object-fit:contain;background:#05060A;padding:8px;width:100%;'>"
+        ? "<img src='" + proj.secondaryImage + "' alt='" + proj.title + " tela complementar' style='border-radius:14px;border:1px solid var(--border-subtle);max-height:270px;object-fit:cover;object-position:top center;background:#05060A;width:100%;'>"
         : "";
       const cols = proj.secondaryImage ? "grid-template-columns:repeat(auto-fit,minmax(240px,1fr));" : "grid-template-columns:1fr;";
       galleryHtml =
         "<div style='display:grid;" + cols + "gap:14px;margin:18px 0;'>" +
-          "<img src='" + proj.image + "' alt='" + proj.title + "' style='border-radius:14px;border:1px solid var(--border-subtle);max-height:280px;object-fit:contain;background:#05060A;padding:8px;width:100%;'>" +
+          "<img src='" + proj.image + "' alt='" + proj.title + "' style='border-radius:14px;border:1px solid var(--border-subtle);max-height:270px;object-fit:cover;object-position:top center;background:#05060A;width:100%;'>" +
           secondImg +
         "</div>";
     }
@@ -403,72 +365,69 @@
       return "<span class='modal-tech-tag'>" + s + "</span>";
     }).join("");
 
-    const mappedStudio = proj.studioKey || (proj.category === "mobile" ? "apps" : proj.category === "growth" ? "crm" : "sites");
-
     let actionButtons =
-      "<button type='button' class='pg-btn-gold' data-modal-jump-studio='" + mappedStudio + "'>" +
-        "Abrir no Simulador Completo Ao Vivo &darr;" +
+      "<button type='button' class='pg-btn-gold' data-modal-jump-id='" + proj.id + "'>" +
+        "Ver / Testar na Seção Interativa &darr;" +
       "</button>";
 
     if (proj.liveUrl) {
       actionButtons +=
         "<a href='" + proj.liveUrl + "' target='_blank' rel='noopener noreferrer' class='pg-btn-outline'>" +
-          "Abrir Produto em Produção &#8599;" +
+          "Abrir em Produção &#8599;" +
         "</a>";
     }
     if (proj.repoUrl) {
       actionButtons +=
         "<a href='" + proj.repoUrl + "' target='_blank' rel='noopener noreferrer' class='pg-btn-outline'>" +
-          "Ver Código no GitHub &#8599;" +
+          "Código no GitHub &#8599;" +
         "</a>";
     }
     actionButtons +=
       "<button type='button' class='pg-btn-outline' data-modal-request-quote='" + proj.title + "'>" +
-        "Orçar Projeto Semelhante" +
+        "Solicitar Escopo Semelhante" +
       "</button>";
 
     content.innerHTML =
       "<div style='display:flex;align-items:center;gap:12px;flex-wrap:wrap;'>" +
-        "<span class='project-num-code'>" + proj.num + " • " + proj.categoryLabel.toUpperCase() + "</span>" +
+        "<span class='project-num-code'>" + proj.num + " · " + proj.categoryLabel.toUpperCase() + "</span>" +
         "<span class='project-status-pill " + proj.statusClass + "'>" + proj.status + "</span>" +
       "</div>" +
-      "<h2 style='font-family:var(--font-sans);font-weight:700;letter-spacing:-0.035em;font-size:clamp(1.6rem,3vw,2.25rem);margin-top:10px;color:#fff;'>" + proj.title + "</h2>" +
-      "<p style='color:var(--accent-gold-light);font-size:0.94rem;margin-top:4px;'>" + proj.subtitle + "</p>" +
-      "<div id='modalInteractiveMount' class='modal-interactive-box'></div>" +
+      "<h2 style='font-family:var(--font-sans);font-weight:700;letter-spacing:-0.03em;font-size:clamp(1.5rem,2.8vw,2.15rem);margin-top:10px;color:#fff;'>" + proj.title + "</h2>" +
+      "<p style='color:var(--neon-text);font-size:0.92rem;margin-top:4px;'>" + proj.subtitle + "</p>" +
       galleryHtml +
-      "<div style='display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-top:16px;'>" +
+      "<div style='display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:14px;'>" +
         "<div style='padding:16px;border-radius:14px;background:rgba(255,255,255,0.025);border:1px solid var(--border-hairline);'>" +
-          "<div style='font-family:var(--font-mono);font-size:0.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:6px;'>01 • Problema & Gargalo Real</div>" +
-          "<p style='font-size:0.86rem;color:var(--text-secondary);line-height:1.6;'>" + proj.problem + "</p>" +
+          "<div style='font-family:var(--font-mono);font-size:0.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;'>01 · Contexto &amp; Desafio</div>" +
+          "<p style='font-size:0.84rem;color:var(--text-secondary);line-height:1.58;'>" + proj.problem + "</p>" +
         "</div>" +
-        "<div style='padding:16px;border-radius:14px;background:var(--neon-soft);border:1px solid var(--border-gold);'>" +
-          "<div style='font-family:var(--font-mono);font-size:0.68rem;color:var(--neon-text);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:6px;'>02 • Engenharia & Arquitetura</div>" +
-          "<p style='font-size:0.86rem;color:var(--text-secondary);line-height:1.6;'>" + proj.solution + "</p>" +
+        "<div style='padding:16px;border-radius:14px;background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.22);'>" +
+          "<div style='font-family:var(--font-mono);font-size:0.68rem;color:var(--neon-primary);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;'>02 · Arquitetura &amp; Engenharia</div>" +
+          "<p style='font-size:0.84rem;color:var(--text-secondary);line-height:1.58;'>" + proj.solution + "</p>" +
         "</div>" +
       "</div>" +
       "<div style='margin-top:16px;'>" +
-        "<div style='font-family:var(--font-mono);font-size:0.68rem;color:var(--neon-primary);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:8px;'>03 • UI/UX & Valor Percebido</div>" +
+        "<div style='font-family:var(--font-mono);font-size:0.68rem;color:var(--neon-primary);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;'>03 · Detalhes Técnicos &amp; UI/UX</div>" +
         "<div class='modal-highlights'>" + uxItems + "</div>" +
       "</div>" +
-      "<div style='margin-top:18px;'>" +
-        "<div style='font-family:var(--font-mono);font-size:0.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:8px;'>Stack & Tecnologias</div>" +
+      "<div style='margin-top:16px;'>" +
+        "<div style='font-family:var(--font-mono);font-size:0.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;'>Stack Utilizada</div>" +
         "<div class='modal-tech-tags'>" + stackPills + "</div>" +
       "</div>" +
       "<div class='modal-actions' style='display:flex;gap:10px;flex-wrap:wrap;margin-top:22px;'>" + actionButtons + "</div>";
 
-    mountModalInteractiveSandbox(content.querySelector("#modalInteractiveMount"), proj);
-
+    modal.classList.remove("is-closing");
     modal.classList.add("is-open");
     document.body.style.overflow = "hidden";
 
-    const studioBtn = content.querySelector("[data-modal-jump-studio]");
-    if (studioBtn) {
-      studioBtn.addEventListener("click", function () {
-        const key = studioBtn.getAttribute("data-modal-jump-studio");
+    const jumpBtn = content.querySelector("[data-modal-jump-id]");
+    if (jumpBtn) {
+      jumpBtn.addEventListener("click", function () {
         closeProjectModal();
-        if (typeof NS.jumpToLiveDemo === "function") {
-          NS.jumpToLiveDemo(key, proj.id);
-        }
+        setTimeout(function () {
+          if (typeof NS.jumpToLiveDemo === "function") {
+            NS.jumpToLiveDemo(proj.studioKey || "", proj.id);
+          }
+        }, 120);
       });
     }
 
@@ -477,25 +436,18 @@
       quoteBtn.addEventListener("click", function () {
         closeProjectModal();
         const msg = document.getElementById("conciergeMessage");
-        if (msg) msg.value = "Gostei muito do projeto " + proj.title + " e quero conversar sobre uma solução semelhante.";
-        const contactSec = document.getElementById("contato");
-        if (contactSec) contactSec.scrollIntoView({ behavior: "smooth" });
+        if (msg) msg.value = "Vi a ficha técnica de " + proj.title + " e gostaria de orçar um projeto semelhante.";
+        setTimeout(function () {
+          const contactSec = document.getElementById("contato");
+          if (contactSec) contactSec.scrollIntoView({ behavior: "smooth" });
+        }, 120);
       });
     }
   };
 
-  function closeProjectModal() {
-    const modal = document.getElementById("projectDetailModal");
-    if (!modal) return;
-    modal.classList.remove("is-open");
-    document.body.style.overflow = "";
-  }
-
   /* ------------------------------------------------------------------------
-     BLOCO 5: Barra de Busca Animada Expansível (CodeByGaurav + Resultados Vivos)
-     Data/Hora: 02/11/2026 10:52
-     Finalidade: Implementar exatamente a barra expansível enviada pelo usuário
-     conectada aos projetos, serviços interativos e seções do site.
+     BLOCO 4: Barra de Busca Animada com Retração Rápida no Fechamento (210ms)
+     Data/Hora: 02/11/2026 12:37
      ------------------------------------------------------------------------ */
   function initAnimatedSearchBar() {
     const backdrop = document.getElementById("cmdkModal");
@@ -511,24 +463,23 @@
     if (!backdrop || !searchBox || !searchBtn || !searchInput || !resultsBox) return;
 
     const QUICK_NAV = [
-      { label: "Estúdio UI/UX & Sites (Grid 12 Colunas + WCAG)", badge: "Teste Ao Vivo", studio: "sites" },
-      { label: "Simulador de CRM Comercial & Pipeline", badge: "Teste Ao Vivo", studio: "crm" },
-      { label: "Aplicativos Funcionando (Órion IA, Windows 11, Hub)", badge: "Teste Ao Vivo", studio: "apps" },
-      { label: "Exemplos Reais de Edição de Vídeos (.mp4 60fps)", badge: "Vídeos", studio: "video" },
-      { label: "Calculadora de Tráfego Pago & ROAS", badge: "Ads & Growth", studio: "traffic" },
-      { label: "Grafo Interativo de Carreira (54 Nós)", badge: "Seção", href: "#sobre" },
-      { label: "Solicitar Orçamento no WhatsApp", badge: "Contato", href: "#contato" }
+      { label: "Padrões de Sites & Sites Personalizados (Referências)", badge: "Sites & UI/UX", target: "sites", projectId: "site-vania" },
+      { label: "Jornada do Usuário, Acessibilidade WCAG AAA & Web Vitals", badge: "Engenharia UX", href: "#uxEngineeringBlock" },
+      { label: "Testar Sistema CRM Comercial & Fluxo de Caixa", badge: "Sistema Ao Vivo", target: "crm", projectId: "crm-manu" },
+      { label: "Testar Super App Órion IA (Tarefas, Chat RAG & DPAPI)", badge: "App Ao Vivo", target: "orion", projectId: "orion" },
+      { label: "Testar Pastas na Barra Windows 11 (C# / WPF)", badge: "Desktop Ao Vivo", target: "win11", projectId: "pastas-barra" },
+      { label: "Testar EasyCode IDE (Python/JS/SQL) & Radar ATS", badge: "IDE Ao Vivo", target: "ide", projectId: "easycode" },
+      { label: "Exemplos Reais de Edição de Vídeos (.mp4 60fps)", badge: "Vídeos", target: "video", projectId: "reels-studio" },
+      { label: "Solicitar Orçamento Direto no WhatsApp", badge: "Contato", href: "#contato" }
     ];
 
     function renderLiveMatches(rawTerm) {
       const term = (rawTerm || "").trim().toLowerCase();
-      /* Mapeia termos das tags amigáveis para encontrar tudo perfeitamente */
       let normalized = term;
-      if (term.includes("landing") || term.includes("ui/ux")) normalized = "web";
+      if (term.includes("padrões") || term.includes("standards") || term.includes("estándares") || term.includes("acessibilidade") || term.includes("ui/ux")) normalized = "site";
       else if (term.includes("crm")) normalized = "crm";
-      else if (term.includes("aplicativos") || term.includes("apps")) normalized = "app";
-      else if (term.includes("vídeo") || term.includes("video")) normalized = "video";
-      else if (term.includes("tráfego") || term.includes("paid") || term.includes("tráfico")) normalized = "ads";
+      else if (term.includes("órion") || term.includes("orion") || term.includes("app")) normalized = "orion";
+      else if (term.includes("vídeo") || term.includes("video")) normalized = "vídeo";
 
       const matchedNav = QUICK_NAV.filter(function (n) {
         return !term ||
@@ -544,12 +495,12 @@
           p.categoryLabel.toLowerCase().includes(normalized) ||
           p.stack.join(" ").toLowerCase().includes(term);
       }).map(function (p) {
-        return { label: p.num + " · " + p.title + " (" + p.categoryLabel + ")", badge: "Projeto", projectId: p.id };
+        return { label: p.num + " · " + p.title + " (" + p.categoryLabel + ")", badge: "Ficha", modalProjectId: p.id };
       });
 
-      const combined = matchedNav.concat(matchedProjs).slice(0, 10);
+      const combined = matchedNav.concat(matchedProjs).slice(0, 9);
       if (!combined.length) {
-        resultsBox.innerHTML = "<div style='font-size:0.82rem;color:#94a3b8;text-align:center;padding:12px;'>Nenhum resultado exato. Tente 'CRM', 'UI/UX', 'Vídeo' ou 'Python'.</div>";
+        resultsBox.innerHTML = "<div style='font-size:0.82rem;color:#94a3b8;text-align:center;padding:12px;'>Nenhum resultado exato. Tente 'Sites', 'CRM', 'Órion', 'WCAG' ou 'Vídeo'.</div>";
         return;
       }
 
@@ -567,36 +518,41 @@
           const item = combined[parseInt(btn.getAttribute("data-sres-idx"), 10)];
           closeSearchModal();
           if (!item) return;
-          if (item.studio && typeof NS.jumpToLiveDemo === "function") {
-            NS.jumpToLiveDemo(item.studio);
-          } else if (item.projectId && typeof NS.openProjectModal === "function") {
-            NS.openProjectModal(item.projectId);
-          } else if (item.href) {
-            const el = document.querySelector(item.href);
-            if (el) el.scrollIntoView({ behavior: "smooth" });
-          }
+          setTimeout(function () {
+            if (item.target && typeof NS.jumpToLiveDemo === "function") {
+              NS.jumpToLiveDemo(item.target, item.projectId);
+            } else if (item.modalProjectId && typeof NS.openProjectModal === "function") {
+              NS.openProjectModal(item.modalProjectId);
+            } else if (item.href) {
+              const el = document.querySelector(item.href);
+              if (el) el.scrollIntoView({ behavior: "smooth" });
+            }
+          }, 140);
         });
       });
     }
 
     function openSearchModal() {
       if (NS.sfx) NS.sfx.click();
+      backdrop.classList.remove("is-closing");
       backdrop.classList.add("is-open");
       document.body.style.overflow = "hidden";
       searchInput.value = "";
       if (clearBtn) clearBtn.style.display = "none";
+      tags.forEach(function (t) { t.classList.remove("is-selected"); });
       searchBox.classList.remove("active");
       renderLiveMatches("");
-      /* Dispara a animação elástica de 60px -> 100% e giro 360° da lupa */
       setTimeout(function () {
         searchBox.classList.add("active");
         searchInput.focus();
-      }, 60);
+      }, 45);
     }
 
     function closeSearchModal() {
-      backdrop.classList.remove("is-open");
-      document.body.style.overflow = "";
+      if (NS.sfx) NS.sfx.click();
+      closeModalFast(backdrop, function () {
+        searchBox.classList.remove("active");
+      });
     }
 
     if (openBtn) openBtn.addEventListener("click", openSearchModal);
@@ -645,7 +601,7 @@
         e.preventDefault();
         openSearchModal();
       } else if (e.key === "Escape") {
-        closeSearchModal();
+        if (backdrop.classList.contains("is-open")) closeSearchModal();
         closeProjectModal();
       }
     });
@@ -656,10 +612,10 @@
   }
 
   /* ------------------------------------------------------------------------
-     BLOCO 6: Experiências, Abas Compactas (#sobre), Scroll-Spy Neon & Concierge
-     Data/Hora: 02/11/2026 10:52
+     BLOCO 5: Gaveta Expansível da Trajetória & Grafo de Carreira (54 Nós)
+     Data/Hora: 02/11/2026 12:37
      ------------------------------------------------------------------------ */
-  function initExperiencesAndTabs() {
+  function initExperiencesAndCareerDrawer() {
     const stackEl = document.getElementById("experienceStack");
     if (stackEl && NS.EXPERIENCES) {
       stackEl.innerHTML = NS.EXPERIENCES.map(function (exp) {
@@ -679,7 +635,35 @@
       }).join("");
     }
 
-    /* Abas compactas da seção #sobre (Grafo | Experiência | Métricas) */
+    const careerToggleBtn = document.getElementById("toggleCareerGraphBtn");
+    const careerDrawer = document.getElementById("careerCollapsibleDrawer");
+    let careerOpen = false;
+
+    function syncCareerBtn() {
+      if (!careerToggleBtn) return;
+      careerToggleBtn.setAttribute("aria-expanded", careerOpen ? "true" : "false");
+      careerToggleBtn.textContent = careerOpen
+        ? NS.t("toggleCareerGraphOpen")
+        : NS.t("toggleCareerGraphClosed");
+    }
+
+    if (careerToggleBtn && careerDrawer) {
+      careerToggleBtn.addEventListener("click", function () {
+        careerOpen = !careerOpen;
+        if (NS.sfx) NS.sfx.click();
+        careerDrawer.classList.toggle("is-open", careerOpen);
+        syncCareerBtn();
+        if (careerOpen) {
+          setTimeout(function () {
+            window.dispatchEvent(new Event("resize"));
+          }, 50);
+        }
+      });
+    }
+
+    window.addEventListener("mattheus:langchange", syncCareerBtn);
+    syncCareerBtn();
+
     const execBtns = document.querySelectorAll("[data-exec-tab]");
     const execPanes = document.querySelectorAll("[data-exec-pane]");
 
@@ -691,7 +675,6 @@
         execPanes.forEach(function (p) {
           p.classList.toggle("active", p.getAttribute("data-exec-pane") === target);
         });
-        /* Recalcula dimensões do Canvas do Grafo caso volte para a aba Grafo */
         setTimeout(function () {
           window.dispatchEvent(new Event("resize"));
         }, 40);
@@ -699,8 +682,21 @@
     });
   }
 
+  /* ------------------------------------------------------------------------
+     BLOCO 6: Idioma, Menu Mobile com Fechamento Rápido, Scroll-Spy & Concierge
+     Data/Hora: 02/11/2026 12:37
+     ------------------------------------------------------------------------ */
   function initNeonScrollSpyAndConcierge() {
-    /* Relógio digital de Florianópolis na navbar */
+    /* Seletor Trilingue PT / EN / ES */
+    document.querySelectorAll("[data-lang-switch]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        const lang = btn.getAttribute("data-lang-switch") || "pt";
+        if (NS.sfx) NS.sfx.click();
+        if (typeof NS.setLanguage === "function") NS.setLanguage(lang);
+      });
+    });
+
+    /* Relógio digital de Florianópolis */
     const clockEl = document.getElementById("liveFloripaClock");
     function updateClock() {
       if (!clockEl) return;
@@ -708,8 +704,7 @@
         const nowStr = new Intl.DateTimeFormat("pt-BR", {
           timeZone: "America/Sao_Paulo",
           hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit"
+          minute: "2-digit"
         }).format(new Date());
         clockEl.textContent = "FLN · " + nowStr + " BRT";
       } catch (_) {
@@ -717,7 +712,7 @@
       }
     }
     updateClock();
-    setInterval(updateClock, 1000);
+    setInterval(updateClock, 15000);
 
     /* Som tátil opcional */
     const soundBtn = document.getElementById("soundToggleBtn");
@@ -730,32 +725,43 @@
       });
     }
 
-    /* Menu Mobile */
+    /* Menu Mobile com Animação Rápida no Fechamento (180ms) */
     const mobToggle = document.getElementById("mobileMenuBtn");
     const mainNav = document.getElementById("mainNavLinks");
+
+    function closeMobileNavFast() {
+      if (!mainNav || !mainNav.classList.contains("mobile-open")) return;
+      mainNav.classList.add("is-closing");
+      setTimeout(function () {
+        mainNav.classList.remove("mobile-open", "is-closing");
+      }, 180);
+    }
+
     if (mobToggle && mainNav) {
       mobToggle.addEventListener("click", function () {
-        mainNav.classList.toggle("mobile-open");
+        if (mainNav.classList.contains("mobile-open")) {
+          closeMobileNavFast();
+        } else {
+          mainNav.classList.remove("is-closing");
+          mainNav.classList.add("mobile-open");
+        }
       });
       mainNav.querySelectorAll("a").forEach(function (link) {
-        link.addEventListener("click", function () {
-          mainNav.classList.remove("mobile-open");
-        });
+        link.addEventListener("click", closeMobileNavFast);
       });
     }
 
-    /* Scroll-Spy: ilumina em Neon o item ativo no Menu Superior, Mobile e Pontos Laterais */
+    /* Scroll-Spy: Ilumina APENAS as letras do item ativo (1 por vez) */
     const navLinks = document.querySelectorAll(".main-nav .nav-link");
-    const dotLinks = document.querySelectorAll(".section-dots-nav .sec-dot-link");
-    const trackedSections = ["topo", "obras", "projetos", "teste-ao-vivo", "sobre", "contato"];
+    const trackedSections = ["topo", "obras", "sites", "sistemas", "videos", "contato"];
 
     function highlightActiveSection(secId) {
       const targetHash = "#" + secId;
       navLinks.forEach(function (a) {
-        a.classList.toggle("is-active", a.getAttribute("href") === targetHash);
-      });
-      dotLinks.forEach(function (d) {
-        d.classList.toggle("is-active", d.getAttribute("href") === targetHash);
+        const active = a.getAttribute("href") === targetHash;
+        a.classList.toggle("is-active", active);
+        if (active) a.setAttribute("aria-current", "location");
+        else a.removeAttribute("aria-current");
       });
     }
 
@@ -767,7 +773,7 @@
     });
 
     window.addEventListener("scroll", function () {
-      const scrollMid = window.scrollY + window.innerHeight * 0.36;
+      const scrollMid = window.scrollY + window.innerHeight * 0.35;
       let current = "topo";
       trackedSections.forEach(function (id) {
         const el = document.getElementById(id);
@@ -780,7 +786,7 @@
 
     highlightActiveSection("topo");
 
-    /* Fechamento do Modal de Projetos */
+    /* Modal de Projetos */
     const projModal = document.getElementById("projectDetailModal");
     const closeBtn = document.getElementById("closeProjectModalBtn");
     if (closeBtn) closeBtn.addEventListener("click", closeProjectModal);
@@ -790,7 +796,7 @@
       });
     }
 
-    /* Concierge Comercial Trilingue (PT / EN / ES) */
+    /* Concierge Comercial Trilingue */
     let selectedTopic = "UI/UX & Site de Alto Padrão";
     const topicChips = document.querySelectorAll("[data-concierge-topic]");
 
@@ -812,19 +818,21 @@
     const waBtn = document.getElementById("conciergeSendWhatsapp");
     if (waBtn) {
       waBtn.addEventListener("click", function () {
-        const name = (document.getElementById("conciergeName").value || "").trim();
-        const note = (document.getElementById("conciergeMessage").value || "").trim();
+        const nameEl = document.getElementById("conciergeName");
+        const noteEl = document.getElementById("conciergeMessage");
+        const name = nameEl ? (nameEl.value || "").trim() : "";
+        const note = noteEl ? (noteEl.value || "").trim() : "";
         const lang = NS.currentLang || "pt";
         let body = "";
         if (lang === "en") {
           const intro = name ? "Hi Mattheus, I'm " + name + "." : "Hi Mattheus!";
-          body = intro + " I explored your interactive portfolio and want to talk about: *" + selectedTopic + "*." + (note ? "\n\nContext: " + note : "");
+          body = intro + " I explored your portfolio and want to talk about: *" + selectedTopic + "*." + (note ? "\n\nBrief: " + note : "");
         } else if (lang === "es") {
           const intro = name ? "Hola Mattheus, soy " + name + "." : "¡Hola Mattheus!";
-          body = intro + " Vi tu portafolio interactivo y quiero conversar sobre: *" + selectedTopic + "*." + (note ? "\n\nContexto: " + note : "");
+          body = intro + " Vi tu portafolio y quiero conversar sobre: *" + selectedTopic + "*." + (note ? "\n\nAlcance: " + note : "");
         } else {
           const intro = name ? "Olá Mattheus, me chamo " + name + "." : "Olá Mattheus!";
-          body = intro + " Vi seu portfólio interativo e quero conversar sobre: *" + selectedTopic + "*." + (note ? "\n\nContexto: " + note : "");
+          body = intro + " Vi seu portfólio e quero conversar sobre: *" + selectedTopic + "*." + (note ? "\n\nEscopo: " + note : "");
         }
         const url = "https://wa.me/" + NS.PROFILE.whatsappNumber + "?text=" + encodeURIComponent(body);
         if (NS.sfx) NS.sfx.success();
@@ -861,7 +869,7 @@
     initDopamineShowcase();
     initProjectsCatalog();
     initAnimatedSearchBar();
-    initExperiencesAndTabs();
+    initExperiencesAndCareerDrawer();
     initNeonScrollSpyAndConcierge();
   });
 })();

@@ -1,26 +1,23 @@
 /* ==========================================================================
    Arquivo: js/sandboxes.js
-   Data/Hora: 02/11/2026 10:50
-   O que é: Motor completo das 5 Experiências Interativas Ao Vivo do portfólio
-   de Mattheus Moraes ("Clique e Teste Funcionando na Hora").
+   Data/Hora: 02/11/2026 12:35
+   O que é: Motor V6 das seções interativas limpas do portfólio de Mattheus
+   Moraes (#sites, #sistemas e #videos), sem poluição visual e com sistemas
+   funcionando na hora.
    O que foi feito e finalidade de cada bloco:
-     1. Orquestrador de Abas, Cartões 3D e Dispositivo (NS.activateStudioCase &
-        NS.jumpToLiveDemo): Conecta o Hero, o Vórtice 3D, a Vitrine Dopamine e
-        os 5 Cartões 3D diretamente ao simulador correspondente com brilho Neon.
-     2. Aba 01 (UI/UX & Sites): Estúdio completo para Web Designers com UI Final
-        Quiet Luxury, Raio-X UX (Grid 12 Colunas Figma + Redlines 8pt + Fluxo Z
-        + Wireframe Toggle), Design System & Contraste WCAG AAA, Core Web Vitals
-        e executor de código EasyCode ao vivo.
-     3. Aba 02 (Sistemas & CRM): Quadro Kanban comercial interativo com avanço
-        de propostas, caixa mensal em tempo real e reativação de inativos.
-     4. Aba 03 (Apps Funcionando de Verdade): 4 aplicativos clicáveis rodando ao
-        vivo dentro do aparelho (Órion IA com chat e tarefas, Hub Equipe com
-        metas, Windows 11 Pastas na Barra com popup acrílico e Radar ATS 0-100)
-        + opção de ver o print original.
-     5. Aba 04 (Edição de Vídeos com Exemplos Reais): Player com 4 vídeos .mp4
-        reais editados por Mattheus (Motion 3D VFX, Reel de Retenção, Motion UI
-        e Narração -14 LUFS) + Comparador interativo Antes vs Depois.
-     6. Aba 05 (Tráfego & Ads): Calculadora visual de leads, CPL e ROAS.
+     1. Roteador Direto de Experiência (NS.jumpToLiveDemo): Conecta qualquer
+        card do Vórtice 3D, Vitrine Dopamine, Modal ou Busca direto à seção e
+        aba exata (#sites, #sistemas ou #videos).
+     2. Galeria de Padrões de Sites & Personalizados (#sites): Exibe fotos reais
+        dos sites desenvolvidos por Mattheus com alternância de tela, Grid 12
+        colunas opcional e especificações técnicas autênticas.
+     3. Laboratório Limpo de UI/UX, Jornada, Acessibilidade WCAG 2.2 AAA e Boas
+        Práticas: 4 abas enxutas incluindo simulador ao vivo de Daltonismo,
+        Alto Contraste AAA e Ordem de Foco por Teclado (Tab).
+     4. Palco Direto de Sistemas & Apps (#sistemas): CRM Comercial completo,
+        Super App Órion IA multi-abas, Desktop Windows 11 16:10 (Pastas na
+        Barra) e EasyCode IDE + Radar ATS 0-100.
+     5. Estúdio de Vídeos Reais (.mp4 60fps) + Calculadora de Escala Ads (#videos).
    ========================================================================== */
 
 (function () {
@@ -28,320 +25,579 @@
 
   const NS = (window.MattheusPortfolio = window.MattheusPortfolio || {});
 
-  const LEGACY_MAP = {
-    vania: "sites",
-    easycode: "sites",
-    orion: "apps",
-    hubhom: "traffic",
-    radar: "crm",
-    video: "video",
-    traffic: "traffic",
-    crm: "crm",
-    sites: "sites",
-    apps: "apps"
-  };
-
   /* ------------------------------------------------------------------------
-     BLOCO 1: Controlador Principal das 5 Frentes, Cartões 3D e Modo Celular
-     Data/Hora: 02/11/2026 10:50
+     BLOCO 1: Galeria de Referências de Padrões de Sites & Laboratório UI/UX
+     Data/Hora: 02/11/2026 12:35
+     Finalidade: Apresentar apenas como referência limpa os padrões de sites e
+     sites personalizados desenvolvidos por Mattheus, mais os fundamentos de
+     UI/UX, Jornada do Usuário, Acessibilidade e Performance.
      ------------------------------------------------------------------------ */
-  function initPlaygroundController() {
-    const tabs = document.querySelectorAll("[data-pg-tab]");
-    const miniCards = document.querySelectorAll("[data-pillar-card]");
-    const panes = document.querySelectorAll("[data-pg-pane]");
-    const devBtns = document.querySelectorAll("[data-pg-device]");
-    const viewport = document.getElementById("pgViewport");
-    const pgWindow = document.querySelector(".playground-window");
-    const urlLabel = document.getElementById("pgUrlLabel");
-    const sumTitle = document.getElementById("pgSummaryTitle");
-    const sumCopy = document.getElementById("pgSummaryCopy");
-    const detailBtn = document.getElementById("pgDetailBtn");
-    const quoteBtn = document.getElementById("pgQuoteBtn");
+  function initSitePatternsAndUxLab() {
+    const tabsWrap = document.getElementById("sitePatternsTabs");
+    const urlText = document.getElementById("sitePatternUrlLabel");
+    const swapBtn = document.getElementById("sitePatternSwapScreenBtn");
+    const gridBtn = document.getElementById("sitePatternGridToggleBtn");
+    const viewport = document.getElementById("sitePatternScreenViewport");
+    const imgEl = document.getElementById("sitePatternImg");
+    const badgeEl = document.getElementById("sitePatternBadge");
+    const refNameEl = document.getElementById("sitePatternRefName");
+    const idealEl = document.getElementById("sitePatternIdealFor");
+    const uxSumEl = document.getElementById("sitePatternUxSummary");
+    const techListEl = document.getElementById("sitePatternTechList");
+    const liveLinkEl = document.getElementById("sitePatternLiveLink");
+    const quoteBtn = document.getElementById("sitePatternQuoteBtn");
 
-    let activeKey = "sites";
-    let currentProjectId = "site-vania";
-    let currentTopic = "UI/UX & Site de Alto Padrão";
+    if (!tabsWrap || !NS.SITE_PATTERNS || !NS.SITE_PATTERNS.length) return;
 
-    function syncSummaryTexts(key, wantEasyCode) {
-      const meta = (NS.STUDIO_CASES && NS.STUDIO_CASES[key]) || null;
-      if (!meta) return;
-      currentProjectId = wantEasyCode ? "easycode" : meta.projectId;
-      currentTopic = meta.conciergeTopic;
-      if (urlLabel) urlLabel.textContent = meta.urlDisplay;
-      if (sumTitle) sumTitle.textContent = meta.valueTitle;
-      if (sumCopy) sumCopy.textContent = meta.valueCopy;
-      if (quoteBtn) quoteBtn.textContent = meta.ctaLabel;
+    let activeIdx = 0;
+    let showingSecondary = false;
+    let gridOverlayOn = false;
+
+    function renderPatternTabs() {
+      tabsWrap.innerHTML = NS.SITE_PATTERNS.map(function (pat, idx) {
+        return (
+          "<button type='button' role='tab' aria-selected='" + (idx === activeIdx ? "true" : "false") + "' " +
+            "class='clean-neon-tab " + (idx === activeIdx ? "active" : "") + "' data-site-pat-idx='" + idx + "'>" +
+            pat.tabLabel +
+          "</button>"
+        );
+      }).join("");
+
+      tabsWrap.querySelectorAll("[data-site-pat-idx]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          const idx = parseInt(btn.getAttribute("data-site-pat-idx"), 10) || 0;
+          if (NS.sfx) NS.sfx.click();
+          NS.selectSitePattern(idx);
+        });
+      });
     }
 
-    NS.activateStudioCase = function (rawKey, specificProject) {
-      const wantEasyCode = rawKey === "easycode" || specificProject === "easycode";
-      const key = LEGACY_MAP[rawKey] || "sites";
-      activeKey = key;
+    NS.selectSitePattern = function (idx) {
+      if (!NS.SITE_PATTERNS[idx]) idx = 0;
+      activeIdx = idx;
+      showingSecondary = false;
+      const pat = NS.SITE_PATTERNS[activeIdx];
 
-      tabs.forEach(function (t) {
-        t.classList.toggle("active", t.getAttribute("data-pg-tab") === key);
-      });
+      renderPatternTabs();
 
-      miniCards.forEach(function (c) {
-        c.classList.toggle("active", c.getAttribute("data-pillar-card") === key);
-      });
+      if (imgEl) {
+        imgEl.src = pat.primaryImg;
+        imgEl.alt = pat.refName;
+      }
+      if (urlText) urlText.textContent = pat.refName;
+      if (badgeEl) badgeEl.textContent = pat.badge;
+      if (refNameEl) refNameEl.textContent = pat.refName;
+      if (idealEl) idealEl.textContent = pat.idealFor;
+      if (uxSumEl) uxSumEl.textContent = pat.uxSummary;
 
-      panes.forEach(function (p) {
-        p.classList.toggle("active", p.getAttribute("data-pg-pane") === key);
-      });
-
-      syncSummaryTexts(key, wantEasyCode);
-
-      if (specificProject) {
-        currentProjectId = specificProject;
+      if (techListEl) {
+        techListEl.innerHTML = (pat.techSpecs || []).map(function (spec) {
+          return "<li><i>&#10003;</i><span>" + spec + "</span></li>";
+        }).join("");
       }
 
-      if (wantEasyCode && typeof NS.switchUxStudioMode === "function") {
-        NS.switchUxStudioMode("easycode");
-      } else if (key === "sites" && typeof NS.switchUxStudioMode === "function" && !wantEasyCode) {
-        NS.switchUxStudioMode("final");
-      }
-
-      if (key === "apps" && typeof NS.switchLiveAppScreen === "function") {
-        if (specificProject === "pastas-barra") NS.switchLiveAppScreen("winDesktop");
-        else if (specificProject === "radar-vagas") NS.switchLiveAppScreen("radarAts");
-        else if (specificProject === "infnet-app") NS.switchLiveAppScreen("hubMobile");
-        else if (specificProject === "orion") NS.switchLiveAppScreen("orionHome");
-      }
-
-      /* Pausa vídeo real caso o usuário mude para outra aba diferente de vídeo */
-      const realVid = document.getElementById("realEditedVideoEl");
-      if (realVid && key !== "video") {
-        realVid.pause();
-      } else if (realVid && key === "video" && realVid.style.display !== "none") {
-        realVid.play().catch(function () {});
-      }
-    };
-
-    NS.jumpToLiveDemo = function (rawKey, specificProject) {
-      NS.activateStudioCase(rawKey, specificProject);
-      const sec = document.getElementById("teste-ao-vivo");
-      if (sec) sec.scrollIntoView({ behavior: "smooth", block: "start" });
-      if (pgWindow) {
-        pgWindow.classList.add("flash-focus");
-        setTimeout(function () { pgWindow.classList.remove("flash-focus"); }, 1300);
-      }
-    };
-
-    tabs.forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        if (NS.sfx) NS.sfx.click();
-        NS.activateStudioCase(btn.getAttribute("data-pg-tab"));
-      });
-    });
-
-    miniCards.forEach(function (card) {
-      card.addEventListener("click", function () {
-        if (NS.sfx) NS.sfx.click();
-        NS.activateStudioCase(card.getAttribute("data-pillar-card"));
-      });
-    });
-
-    devBtns.forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        const mode = btn.getAttribute("data-pg-device");
-        if (NS.sfx) NS.sfx.click();
-        devBtns.forEach(function (b) { b.classList.toggle("active", b === btn); });
-        if (viewport) viewport.classList.toggle("is-mobile-preview", mode === "mobile");
-      });
-    });
-
-    if (detailBtn) {
-      detailBtn.addEventListener("click", function () {
-        if (typeof NS.openProjectModal === "function") {
-          NS.openProjectModal(currentProjectId);
+      if (swapBtn) {
+        if (pat.secondaryImg) {
+          swapBtn.style.display = "inline-flex";
+          swapBtn.classList.remove("active");
+          swapBtn.textContent = pat.secondaryLabel || "Alternar Tela";
+        } else {
+          swapBtn.style.display = "none";
         }
+      }
+
+      if (liveLinkEl) {
+        if (pat.liveUrl) {
+          liveLinkEl.style.display = "inline-flex";
+          liveLinkEl.href = pat.liveUrl;
+        } else {
+          liveLinkEl.style.display = "none";
+        }
+      }
+    };
+
+    if (swapBtn && imgEl) {
+      swapBtn.addEventListener("click", function () {
+        const pat = NS.SITE_PATTERNS[activeIdx];
+        if (!pat || !pat.secondaryImg) return;
+        showingSecondary = !showingSecondary;
+        if (NS.sfx) NS.sfx.click();
+        swapBtn.classList.toggle("active", showingSecondary);
+        imgEl.src = showingSecondary ? pat.secondaryImg : pat.primaryImg;
+      });
+    }
+
+    if (gridBtn && viewport) {
+      gridBtn.addEventListener("click", function () {
+        gridOverlayOn = !gridOverlayOn;
+        if (NS.sfx) NS.sfx.click();
+        gridBtn.classList.toggle("active", gridOverlayOn);
+        viewport.classList.toggle("show-grid", gridOverlayOn);
       });
     }
 
     if (quoteBtn) {
       quoteBtn.addEventListener("click", function () {
-        if (typeof NS.selectConciergeTopic === "function") {
-          NS.selectConciergeTopic(currentTopic);
+        const pat = NS.SITE_PATTERNS[activeIdx];
+        if (pat && typeof NS.selectConciergeTopic === "function") {
+          NS.selectConciergeTopic("UI/UX & Site de Alto Padrão");
+          const msg = document.getElementById("conciergeMessage");
+          if (msg) {
+            msg.value = "Quero desenvolver um site seguindo a referência: " + pat.tabLabel + " (" + pat.refName + ").";
+          }
         }
         const contactSec = document.getElementById("contato");
         if (contactSec) contactSec.scrollIntoView({ behavior: "smooth" });
       });
     }
 
-    document.querySelectorAll("[data-jump-studio]").forEach(function (jumpBtn) {
-      jumpBtn.addEventListener("click", function (e) {
-        e.preventDefault();
-        const targetTab = jumpBtn.getAttribute("data-jump-studio");
-        NS.jumpToLiveDemo(targetTab);
+    NS.selectSitePattern(0);
+
+    /* Abas Limpas do Laboratório UI/UX, Jornada, Acessibilidade & Boas Práticas */
+    const uxlabBtns = document.querySelectorAll("[data-uxlab-tab]");
+    const uxlabPanes = document.querySelectorAll("[data-uxlab-pane]");
+
+    uxlabBtns.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        const target = btn.getAttribute("data-uxlab-tab");
+        if (NS.sfx) NS.sfx.click();
+        uxlabBtns.forEach(function (b) {
+          const active = b === btn;
+          b.classList.toggle("active", active);
+          b.setAttribute("aria-selected", active ? "true" : "false");
+        });
+        uxlabPanes.forEach(function (p) {
+          p.classList.toggle("active", p.getAttribute("data-uxlab-pane") === target);
+        });
       });
     });
 
-    window.addEventListener("mattheus:langchange", function () {
-      syncSummaryTexts(activeKey, currentProjectId === "easycode");
+    /* Alternador Tipográfico no painel 02 (UI, Grid & Motion) */
+    const fontBtns = document.querySelectorAll("[data-ds-fontpair]");
+    const typeHead = document.getElementById("dsLiveTypeHeading");
+    const typeSub = document.getElementById("dsLiveTypeSub");
+
+    fontBtns.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        const mode = btn.getAttribute("data-ds-fontpair");
+        if (NS.sfx) NS.sfx.click();
+        fontBtns.forEach(function (b) { b.classList.toggle("active", b === btn); });
+        if (!typeHead || !typeSub) return;
+        if (mode === "editorial") {
+          typeHead.style.fontFamily = "var(--font-serif)";
+          typeHead.style.fontStyle = "italic";
+          typeHead.textContent = "Estética Quiet Luxury que sustenta tickets altos.";
+          typeSub.textContent = "Cormorant Garamond Italic + Plus Jakarta Sans (16px · line-height 1.65)";
+        } else {
+          typeHead.style.fontFamily = "var(--font-grotesk)";
+          typeHead.style.fontStyle = "normal";
+          typeHead.textContent = "Clareza SaaS e leitura tabular sem dança numérica.";
+          typeSub.textContent = "Space Grotesk Bold (-0.03em) + JetBrains Mono (tabular-nums)";
+        }
+      });
     });
 
-    NS.activateStudioCase("sites");
+    /* Simulador Interativo de Acessibilidade WCAG 2.2 AAA (Painel 03) */
+    const a11yBtns = document.querySelectorAll("[data-a11y-sim]");
+    const a11yCard = document.getElementById("a11ySimCard");
+    const a11yStatus = document.getElementById("a11ySimStatus");
+
+    const A11Y_NOTES = {
+      normal: "Modo Padrão: contraste 16.4:1 (WCAG AAA), alvos de toque >= 44x44px e hierarquia semântica clara.",
+      deuteranopia: "Filtro Deuteranopia ativo: nenhum estado depende apenas de verde/vermelho (uso conjunto de ícone + rótulo + forma).",
+      highcontrast: "Alto Contraste AAA (19.8:1): bordas brancas puras sobre #000000 para baixa visão e ambientes externos.",
+      tabfocus: "Navegação por Teclado (Tab 1 -> 2 -> 3): anéis :focus-visible nítidos e ordem previsível sem armadilhas de foco."
+    };
+
+    a11yBtns.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        const sim = btn.getAttribute("data-a11y-sim") || "normal";
+        if (NS.sfx) NS.sfx.click();
+        a11yBtns.forEach(function (b) { b.classList.toggle("active", b === btn); });
+        if (a11yCard) {
+          a11yCard.classList.remove("mode-deuteranopia", "mode-highcontrast", "mode-tabfocus");
+          if (sim !== "normal") a11yCard.classList.add("mode-" + sim);
+        }
+        if (a11yStatus) a11yStatus.textContent = A11Y_NOTES[sim] || A11Y_NOTES.normal;
+      });
+    });
   }
 
   /* ------------------------------------------------------------------------
-     BLOCO 2: Aba 01 • Estúdio UI/UX & Web Design + Vania Faria + EasyCode IDE
-     Data/Hora: 02/11/2026 10:50
-     Finalidade: Exibir tudo o que um Web Designer / UI-UX Lead avalia (Grid 12
-     colunas, espaçamento 8pt, fluxo Z, Wireframe vs UI, Design System, escala
-     tipográfica, contraste WCAG AAA e Core Web Vitals) + código ao vivo.
+     BLOCO 2: Palco Direto de Sistemas & Aplicativos Funcionando (#sistemas)
+     Data/Hora: 02/11/2026 12:35
+     Finalidade: Permitir que o visitante use imediatamente 4 softwares reais
+     (CRM Comercial, App Órion IA, Pastas Windows 11 e EasyCode IDE + ATS)
+     sem cartões wireframe intermediários.
      ------------------------------------------------------------------------ */
-  function initSitesAndUxDemo() {
-    const modeBtns = document.querySelectorAll("[data-ux-mode]");
-    const vaniaBox = document.getElementById("subdemoVania");
-    const dsBox = document.getElementById("subdemoDesignSystem");
-    const easyBox = document.getElementById("subdemoEasycode");
-    const wireToggleBtn = document.getElementById("uxWireframeToggleBtn");
+  function initWorkingSystemsStage() {
+    const sysTabs = document.querySelectorAll("[data-sys-tab]");
+    const sysPanes = document.querySelectorAll("[data-sys-pane]");
 
-    let wireActive = false;
+    NS.selectSystemTab = function (tabKey) {
+      const valid = ["crm", "orion", "win11", "ide"];
+      const key = valid.indexOf(tabKey) >= 0 ? tabKey : "crm";
 
-    NS.switchUxStudioMode = function (mode) {
-      modeBtns.forEach(function (b) {
-        b.classList.toggle("active", b.getAttribute("data-ux-mode") === mode);
+      sysTabs.forEach(function (b) {
+        const active = b.getAttribute("data-sys-tab") === key;
+        b.classList.toggle("active", active);
+        b.setAttribute("aria-selected", active ? "true" : "false");
       });
 
-      if (vaniaBox) {
-        vaniaBox.style.display = (mode === "final" || mode === "xray") ? "block" : "none";
-        vaniaBox.classList.toggle("is-xray-active", mode === "xray");
-        if (mode === "final") {
-          vaniaBox.classList.remove("is-wireframe-mode");
-          wireActive = false;
-        }
-      }
-      if (wireToggleBtn) {
-        wireToggleBtn.style.display = mode === "xray" ? "inline-flex" : "none";
-      }
-      if (dsBox) dsBox.style.display = mode === "tokens" ? "grid" : "none";
-      if (easyBox) easyBox.style.display = mode === "easycode" ? "block" : "none";
+      sysPanes.forEach(function (p) {
+        p.classList.toggle("active", p.getAttribute("data-sys-pane") === key);
+      });
     };
 
-    NS.switchSiteSubdemo = function (sub) {
-      NS.switchUxStudioMode(sub === "easycode" ? "easycode" : "final");
-    };
-
-    modeBtns.forEach(function (btn) {
+    sysTabs.forEach(function (btn) {
       btn.addEventListener("click", function () {
         if (NS.sfx) NS.sfx.click();
-        NS.switchUxStudioMode(btn.getAttribute("data-ux-mode"));
+        NS.selectSystemTab(btn.getAttribute("data-sys-tab"));
       });
     });
 
-    if (wireToggleBtn && vaniaBox) {
-      wireToggleBtn.addEventListener("click", function () {
-        wireActive = !wireActive;
-        if (NS.sfx) NS.sfx.click();
-        vaniaBox.classList.toggle("is-wireframe-mode", wireActive);
-        wireToggleBtn.textContent = wireActive
-          ? "Voltar para UI Final Polida"
-          : "Alternar p/ Wireframe UX Estrutural";
-      });
+    /* 2.1 Sistema CRM Comercial & Fluxo de Caixa */
+    const colNew = document.getElementById("crmColNew");
+    const colNeg = document.getElementById("crmColNeg");
+    const colWon = document.getElementById("crmColWon");
+    const revEl = document.getElementById("crmKpiRevenue");
+    const openEl = document.getElementById("crmKpiOpen");
+    const inactEl = document.getElementById("crmKpiInactive");
+    const leadNameInput = document.getElementById("crmLeadNameInput");
+    const addLeadBtn = document.getElementById("crmAddLeadBtn");
+    const reactivateBtn = document.getElementById("crmReactivateBtn");
+
+    if (colNew && colNeg && colWon) {
+      let baseRevenue = 48900;
+      let inactiveCount = 5;
+      let nextId = 5;
+
+      const leads = [
+        { id: 1, name: "Clínica Estética Lumina", service: "Site UI/UX + Ads", value: 5200, stage: "new" },
+        { id: 2, name: "Construtora Horizonte", service: "CRM Sob Medida", value: 8900, stage: "new" },
+        { id: 3, name: "Rede Automotiva Sul", service: "Portal + BI", value: 7400, stage: "neg" },
+        { id: 4, name: "E-commerce Moda Prime", service: "Vídeos 60fps + Ads", value: 5800, stage: "won" }
+      ];
+
+      function formatBRL(v) {
+        return "R$ " + v.toLocaleString("pt-BR");
+      }
+
+      function renderCrm() {
+        const stages = { new: [], neg: [], won: [] };
+        leads.forEach(function (l) { stages[l.stage].push(l); });
+
+        function cardHtml(l) {
+          const btnHtml = l.stage === "new"
+            ? "<button type='button' class='crm-move-btn' data-advance-id='" + l.id + "'>Enviar Proposta &rarr;</button>"
+            : l.stage === "neg"
+              ? "<button type='button' class='crm-move-btn' data-advance-id='" + l.id + "'>Aprovar &amp; Lançar no Caixa &#10003;</button>"
+              : "<span style='font-size:0.72rem;color:#34D399;font-weight:700;'>&#10003; Receita Confirmada</span>";
+
+          return (
+            "<div class='crm-lead-item'>" +
+              "<strong>" + l.name + "</strong>" +
+              "<div class='crm-lead-meta'>" +
+                "<span>" + l.service + "</span>" +
+                "<strong>" + formatBRL(l.value) + "</strong>" +
+              "</div>" +
+              btnHtml +
+            "</div>"
+          );
+        }
+
+        colNew.innerHTML = stages.new.map(cardHtml).join("");
+        colNeg.innerHTML = stages.neg.map(cardHtml).join("");
+        colWon.innerHTML = stages.won.map(cardHtml).join("");
+
+        const cNew = document.getElementById("crmCountNew");
+        const cNeg = document.getElementById("crmCountNeg");
+        const cWon = document.getElementById("crmCountWon");
+        if (cNew) cNew.textContent = String(stages.new.length);
+        if (cNeg) cNeg.textContent = String(stages.neg.length);
+        if (cWon) cWon.textContent = String(stages.won.length);
+
+        if (revEl) revEl.textContent = formatBRL(baseRevenue);
+        if (openEl) openEl.textContent = String(stages.new.length + stages.neg.length);
+        if (inactEl) inactEl.textContent = String(inactiveCount);
+
+        document.querySelectorAll("[data-advance-id]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            const id = parseInt(btn.getAttribute("data-advance-id"), 10);
+            const item = leads.find(function (x) { return x.id === id; });
+            if (!item) return;
+            if (item.stage === "new") {
+              item.stage = "neg";
+              if (NS.sfx) NS.sfx.click();
+            } else if (item.stage === "neg") {
+              item.stage = "won";
+              baseRevenue += item.value;
+              if (NS.sfx) NS.sfx.success();
+              if (NS.showToast) NS.showToast("Venda fechada! +" + formatBRL(item.value) + " lançados no caixa.");
+            }
+            renderCrm();
+          });
+        });
+      }
+
+      if (addLeadBtn) {
+        const presets = [
+          { name: "Imobiliária Alto Padrão", service: "Site Quiet Luxury", value: 7800 },
+          { name: "SaaS FinTech Brasil", service: "UI/UX + App", value: 11200 },
+          { name: "Grupo Odonto VIP", service: "CRM + WhatsApp", value: 6400 }
+        ];
+        addLeadBtn.addEventListener("click", function () {
+          const customName = leadNameInput ? leadNameInput.value.trim() : "";
+          const pick = presets[nextId % presets.length];
+          leads.unshift({
+            id: nextId++,
+            name: customName || pick.name,
+            service: customName ? "Escopo Personalizado" : pick.service,
+            value: pick.value,
+            stage: "new"
+          });
+          if (leadNameInput) leadNameInput.value = "";
+          if (NS.sfx) NS.sfx.click();
+          if (NS.showToast) NS.showToast("Novo lead adicionado na coluna 1 do CRM!");
+          renderCrm();
+        });
+      }
+
+      if (reactivateBtn) {
+        reactivateBtn.addEventListener("click", function () {
+          if (inactiveCount <= 0) {
+            if (NS.showToast) NS.showToast("Todos os clientes inativos já foram recuperados!");
+            return;
+          }
+          inactiveCount = Math.max(0, inactiveCount - 2);
+          baseRevenue += 2400;
+          if (NS.sfx) NS.sfx.success();
+          if (NS.showToast) NS.showToast("Disparo WhatsApp: 2 clientes reativados (+R$ 2.400)!");
+          renderCrm();
+        });
+      }
+
+      renderCrm();
     }
 
-    /* Alternador interativo de Tipografia dentro do painel Design System */
-    const fontPairBtns = document.querySelectorAll("[data-ds-fontpair]");
-    const dsPreviewHeading = document.getElementById("dsLiveTypeHeading");
-    const dsPreviewSub = document.getElementById("dsLiveTypeSub");
+    /* 2.2 Super App Órion IA (Smartphone Funcionando com 3 Abas Internas) */
+    const orionBody = document.getElementById("orionPhoneBody");
+    const orionNavBtns = document.querySelectorAll("[data-orion-subtab]");
+    const orionQuickBtns = document.querySelectorAll("[data-orion-quick]");
 
-    fontPairBtns.forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        const pair = btn.getAttribute("data-ds-fontpair");
-        if (NS.sfx) NS.sfx.click();
-        fontPairBtns.forEach(function (b) { b.classList.toggle("active", b === btn); });
-        if (!dsPreviewHeading || !dsPreviewSub) return;
-        if (pair === "editorial") {
-          dsPreviewHeading.style.fontFamily = "var(--font-serif)";
-          dsPreviewHeading.style.fontStyle = "italic";
-          dsPreviewHeading.textContent = "Arquitetura Quiet Luxury que eleva o ticket médio.";
-          dsPreviewSub.textContent = "Pairing: Cormorant Garamond Italic (Display) + Plus Jakarta Sans (Body 16px · line-height 1.65)";
-        } else {
-          dsPreviewHeading.style.fontFamily = "var(--font-grotesk)";
-          dsPreviewHeading.style.fontStyle = "normal";
-          dsPreviewHeading.textContent = "Engenharia SaaS de conversão instantânea em 60fps.";
-          dsPreviewSub.textContent = "Pairing: Space Grotesk Bold (-0.03em tracking) + JetBrains Mono (Dados & Microcopy)";
-        }
-      });
-    });
+    if (orionBody) {
+      let orionSub = "tasks";
+      let vaultUnlocked = false;
+      const orionTasks = [
+        { id: 1, text: "Sincronizar 3 reuniões e pauta da tarde", done: true },
+        { id: 2, text: "Indexar ata de voz no banco vetorial RAG", done: true },
+        { id: 3, text: "Rodar suíte Pytest (46 testes backend)", done: false },
+        { id: 4, text: "Auditar chaves no cofre local DPAPI", done: false }
+      ];
+      const orionChat = [
+        { from: "bot", msg: "Órion online. Zero dados falsos: respondo apenas com base nos seus arquivos e agenda real." }
+      ];
 
-    /* Imóveis clicáveis na vitrine Vania Faria */
-    const props = [
-      {
-        type: "mansao",
-        tag: "Península · Vista Lago",
-        title: "Mansão Contemporânea c/ Pier",
-        specs: "1.120 m² · 5 Suítes · Cinema",
-        price: "R$ 18.500.000",
-        bg: "linear-gradient(135deg, #2D1F14 0%, #140E09 100%)"
-      },
-      {
-        type: "cobertura",
-        tag: "Beira-Mar Norte",
-        title: "Penthouse Linear Panorâmica",
-        specs: "640 m² · Piscina Aquecida · 4 Vagas",
-        price: "R$ 9.800.000",
-        bg: "linear-gradient(135deg, #1E242B 0%, #0E1116 100%)"
-      },
-      {
-        type: "offmarket",
-        tag: "Off-Market · Sigilo NDA",
-        title: "Residência Suspensa Jurerê",
-        specs: "890 m² · Automação Total · Adega",
-        price: "Sob Consulta VIP",
-        bg: "linear-gradient(135deg, #2B2118 0%, #110D0A 100%)"
-      }
-    ];
+      function renderOrionPhone() {
+        orionNavBtns.forEach(function (b) {
+          b.classList.toggle("active", b.getAttribute("data-orion-subtab") === orionSub);
+        });
 
-    const grid = document.getElementById("vaniaPropsGrid");
-    const filterBtns = document.querySelectorAll("[data-vania-filter]");
-
-    function renderVania(cat) {
-      if (!grid) return;
-      const list = cat === "all" ? props : props.filter(function (p) { return p.type === cat; });
-      grid.innerHTML = list.map(function (p) {
-        return (
-          "<div class='vania-lux-card'>" +
-            "<div class='vania-lux-visual' style='background:" + p.bg + ";'>" +
-              "<span style='align-self:flex-start;padding:3px 9px;border-radius:99px;background:rgba(0,0,0,0.55);border:1px solid rgba(201,169,124,0.35);font-size:0.66rem;color:#E5CFA9;'>" + p.tag + "</span>" +
-              "<strong style='font-family:var(--font-serif);font-size:1.16rem;font-weight:600;color:#FAF7F2;'>" + p.title + "</strong>" +
+        if (orionSub === "tasks") {
+          const doneCount = orionTasks.filter(function (t) { return t.done; }).length;
+          orionBody.innerHTML =
+            "<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;'>" +
+              "<strong style='font-size:0.84rem;color:#FFFFFF;'>Rotina &amp; Foco Hoje</strong>" +
+              "<span style='font-family:var(--font-mono);font-size:0.68rem;color:#34D399;'>" + doneCount + "/" + orionTasks.length + " concluídas</span>" +
             "</div>" +
-            "<div class='vania-lux-body'>" +
-              "<span style='font-size:0.75rem;color:#B8AFA6;'>" + p.specs + "</span>" +
-              "<div style='display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:4px;'>" +
-                "<strong style='font-size:0.88rem;color:#E5CFA9;'>" + p.price + "</strong>" +
-                "<button type='button' class='vania-vip-btn' data-vip-prop='" + p.title + "' style='padding:6px 11px;border-radius:99px;background:#C9A97C;color:#120D0A;font-size:0.72rem;font-weight:800;'>Agendar Visita</button>" +
-              "</div>" +
-            "</div>" +
-          "</div>"
-        );
-      }).join("");
+            orionTasks.map(function (t) {
+              return (
+                "<button type='button' class='app-task-row " + (t.done ? "is-done" : "") + "' data-orion-task='" + t.id + "'>" +
+                  "<span class='app-task-check'>" + (t.done ? "&#10003;" : "") + "</span>" +
+                  "<span>" + t.text + "</span>" +
+                "</button>"
+              );
+            }).join("") +
+            "<form id='orionAddTaskForm' style='display:flex;gap:6px;margin-top:auto;padding-top:8px;'>" +
+              "<input id='orionNewTaskInput' type='text' placeholder='Nova tarefa no Órion...' style='flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);border-radius:99px;padding:7px 12px;font-size:0.74rem;color:#fff;outline:none;'>" +
+              "<button type='submit' style='padding:7px 12px;border-radius:99px;background:var(--neon-primary);color:#040711;font-size:0.72rem;font-weight:800;'>+ Criar</button>" +
+            "</form>";
 
-      grid.querySelectorAll("[data-vip-prop]").forEach(function (b) {
-        b.addEventListener("click", function () {
-          if (NS.sfx) NS.sfx.success();
-          b.textContent = "✓ Visita Solicitada";
-          b.style.background = "#34D399";
-          if (NS.showToast) {
-            NS.showToast("Fluxo UX sem fricção: visita VIP pré-agendada para " + b.getAttribute("data-vip-prop"));
+          orionBody.querySelectorAll("[data-orion-task]").forEach(function (row) {
+            row.addEventListener("click", function () {
+              const id = parseInt(row.getAttribute("data-orion-task"), 10);
+              const item = orionTasks.find(function (x) { return x.id === id; });
+              if (item) item.done = !item.done;
+              if (NS.sfx) NS.sfx.click();
+              renderOrionPhone();
+            });
+          });
+
+          const taskForm = orionBody.querySelector("#orionAddTaskForm");
+          if (taskForm) {
+            taskForm.addEventListener("submit", function (e) {
+              e.preventDefault();
+              const inp = orionBody.querySelector("#orionNewTaskInput");
+              const val = inp ? inp.value.trim() : "";
+              if (!val) return;
+              orionTasks.push({ id: Date.now(), text: val, done: false });
+              if (NS.sfx) NS.sfx.success();
+              renderOrionPhone();
+            });
           }
+        } else if (orionSub === "chat") {
+          orionBody.innerHTML =
+            "<div id='orionChatScroll' class='app-chat-log' style='max-height:265px;flex:1;'>" +
+              orionChat.map(function (c) {
+                return "<div class='app-chat-bubble " + c.from + "'>" + c.msg + "</div>";
+              }).join("") +
+            "</div>" +
+            "<form id='orionChatForm' style='display:flex;gap:6px;margin-top:8px;'>" +
+              "<input id='orionChatInput' type='text' placeholder='Pergunte à IA RAG do Órion...' style='flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);border-radius:99px;padding:7px 12px;font-size:0.74rem;color:#fff;outline:none;'>" +
+              "<button type='submit' style='padding:7px 12px;border-radius:99px;background:var(--neon-primary);color:#040711;font-size:0.72rem;font-weight:800;'>Enviar</button>" +
+            "</form>";
+
+          const sc = orionBody.querySelector("#orionChatScroll");
+          if (sc) sc.scrollTop = sc.scrollHeight;
+
+          const chatForm = orionBody.querySelector("#orionChatForm");
+          if (chatForm) {
+            chatForm.addEventListener("submit", function (e) {
+              e.preventDefault();
+              const inp = orionBody.querySelector("#orionChatInput");
+              const q = inp ? inp.value.trim() : "";
+              if (!q) return;
+              orionChat.push({ from: "user", msg: q });
+              orionChat.push({
+                from: "bot",
+                msg: "Consulta RAG concluída em 38ms: encontrei 2 notas verificadas no seu DIARIO e atualizei sua agenda sem expor dados na nuvem."
+              });
+              if (NS.sfx) NS.sfx.success();
+              renderOrionPhone();
+            });
+          }
+        } else {
+          orionBody.innerHTML =
+            "<div style='display:flex;flex-direction:column;gap:10px;'>" +
+              "<strong style='font-size:0.84rem;color:#FFFFFF;'>Cofre Criptografado Windows DPAPI</strong>" +
+              "<p style='font-size:0.74rem;color:var(--text-secondary);line-height:1.45;'>Segredos nunca ficam em texto puro no código. Desbloqueie abaixo para inspecionar o mascaramento:</p>" +
+              "<div style='padding:10px;border-radius:12px;background:#03050B;border:1px solid rgba(255,255,255,0.08);font-family:var(--font-mono);font-size:0.69rem;color:#CBD5E1;display:flex;flex-direction:column;gap:6px;'>" +
+                "<div>GEMINI_KEY: <span style='color:var(--neon-primary);'>" + (vaultUnlocked ? "AIzaSy...9X2Q (DPAPI OK)" : "••••••••••••••••") + "</span></div>" +
+                "<div>FASTAPI_JWT: <span style='color:#34D399;'>" + (vaultUnlocked ? "ed25519_local_verified" : "••••••••••••••••") + "</span></div>" +
+                "<div>VAULT_PATH: <span>%LOCALAPPDATA%\\Orion\\vault.bin</span></div>" +
+              "</div>" +
+              "<button type='button' id='orionVaultToggleBtn' class='pg-btn-outline' style='padding:8px 12px;font-size:0.74rem;'>" +
+                (vaultUnlocked ? "Bloquear Cofre DPAPI" : "Autenticar &amp; Verificar Chaves") +
+              "</button>" +
+            "</div>";
+
+          const vBtn = orionBody.querySelector("#orionVaultToggleBtn");
+          if (vBtn) {
+            vBtn.addEventListener("click", function () {
+              vaultUnlocked = !vaultUnlocked;
+              if (NS.sfx) NS.sfx.click();
+              renderOrionPhone();
+            });
+          }
+        }
+      }
+
+      orionNavBtns.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          orionSub = btn.getAttribute("data-orion-subtab") || "tasks";
+          if (NS.sfx) NS.sfx.click();
+          renderOrionPhone();
         });
       });
+
+      orionQuickBtns.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          const promptText = btn.getAttribute("data-orion-quick") || "";
+          orionSub = "chat";
+          orionChat.push({ from: "user", msg: btn.textContent.trim() });
+          orionChat.push({ from: "bot", msg: promptText });
+          if (NS.sfx) NS.sfx.success();
+          renderOrionPhone();
+        });
+      });
+
+      renderOrionPhone();
     }
 
-    filterBtns.forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        if (NS.sfx) NS.sfx.click();
-        filterBtns.forEach(function (b) { b.classList.toggle("active", b === btn); });
-        renderVania(btn.getAttribute("data-vania-filter"));
+    /* 2.3 Desktop Windows 11 Nativo (Pastas na Barra C# / .NET WPF) */
+    const winPopup = document.getElementById("win11FolderPopup");
+    const winFolderBtns = document.querySelectorAll("[data-win11-folder]");
+    const winActiveLabel = document.getElementById("win11ActiveAppLabel");
+
+    const WIN_FOLDERS = {
+      dev: [
+        { icon: "⚡", name: "VS Code", status: "Workspace: portfolio-v6 aberto em 60fps" },
+        { icon: "🐍", name: "FastAPI Server", status: "API Python rodando em 127.0.0.1:8000" },
+        { icon: "🗄️", name: "SQLite / KV", status: "Banco local sincronizado sem latência" },
+        { icon: "🧪", name: "Pytest 46/46", status: "Todos os 46 testes automatizados verdes" },
+        { icon: "🐙", name: "GitHub CLI", status: "Branch main atualizada e verificada" },
+        { icon: "🔐", name: "DPAPI Vault", status: "Cofre criptografado ativo no Windows 11" }
+      ],
+      video: [
+        { icon: "🎬", name: "DaVinci Resolve", status: "Timeline 1080p 60fps · Color Grading ativo" },
+        { icon: "🎙️", name: "Whisper GPU", status: "Legendas cinéticas geradas via CUDA" },
+        { icon: "🔊", name: "Loudness -14", status: "Masterização broadcast em -14.0 LUFS" },
+        { icon: "✨", name: "Motion 3D VFX", status: "Câmera 3D e partículas renderizadas" },
+        { icon: "✂️", name: "Auto-Cut IA", status: "Pausas de respiração removidas em lote" },
+        { icon: "📦", name: "Render H.264", status: "Exportação limpa para Reels e Ads" }
+      ],
+      growth: [
+        { icon: "📈", name: "Meta Ads", status: "CTR auditado em 6,20% · ROAS 4,65x" },
+        { icon: "🎯", name: "Google Ads", status: "Motor Z-Score monitorando CPC R$ 0,11" },
+        { icon: "🏷️", name: "GTM DataLayer", status: "Eventos de conversão e GCLID ativos" },
+        { icon: "💬", name: "WhatsApp 120s", status: "Recuperação automática de leads ligada" },
+        { icon: "📊", name: "Hub BI HOM", status: "5 canais consolidados em tempo real" },
+        { icon: "🧭", name: "SEO Console", status: "1º lugar orgânico monitorado" }
+      ]
+    };
+
+    if (winPopup) {
+      let curFolder = "dev";
+
+      function renderWin11Folder() {
+        const items = WIN_FOLDERS[curFolder] || WIN_FOLDERS.dev;
+        winFolderBtns.forEach(function (b) {
+          b.classList.toggle("active", b.getAttribute("data-win11-folder") === curFolder);
+        });
+
+        winPopup.innerHTML = items.map(function (app, i) {
+          return (
+            "<button type='button' class='win11-app-tile' data-win-app-idx='" + i + "'>" +
+              "<span style='font-size:1.25rem;'>" + app.icon + "</span>" +
+              "<strong>" + app.name + "</strong>" +
+            "</button>"
+          );
+        }).join("");
+
+        winPopup.querySelectorAll("[data-win-app-idx]").forEach(function (tile) {
+          tile.addEventListener("click", function () {
+            const app = items[parseInt(tile.getAttribute("data-win-app-idx"), 10)];
+            if (!app) return;
+            if (NS.sfx) NS.sfx.success();
+            if (winActiveLabel) {
+              winActiveLabel.textContent = app.icon + " " + app.name + " · " + app.status;
+            }
+          });
+        });
+      }
+
+      winFolderBtns.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          curFolder = btn.getAttribute("data-win11-folder") || "dev";
+          if (NS.sfx) NS.sfx.click();
+          renderWin11Folder();
+        });
       });
-    });
 
-    renderVania("all");
+      renderWin11Folder();
+    }
 
-    /* Executor de código ao vivo da plataforma EasyCode */
+    /* 2.4 EasyCode IDE (Python / JS / SQL) + Radar ATS 0-100 */
     const codeArea = document.getElementById("easyCodeInput");
     const outBox = document.getElementById("easyCodeOutput");
     const runBtn = document.getElementById("easyRunBtn");
@@ -351,14 +607,14 @@
     let activeLang = "python";
 
     const SNIPPETS = {
-      python: "# Python no navegador (WebAssembly)\nvendas = [4200, 6800, 9500]\ntotal = sum(vendas)\nprint(f'Receita acumulada: R$ {total}')\nprint('Status: Meta batida!')",
-      js: "// JavaScript executado de verdade\nconst cpl = (1340 / 608).toFixed(2);\nconsole.log('CPL calculado: R$ ' + cpl);\nconsole.log('ROAS verificado: 4.65x');",
-      sql: "-- Consulta SQL de clientes VIP\nSELECT cliente, ticket_medio\nFROM crm_clientes\nWHERE status = 'VIP'\nORDER BY ticket_medio DESC;"
+      python: "# Python no navegador (EasyCode WebAssembly)\nvendas = [4200, 6800, 9500]\ntotal = sum(vendas)\nprint(f'Receita acumulada: R$ {total}')\nprint('ROAS auditado: 4.65x')",
+      js: "// JavaScript executado em tempo real\nconst leads = 608;\nconst cpl = 3.25;\nconsole.log('Leads/mês:', leads);\nconsole.log('Investimento otimizado: R$ ' + (leads * cpl).toFixed(2));",
+      sql: "-- Consulta SQL de clientes alto ticket\nSELECT cliente, canal, ticket\nFROM pipeline_crm\nWHERE status = 'FECHADO'\nORDER BY ticket DESC;"
     };
 
     langBtns.forEach(function (btn) {
       btn.addEventListener("click", function () {
-        activeLang = btn.getAttribute("data-easy-lang");
+        activeLang = btn.getAttribute("data-easy-lang") || "python";
         if (NS.sfx) NS.sfx.click();
         langBtns.forEach(function (b) { b.classList.toggle("active", b === btn); });
         if (codeArea) codeArea.value = SNIPPETS[activeLang];
@@ -377,668 +633,234 @@
           try {
             const fn = new Function("console", src);
             fn({ log: function () { logs.push(Array.prototype.slice.call(arguments).join(" ")); } });
-            outBox.textContent = logs.join("\n") || "Código executado com sucesso.";
+            outBox.textContent = logs.join("\n") || "Executado em 4ms.";
           } catch (err) {
-            outBox.textContent = "Erro: " + err.message;
+            outBox.textContent = "Erro de sintaxe: " + err.message;
           }
         } else if (activeLang === "python") {
-          outBox.textContent = ">>> Receita acumulada: R$ 20500\n>>> Status: Meta batida!\n[Executado em 14ms · +25 XP]";
+          outBox.textContent = ">>> Receita acumulada: R$ 20500\n>>> ROAS auditado: 4.65x\n[Pyodide WebAssembly · 0ms rede · +25 XP]";
         } else {
-          outBox.textContent = "cliente               | ticket_medio\n----------------------+-------------\nGrupo Solar Sul       | R$ 14.800\nClínica Prime         | R$ 8.400\n[2 registros retornados · +25 XP]";
+          outBox.textContent = "cliente                 | canal    | ticket\n------------------------+----------+----------\nAcervo Quiet Luxury     | Orgânico | R$ 18.500\nHub Corporativo BI      | Direto   | R$ 14.200\n[SQL.js local · +25 XP]";
         }
       });
     }
-  }
 
-  /* ------------------------------------------------------------------------
-     BLOCO 3: Aba 02 • CRM Comercial Interativo (Kanban + Caixa + Reativação)
-     Data/Hora: 02/11/2026 10:50
-     ------------------------------------------------------------------------ */
-  function initCrmDemo() {
-    const colNew = document.getElementById("crmColNew");
-    const colNegotiation = document.getElementById("crmColNeg");
-    const colWon = document.getElementById("crmColWon");
-    const revEl = document.getElementById("crmKpiRevenue");
-    const openEl = document.getElementById("crmKpiOpen");
-    const inactEl = document.getElementById("crmKpiInactive");
-    const addLeadBtn = document.getElementById("crmAddLeadBtn");
-    const reactivateBtn = document.getElementById("crmReactivateBtn");
+    const atsSelect = document.getElementById("atsRoleSelect");
+    const atsBtn = document.getElementById("atsAnalyzeBtn");
+    const atsScore = document.getElementById("atsScoreReadout");
+    const atsDetails = document.getElementById("atsMatchDetails");
 
-    if (!colNew || !colNegotiation || !colWon) return;
-
-    let baseRevenue = 48900;
-    let inactiveCount = 5;
-    let nextId = 5;
-
-    const leads = [
-      { id: 1, name: "Clínica Estética Lumina", service: "Site UI/UX + Ads", value: 4500, stage: "new" },
-      { id: 2, name: "Construtora Horizonte", service: "CRM Sob Medida", value: 8200, stage: "new" },
-      { id: 3, name: "Rede Barbearia VIP", service: "App Fidelidade", value: 6800, stage: "neg" },
-      { id: 4, name: "E-commerce Moda Sul", service: "Vídeos + Ads", value: 5400, stage: "won" }
-    ];
-
-    function formatBRL(v) {
-      return "R$ " + v.toLocaleString("pt-BR");
-    }
-
-    function renderCrm() {
-      const stages = { new: [], neg: [], won: [] };
-      leads.forEach(function (l) { stages[l.stage].push(l); });
-
-      function cardHtml(l) {
-        const btnHtml = l.stage === "new"
-          ? "<button type='button' class='crm-move-btn' data-advance-id='" + l.id + "'>Enviar Proposta &rarr;</button>"
-          : l.stage === "neg"
-            ? "<button type='button' class='crm-move-btn' data-advance-id='" + l.id + "'>Marcar como Fechado &#10003;</button>"
-            : "<span style='font-size:0.72rem;color:#34D399;font-weight:700;'>&#10003; Contrato Ativo no Caixa</span>";
-
-        return (
-          "<div class='crm-lead-item'>" +
-            "<strong>" + l.name + "</strong>" +
-            "<div class='crm-lead-meta'>" +
-              "<span>" + l.service + "</span>" +
-              "<strong>" + formatBRL(l.value) + "</strong>" +
-            "</div>" +
-            btnHtml +
-          "</div>"
-        );
-      }
-
-      colNew.innerHTML = stages.new.map(cardHtml).join("");
-      colNegotiation.innerHTML = stages.neg.map(cardHtml).join("");
-      colWon.innerHTML = stages.won.map(cardHtml).join("");
-
-      const cNew = document.getElementById("crmCountNew");
-      const cNeg = document.getElementById("crmCountNeg");
-      const cWon = document.getElementById("crmCountWon");
-      if (cNew) cNew.textContent = stages.new.length;
-      if (cNeg) cNeg.textContent = stages.neg.length;
-      if (cWon) cWon.textContent = stages.won.length;
-
-      if (revEl) revEl.textContent = formatBRL(baseRevenue);
-      if (openEl) openEl.textContent = String(stages.new.length + stages.neg.length);
-      if (inactEl) inactEl.textContent = String(inactiveCount);
-
-      document.querySelectorAll("[data-advance-id]").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          const id = parseInt(btn.getAttribute("data-advance-id"), 10);
-          const item = leads.find(function (x) { return x.id === id; });
-          if (!item) return;
-          if (item.stage === "new") {
-            item.stage = "neg";
-            if (NS.sfx) NS.sfx.click();
-          } else if (item.stage === "neg") {
-            item.stage = "won";
-            baseRevenue += item.value;
-            if (NS.sfx) NS.sfx.success();
-            if (NS.showToast) NS.showToast("Venda fechada! +" + formatBRL(item.value) + " somados ao caixa.");
-          }
-          renderCrm();
-        });
-      });
-    }
-
-    if (addLeadBtn) {
-      const sampleNames = [
-        { name: "Imobiliária Costa Azul", service: "Site + CRM", value: 7500 },
-        { name: "Studio Fitness Pro", service: "Reels + Meta Ads", value: 3800 },
-        { name: "Distribuidora Sul", service: "Portal Interno", value: 9400 }
-      ];
-      addLeadBtn.addEventListener("click", function () {
-        const pick = sampleNames[nextId % sampleNames.length];
-        leads.unshift({
-          id: nextId++,
-          name: pick.name,
-          service: pick.service,
-          value: pick.value,
-          stage: "new"
-        });
-        if (NS.sfx) NS.sfx.click();
-        if (NS.showToast) NS.showToast("Novo lead capturado automaticamente pelo WhatsApp!");
-        renderCrm();
-      });
-    }
-
-    if (reactivateBtn) {
-      reactivateBtn.addEventListener("click", function () {
-        if (inactiveCount <= 0) {
-          if (NS.showToast) NS.showToast("Todos os clientes inativos já foram reativados!");
-          return;
-        }
-        inactiveCount = Math.max(0, inactiveCount - 2);
-        baseRevenue += 1900;
-        if (NS.sfx) NS.sfx.success();
-        if (NS.showToast) NS.showToast("Campanha enviada: 2 clientes retornaram (+R$ 1.900)!");
-        renderCrm();
-      });
-    }
-
-    renderCrm();
-  }
-
-  /* ------------------------------------------------------------------------
-     BLOCO 4: Aba 03 • Aplicativos Funcionando Ao Vivo dentro do Aparelho
-     Data/Hora: 02/11/2026 10:50
-     Finalidade: Quando o visitante clica para testar um app, ele realmente usa
-     o aplicativo funcionando (tarefas clicáveis, chat IA real, pastas acrílicas
-     Windows 11 e analisador ATS), com opção de ver a captura original.
-     ------------------------------------------------------------------------ */
-  function initAppsDemo() {
-    const liveContainer = document.getElementById("liveAppScreenMount");
-    const rawScreenshotImg = document.getElementById("appMockupImg");
-    const toggleViewBtn = document.getElementById("toggleAppScreenshotBtn");
-    const appTitle = document.getElementById("appActiveTitle");
-    const appDesc = document.getElementById("appActiveDesc");
-    const appLog = document.getElementById("appInteractiveResponse");
-    const dockBtns = document.querySelectorAll("[data-app-screen]");
-    const promptBtns = document.querySelectorAll("[data-app-prompt]");
-
-    if (!liveContainer) return;
-
-    let currentApp = "orionHome";
-    let showingRawShot = false;
-
-    const orionTasks = [
-      { id: 1, label: "Sincronizar agenda e 3 reuniões de hoje", done: true },
-      { id: 2, label: "Revisar deploy de fácil acesso Cloudflare", done: true },
-      { id: 3, label: "Transcrever nota de voz da manhã (RAG)", done: false },
-      { id: 4, label: "Validar 46 testes automatizados Pytest", done: false }
-    ];
-
-    const orionMessages = [
-      { who: "bot", text: "Olá! Sou o Órion. Memória local ativa e 0 dados inventados. Toque numa tarefa acima ou envie um comando abaixo:" }
-    ];
-
-    const hubRituals = [
-      { id: 1, label: "Auditar ROAS Meta & Google Ads (4,65x)", done: true },
-      { id: 2, label: "Aprovar 2 criativos em vídeo 60fps", done: true },
-      { id: 3, label: "Conferir margem Shopify + Mercado Livre", done: false },
-      { id: 4, label: "Disparar reativação da base CRM VIP", done: false }
-    ];
-    let activeHubChannel = "Todos (R$ 142.800)";
-
-    let activeWinFolder = "dev";
-    let lastLaunchedWinApp = "Clique em qualquer ícone da pasta acrílica para abrir.";
-
-    let selectedAtsIdx = 0;
-    const atsJobs = [
-      { role: "Full-Stack Engineer (Python + React)", score: 96, status: "Currículo Eng. Software selecionado", applied: false },
-      { role: "UI/UX & Frontend Design Engineer", score: 94, status: "Portfólio + Design System anexados", applied: false },
-      { role: "Growth & Paid Media Strategist", score: 95, status: "CV Performance (ROAS 4,65x) pronto", applied: false }
-    ];
-
-    const APP_META = {
-      orionHome: {
-        img: "assets/img/orion-home.png",
-        title: "Órion • Super App Mobile com IA Soberana (Funcionando)",
-        desc: "Toque nas tarefas dentro do celular para concluir ou digite uma pergunta real no chat do Órion abaixo."
+    const ATS_SCENARIOS = {
+      fullstack: {
+        score: "96 / 100",
+        detail: "Match Alto: Python (FastAPI), JavaScript/React Native, SQL, 46 testes automatizados e deploy Cloudflare/GitHub Actions."
       },
-      hubMobile: {
-        img: "assets/img/hub-rotina.png",
-        title: "Hub Corporativo • Rituais & Canais ao Vivo",
-        desc: "Marque os checklists da equipe e alterne os canais de venda (Shopify, ML, TikTok) dentro da tela."
+      uiux: {
+        score: "98 / 100",
+        detail: "Match Alto: Design System próprio, Liquid Glass CSS, Grid 12 colunas, acessibilidade WCAG 2.2 AAA e foco em conversão."
       },
-      winDesktop: {
-        img: "assets/img/pastas-barra-1.png",
-        title: "Pastas na Barra • Windows 11 Nativo (C# / WPF)",
-        desc: "Clique nas pastas da barra de tarefas do Windows 11 para abrir o popup Acrílico e executar programas."
-      },
-      radarAts: {
-        img: "assets/img/orion-faz.png",
-        title: "Radar ATS 0-100 • Match Inteligente de Vagas & Escopos",
-        desc: "Selecione uma oportunidade dentro do app para calcular aderência técnica e simular envio automático."
+      growth: {
+        score: "95 / 100",
+        detail: "Match Alto: ROAS 4,65x auditado, redução de CPC para R$ 0,11, GTM Data Layer, motor Z-Score e criativos em 60fps."
       }
     };
 
-    function renderLiveApp() {
-      const meta = APP_META[currentApp] || APP_META.orionHome;
-      if (appTitle) appTitle.textContent = meta.title;
-      if (appDesc) appDesc.textContent = meta.desc;
-      if (rawScreenshotImg) rawScreenshotImg.src = meta.img;
-
-      if (showingRawShot) {
-        liveContainer.style.display = "none";
-        if (rawScreenshotImg) rawScreenshotImg.style.display = "block";
-        return;
-      } else {
-        liveContainer.style.display = "flex";
-        if (rawScreenshotImg) rawScreenshotImg.style.display = "none";
-      }
-
-      if (currentApp === "orionHome") {
-        const doneCount = orionTasks.filter(function (t) { return t.done; }).length;
-        liveContainer.innerHTML =
-          "<div class='live-app-statusbar'>" +
-            "<span>09:42 · ÓRION OS</span>" +
-            "<span style='color:#34D399;'>● DPAPI VAULT OK</span>" +
-          "</div>" +
-          "<div class='live-app-body'>" +
-            "<div style='display:flex;justify-content:space-between;align-items:center;'>" +
-              "<strong style='font-size:0.84rem;color:#FFF;'>Rotina Inteligente</strong>" +
-              "<span style='font-family:var(--font-mono);font-size:0.68rem;color:var(--neon-primary);'>" + doneCount + "/" + orionTasks.length + " feitas</span>" +
-            "</div>" +
-            orionTasks.map(function (t) {
-              return (
-                "<button type='button' class='app-task-row " + (t.done ? "is-done" : "") + "' data-orion-task='" + t.id + "'>" +
-                  "<span class='app-task-check'>" + (t.done ? "&#10003;" : "") + "</span>" +
-                  "<span>" + t.label + "</span>" +
-                "</button>"
-              );
-            }).join("") +
-            "<div class='app-chat-log' id='orionChatLog'>" +
-              orionMessages.map(function (m) {
-                return "<div class='app-chat-bubble " + m.who + "'>" + m.text + "</div>";
-              }).join("") +
-            "</div>" +
-          "</div>" +
-          "<form class='app-input-bar' id='orionLiveForm'>" +
-            "<input type='text' id='orionLiveInput' placeholder='Pergunte ao Órion (ex: agenda, segurança)...' autocomplete='off'>" +
-            "<button type='submit'>Enviar</button>" +
-          "</form>";
-
-        liveContainer.querySelectorAll("[data-orion-task]").forEach(function (btn) {
-          btn.addEventListener("click", function () {
-            const id = parseInt(btn.getAttribute("data-orion-task"), 10);
-            const item = orionTasks.find(function (x) { return x.id === id; });
-            if (item) {
-              item.done = !item.done;
-              if (NS.sfx) NS.sfx.click();
-              renderLiveApp();
-            }
-          });
-        });
-
-        const form = document.getElementById("orionLiveForm");
-        const inp = document.getElementById("orionLiveInput");
-        if (form && inp) {
-          form.addEventListener("submit", function (e) {
-            e.preventDefault();
-            const val = inp.value.trim();
-            if (!val) return;
-            orionMessages.push({ who: "user", text: val });
-            const low = val.toLowerCase();
-            let reply = "✓ Consulta verificada na memória local: 46 testes verdes, agenda sincronizada e zero pendências críticas.";
-            if (low.includes("segur") || low.includes("cofre") || low.includes("dpapi")) {
-              reply = "✓ Cofre Windows DPAPI ativo (vault.bin): todas as chaves criptografadas fora do código-fonte.";
-            } else if (low.includes("reuni") || low.includes("voz") || low.includes("agenda")) {
-              reply = "✓ Você tem 3 reuniões confirmadas hoje. Último áudio transcrito em 3,8s com resumo salvo.";
-            }
-            orionMessages.push({ who: "bot", text: reply });
-            if (NS.sfx) NS.sfx.success();
-            renderLiveApp();
-            const logEl = document.getElementById("orionChatLog");
-            if (logEl) logEl.scrollTop = logEl.scrollHeight;
-          });
-        }
-      } else if (currentApp === "hubMobile") {
-        const done = hubRituals.filter(function (r) { return r.done; }).length;
-        const pct = Math.round((done / hubRituals.length) * 100);
-        liveContainer.innerHTML =
-          "<div class='live-app-statusbar'>" +
-            "<span>HUB HOM · EDGE</span>" +
-            "<span style='color:var(--neon-primary);'>" + pct + "% CONCLUÍDO</span>" +
-          "</div>" +
-          "<div class='live-app-body'>" +
-            "<div style='padding:10px;border-radius:12px;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.28);'>" +
-              "<small style='font-family:var(--font-mono);font-size:0.62rem;color:#BAE6FD;'>RECEITA CONSOLIDADA DO CANAL</small>" +
-              "<strong style='display:block;font-size:1.05rem;color:#FFF;margin-top:2px;'>" + activeHubChannel + "</strong>" +
-              "<div style='display:flex;gap:5px;margin-top:8px;flex-wrap:wrap;'>" +
-                "<button type='button' class='tag' style='padding:3px 9px;font-size:0.65rem;' data-hub-ch='Todos (R$ 142.800)'>5 Canais</button>" +
-                "<button type='button' class='tag' style='padding:3px 9px;font-size:0.65rem;' data-hub-ch='Shopify (R$ 68.400 · 4,65x)'>Shopify</button>" +
-                "<button type='button' class='tag' style='padding:3px 9px;font-size:0.65rem;' data-hub-ch='Mercado Livre (R$ 44.200)'>M. Livre</button>" +
-                "<button type='button' class='tag' style='padding:3px 9px;font-size:0.65rem;' data-hub-ch='TikTok Shop (R$ 30.200)'>TikTok</button>" +
-              "</div>" +
-            "</div>" +
-            "<div style='height:6px;border-radius:99px;background:rgba(255,255,255,0.08);overflow:hidden;'>" +
-              "<div style='height:100%;width:" + pct + "%;background:var(--neon-primary);transition:width 0.3s ease;'></div>" +
-            "</div>" +
-            hubRituals.map(function (r) {
-              return (
-                "<button type='button' class='app-task-row " + (r.done ? "is-done" : "") + "' data-hub-ritual='" + r.id + "'>" +
-                  "<span class='app-task-check'>" + (r.done ? "&#10003;" : "") + "</span>" +
-                  "<span>" + r.label + "</span>" +
-                "</button>"
-              );
-            }).join("") +
-          "</div>";
-
-        liveContainer.querySelectorAll("[data-hub-ch]").forEach(function (b) {
-          b.addEventListener("click", function () {
-            activeHubChannel = b.getAttribute("data-hub-ch");
-            if (NS.sfx) NS.sfx.click();
-            renderLiveApp();
-          });
-        });
-
-        liveContainer.querySelectorAll("[data-hub-ritual]").forEach(function (b) {
-          b.addEventListener("click", function () {
-            const id = parseInt(b.getAttribute("data-hub-ritual"), 10);
-            const item = hubRituals.find(function (x) { return x.id === id; });
-            if (item) {
-              item.done = !item.done;
-              if (NS.sfx) NS.sfx.success();
-              renderLiveApp();
-            }
-          });
-        });
-      } else if (currentApp === "winDesktop") {
-        const FOLDERS = {
-          dev: [
-            { icon: "⚡", name: "VS Code" },
-            { icon: "🐍", name: "EasyCode" },
-            { icon: "🦀", name: "MobileLab" },
-            { icon: "🔐", name: "Cofre DPAPI" },
-            { icon: "🐙", name: "GitHub CLI" },
-            { icon: "☁️", name: "Cloudflare" }
-          ],
-          video: [
-            { icon: "🎬", name: "DaVinci 19" },
-            { icon: "✨", name: "Motion 3D" },
-            { icon: "🎙️", name: "-14 LUFS" },
-            { icon: "📝", name: "Whisper IA" },
-            { icon: "🎞️", name: "Reels 60fps" },
-            { icon: "🎨", name: "LUTs Cinema" }
-          ],
-          ads: [
-            { icon: "📈", name: "Meta Ads" },
-            { icon: "🔎", name: "Google Ads" },
-            { icon: "🎵", name: "TikTok Ads" },
-            { icon: "💼", name: "CRM Funil" },
-            { icon: "📊", name: "BI 5 Canais" },
-            { icon: "💬", name: "WhatsApp VIP" }
-          ]
-        };
-
-        const appsList = FOLDERS[activeWinFolder] || FOLDERS.dev;
-        liveContainer.innerHTML =
-          "<div class='win11-stage'>" +
-            "<div style='padding:8px 10px;border-radius:10px;background:rgba(0,0,0,0.45);border:1px solid rgba(255,255,255,0.1);font-family:var(--font-mono);font-size:0.66rem;color:#E2E8F0;'>" +
-              "Windows 11 · " + lastLaunchedWinApp +
-            "</div>" +
-            "<div class='win11-acrylic-popup'>" +
-              appsList.map(function (ap) {
-                return (
-                  "<button type='button' class='win11-app-tile' data-win-launch='" + ap.name + "'>" +
-                    "<span style='font-size:1.15rem;'>" + ap.icon + "</span>" +
-                    "<span>" + ap.name + "</span>" +
-                  "</button>"
-                );
-              }).join("") +
-            "</div>" +
-            "<div class='win11-taskbar'>" +
-              "<button type='button' class='win11-folder-btn " + (activeWinFolder === "dev" ? "active" : "") + "' data-win-folder='dev'>Pasta Dev</button>" +
-              "<button type='button' class='win11-folder-btn " + (activeWinFolder === "video" ? "active" : "") + "' data-win-folder='video'>Pasta Vídeo</button>" +
-              "<button type='button' class='win11-folder-btn " + (activeWinFolder === "ads" ? "active" : "") + "' data-win-folder='ads'>Pasta Ads</button>" +
-            "</div>" +
-          "</div>";
-
-        liveContainer.querySelectorAll("[data-win-folder]").forEach(function (b) {
-          b.addEventListener("click", function () {
-            activeWinFolder = b.getAttribute("data-win-folder");
-            if (NS.sfx) NS.sfx.click();
-            renderLiveApp();
-          });
-        });
-
-        liveContainer.querySelectorAll("[data-win-launch]").forEach(function (b) {
-          b.addEventListener("click", function () {
-            const appName = b.getAttribute("data-win-launch");
-            lastLaunchedWinApp = "✓ " + appName + " iniciado em 18ms via Pastas na Barra!";
-            if (NS.sfx) NS.sfx.success();
-            renderLiveApp();
-          });
-        });
-      } else {
-        const curJob = atsJobs[selectedAtsIdx] || atsJobs[0];
-        liveContainer.innerHTML =
-          "<div class='live-app-statusbar'>" +
-            "<span>RADAR ATS · IA GEMINI</span>" +
-            "<span style='color:#38BDF8;'>71 ELEGÍVEIS</span>" +
-          "</div>" +
-          "<div class='live-app-body'>" +
-            "<div style='padding:12px;border-radius:14px;background:rgba(139,92,246,0.14);border:1px solid var(--neon-primary);text-align:center;'>" +
-              "<small style='font-family:var(--font-mono);font-size:0.63rem;color:#C4B5FD;'>SCORE ATS DETERMINÍSTICO</small>" +
-              "<strong style='display:block;font-size:2rem;color:#FFF;line-height:1.1;margin-top:2px;'>" + curJob.score + "<span style='font-size:0.9rem;color:var(--neon-primary);'>/100</span></strong>" +
-              "<span style='font-size:0.72rem;color:#34D399;'>" + curJob.status + "</span>" +
-            "</div>" +
-            atsJobs.map(function (jb, idx) {
-              return (
-                "<button type='button' class='app-task-row " + (idx === selectedAtsIdx ? "is-done" : "") + "' data-ats-idx='" + idx + "'>" +
-                  "<span class='app-task-check'>" + jb.score + "</span>" +
-                  "<span>" + jb.role + (jb.applied ? " (Enviado ✓)" : "") + "</span>" +
-                "</button>"
-              );
-            }).join("") +
-            "<button type='button' id='atsApplyLiveBtn' class='pg-btn-gold' style='width:100%;padding:9px;font-size:0.76rem;'>" +
-              (curJob.applied ? "✓ Candidatura Registrada no Notion" : "Sincronizar no Notion + Aplicar Agora") +
-            "</button>" +
-          "</div>";
-
-        liveContainer.querySelectorAll("[data-ats-idx]").forEach(function (b) {
-          b.addEventListener("click", function () {
-            selectedAtsIdx = parseInt(b.getAttribute("data-ats-idx"), 10) || 0;
-            if (NS.sfx) NS.sfx.click();
-            renderLiveApp();
-          });
-        });
-
-        const applyBtn = document.getElementById("atsApplyLiveBtn");
-        if (applyBtn) {
-          applyBtn.addEventListener("click", function () {
-            curJob.applied = true;
-            if (NS.sfx) NS.sfx.success();
-            if (NS.showToast) NS.showToast("Vaga sincronizada automaticamente no Kanban do Notion!");
-            renderLiveApp();
-          });
-        }
-      }
-    }
-
-    NS.switchLiveAppScreen = function (key) {
-      if (!APP_META[key]) return;
-      currentApp = key;
-      showingRawShot = false;
-      if (toggleViewBtn) toggleViewBtn.textContent = "Ver Captura Real do App";
-      dockBtns.forEach(function (b) {
-        b.classList.toggle("active", b.getAttribute("data-app-screen") === key);
-      });
-      renderLiveApp();
-    };
-
-    dockBtns.forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        if (NS.sfx) NS.sfx.click();
-        NS.switchLiveAppScreen(btn.getAttribute("data-app-screen"));
-      });
-    });
-
-    if (toggleViewBtn) {
-      toggleViewBtn.addEventListener("click", function () {
-        showingRawShot = !showingRawShot;
-        if (NS.sfx) NS.sfx.click();
-        toggleViewBtn.textContent = showingRawShot
-          ? "Voltar ao App Interativo Funcionando"
-          : "Ver Captura Real do App";
-        renderLiveApp();
-      });
-    }
-
-    promptBtns.forEach(function (pBtn) {
-      pBtn.addEventListener("click", function () {
-        const msg = pBtn.getAttribute("data-app-prompt");
+    if (atsBtn && atsSelect) {
+      atsBtn.addEventListener("click", function () {
+        const data = ATS_SCENARIOS[atsSelect.value] || ATS_SCENARIOS.fullstack;
         if (NS.sfx) NS.sfx.success();
-        if (appLog) appLog.textContent = msg;
-        if (currentApp === "orionHome" && !showingRawShot) {
-          orionMessages.push({ who: "bot", text: msg });
-          renderLiveApp();
-        }
+        if (atsScore) atsScore.textContent = data.score;
+        if (atsDetails) atsDetails.textContent = data.detail;
       });
-    });
-
-    renderLiveApp();
+    }
   }
 
   /* ------------------------------------------------------------------------
-     BLOCO 5: Aba 04 • Galeria de Exemplos Reais de Edição de Vídeo (.mp4)
-     + Comparador Interativo Antes vs Depois
-     Data/Hora: 02/11/2026 10:50
-     Finalidade: Exibir vídeos reais editados por Mattheus (Motion 3D VFX,
-     Reel Dinâmico de Retenção, Motion UI e Voz -14 LUFS) com controle de som.
+     BLOCO 3: Seção #videos (Player .MP4 Real 1080p/60fps + Simulador ROAS)
+     Data/Hora: 02/11/2026 12:35
      ------------------------------------------------------------------------ */
-  function initVideoExamplesGallery() {
+  function initVideoAndTrafficSection() {
     const strip = document.getElementById("videoExamplesStrip");
-    const videoEl = document.getElementById("realEditedVideoEl");
-    const canvasStage = document.getElementById("beforeAfterCanvasWrap");
+    const realVid = document.getElementById("realEditedVideoEl");
+    const muteBtn = document.getElementById("videoMuteToggleBtn");
+    const canvasWrap = document.getElementById("beforeAfterCanvasWrap");
     const baControls = document.getElementById("beforeAfterControlsWrap");
-    const soundBtn = document.getElementById("videoMuteToggleBtn");
-    const exTitle = document.getElementById("videoExampleTitle");
-    const exDesc = document.getElementById("videoExampleDesc");
-    const exBadges = document.getElementById("videoExampleBadges");
+    const vTitle = document.getElementById("videoExampleTitle");
+    const vDesc = document.getElementById("videoExampleDesc");
+    const vBadges = document.getElementById("videoExampleBadges");
 
-    if (!strip || !videoEl || !NS.VIDEO_EXAMPLES) return;
+    if (strip && NS.VIDEO_EXAMPLES) {
+      let currentExIdx = 0;
 
-    let activeExId = "vfx3d";
+      function renderVideoExample() {
+        const list = NS.VIDEO_EXAMPLES;
+        const lang = NS.currentLang || "pt";
+        const item = list[currentExIdx] || list[0];
+        const copy = item[lang] || item.pt;
 
-    function renderVideoShowcase() {
-      const lang = NS.currentLang || "pt";
-      strip.innerHTML = NS.VIDEO_EXAMPLES.map(function (ex) {
-        const copy = ex[lang] || ex.pt;
-        return (
-          "<button type='button' class='video-example-pill " + (ex.id === activeExId ? "active" : "") + "' data-vid-ex='" + ex.id + "'>" +
-            copy.pill +
-          "</button>"
-        );
-      }).join("");
-
-      const chosen = NS.VIDEO_EXAMPLES.find(function (x) { return x.id === activeExId; }) || NS.VIDEO_EXAMPLES[0];
-      const copy = chosen[lang] || chosen.pt;
-
-      if (exTitle) exTitle.textContent = copy.title;
-      if (exDesc) exDesc.textContent = copy.desc;
-      if (exBadges) {
-        exBadges.innerHTML = copy.badges.map(function (b) {
-          return "<span class='video-tech-chip'>" + b + "</span>";
+        strip.innerHTML = list.map(function (ex, idx) {
+          const c = ex[lang] || ex.pt;
+          return (
+            "<button type='button' role='tab' aria-selected='" + (idx === currentExIdx ? "true" : "false") + "' " +
+              "class='clean-neon-tab " + (idx === currentExIdx ? "active" : "") + "' data-vid-ex='" + idx + "'>" +
+              c.tab +
+            "</button>"
+          );
         }).join("");
-      }
 
-      if (chosen.type === "mp4") {
-        videoEl.style.display = "block";
-        if (canvasStage) canvasStage.style.display = "none";
-        if (baControls) baControls.style.display = "none";
-        if (soundBtn) soundBtn.style.display = "inline-flex";
-
-        if (videoEl.getAttribute("data-loaded-src") !== chosen.src) {
-          videoEl.setAttribute("data-loaded-src", chosen.src);
-          videoEl.src = chosen.src;
-          videoEl.load();
+        if (vTitle) vTitle.textContent = copy.title;
+        if (vDesc) vDesc.textContent = copy.desc;
+        if (vBadges) {
+          vBadges.innerHTML = (copy.badges || []).map(function (b) {
+            return "<span class='video-tech-chip'>" + b + "</span>";
+          }).join("");
         }
-        const videoPane = document.querySelector("[data-pg-pane='video']");
-        if (videoPane && videoPane.classList.contains("active")) {
-          videoEl.play().catch(function () {});
-        }
-      } else {
-        videoEl.pause();
-        videoEl.style.display = "none";
-        if (canvasStage) canvasStage.style.display = "block";
-        if (baControls) baControls.style.display = "flex";
-        if (soundBtn) soundBtn.style.display = "none";
-      }
 
-      strip.querySelectorAll("[data-vid-ex]").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          activeExId = btn.getAttribute("data-vid-ex");
-          if (NS.sfx) NS.sfx.click();
-          renderVideoShowcase();
+        if (item.isCanvasCompare) {
+          if (realVid) {
+            realVid.pause();
+            realVid.style.display = "none";
+          }
+          if (canvasWrap) canvasWrap.style.display = "block";
+          if (baControls) baControls.style.display = "flex";
+        } else {
+          if (canvasWrap) canvasWrap.style.display = "none";
+          if (baControls) baControls.style.display = "none";
+          if (realVid) {
+            realVid.style.display = "block";
+            if (realVid.getAttribute("src") !== item.src) {
+              realVid.setAttribute("src", item.src);
+              realVid.load();
+            }
+            realVid.play().catch(function () {});
+          }
+        }
+
+        strip.querySelectorAll("[data-vid-ex]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            currentExIdx = parseInt(btn.getAttribute("data-vid-ex"), 10) || 0;
+            if (NS.sfx) NS.sfx.click();
+            renderVideoExample();
+          });
         });
-      });
+      }
+
+      if (muteBtn && realVid) {
+        muteBtn.addEventListener("click", function () {
+          realVid.muted = !realVid.muted;
+          if (NS.sfx) NS.sfx.click();
+          muteBtn.textContent = realVid.muted ? NS.t("videoSoundOff") : NS.t("videoSoundOn");
+        });
+      }
+
+      /* Reproduz automaticamente quando a seção #videos entra na tela */
+      if (realVid && "IntersectionObserver" in window) {
+        const vObs = new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) {
+            if (en.isIntersecting && realVid.style.display !== "none") {
+              realVid.play().catch(function () {});
+            } else if (!en.isIntersecting) {
+              realVid.pause();
+            }
+          });
+        }, { threshold: 0.15 });
+        vObs.observe(realVid);
+      }
+
+      window.addEventListener("mattheus:langchange", renderVideoExample);
+      renderVideoExample();
     }
 
-    if (soundBtn) {
-      soundBtn.addEventListener("click", function () {
-        videoEl.muted = !videoEl.muted;
-        if (!videoEl.muted) {
-          videoEl.volume = 0.85;
-          videoEl.play().catch(function () {});
-        }
-        soundBtn.textContent = videoEl.muted
-          ? NS.t("videoSoundOff")
-          : NS.t("videoSoundOn");
-      });
-    }
-
-    window.addEventListener("mattheus:langchange", renderVideoShowcase);
-    renderVideoShowcase();
-  }
-
-  /* ------------------------------------------------------------------------
-     BLOCO 6: Aba 05 • Simulador Executivo de Tráfego Pago & ROAS
-     Data/Hora: 02/11/2026 10:50
-     ------------------------------------------------------------------------ */
-  function initTrafficSimulator() {
+    /* Simulador Enxuto de Escala em Tráfego Pago */
     const slider = document.getElementById("trafficBudgetSlider");
-    const budgetVal = document.getElementById("trafficBudgetDisplay");
+    const budgetLabel = document.getElementById("trafficBudgetDisplay");
     const modeBtns = document.querySelectorAll("[data-traffic-mode]");
     const outLeads = document.getElementById("trafficOutLeads");
     const outCpl = document.getElementById("trafficOutCpl");
     const outRev = document.getElementById("trafficOutRev");
     const poly = document.getElementById("trafficSimPolyline");
 
-    if (!slider) return;
+    if (slider) {
+      let mode = "leads";
 
-    let mode = "leads";
+      function recalc() {
+        const budget = parseInt(slider.value, 10) || 5000;
+        if (budgetLabel) budgetLabel.textContent = "R$ " + budget.toLocaleString("pt-BR") + "/mês";
 
-    function updateSim() {
-      const invest = parseInt(slider.value, 10) || 5000;
-      if (budgetVal) budgetVal.textContent = "R$ " + invest.toLocaleString("pt-BR") + "/mês";
+        if (mode === "leads") {
+          const cpl = 3.8;
+          const leads = Math.round(budget / cpl);
+          const sales = Math.max(1, Math.round(leads * 0.08));
+          const revenue = sales * 650;
+          if (outLeads) outLeads.textContent = leads.toLocaleString("pt-BR") + " leads";
+          if (outCpl) outCpl.textContent = "R$ 3,80 CPL méd.";
+          if (outRev) outRev.textContent = "R$ " + revenue.toLocaleString("pt-BR");
+        } else {
+          const roas = 4.5;
+          const revenue = Math.round(budget * roas);
+          const orders = Math.max(1, Math.round(revenue / 260));
+          if (outLeads) outLeads.textContent = orders.toLocaleString("pt-BR") + " pedidos";
+          if (outCpl) outCpl.textContent = "4,5x ROAS méd.";
+          if (outRev) outRev.textContent = "R$ " + revenue.toLocaleString("pt-BR");
+        }
 
-      if (mode === "leads") {
-        const estLeads = Math.round(invest / 3.8);
-        const estSales = Math.max(1, Math.round(estLeads * 0.08));
-        const estReturn = estSales * 650;
-        if (outLeads) outLeads.textContent = estLeads.toLocaleString("pt-BR") + " leads";
-        if (outCpl) outCpl.textContent = "R$ 3,80 méd.";
-        if (outRev) outRev.textContent = "R$ " + estReturn.toLocaleString("pt-BR");
-      } else {
-        const orders = Math.max(1, Math.round(invest / 42));
-        const estReturn = Math.round(invest * 4.4);
-        if (outLeads) outLeads.textContent = orders.toLocaleString("pt-BR") + " pedidos";
-        if (outCpl) outCpl.textContent = "ROAS 4,40x";
-        if (outRev) outRev.textContent = "R$ " + estReturn.toLocaleString("pt-BR");
+        if (poly) {
+          const factor = Math.min(1, budget / 30000);
+          const y4 = Math.round(92 - factor * 68);
+          const y3 = Math.round(98 - factor * 48);
+          const y2 = Math.round(104 - factor * 28);
+          poly.setAttribute("points", "10,112 95," + y2 + " 185," + y3 + " 275," + Math.round((y3 + y4) / 2) + " 360," + y4);
+        }
       }
 
-      if (poly) {
-        const ratio = (invest - 1500) / (30000 - 1500);
-        const yEnd = Math.round(88 - ratio * 68);
-        const yMid = Math.round(98 - ratio * 42);
-        poly.setAttribute(
-          "points",
-          "10,112 90," + (104 - Math.round(ratio * 14)) +
-          " 180," + yMid +
-          " 270," + Math.round((yMid + yEnd) / 2) +
-          " 360," + yEnd
-        );
-      }
-    }
-
-    slider.addEventListener("input", updateSim);
-    modeBtns.forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        mode = btn.getAttribute("data-traffic-mode");
-        if (NS.sfx) NS.sfx.click();
-        modeBtns.forEach(function (b) { b.classList.toggle("active", b === btn); });
-        updateSim();
+      slider.addEventListener("input", recalc);
+      modeBtns.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          mode = btn.getAttribute("data-traffic-mode") || "leads";
+          if (NS.sfx) NS.sfx.click();
+          modeBtns.forEach(function (b) { b.classList.toggle("active", b === btn); });
+          recalc();
+        });
       });
-    });
 
-    updateSim();
+      recalc();
+    }
   }
 
+  /* ------------------------------------------------------------------------
+     BLOCO 4: Roteador Global NS.jumpToLiveDemo (Vórtice, Cases, Modais e Busca)
+     Data/Hora: 02/11/2026 12:35
+     ------------------------------------------------------------------------ */
+  NS.jumpToLiveDemo = function (rawKey, projectId) {
+    let targetSecId = "sistemas";
+
+    if (rawKey === "sites" || projectId === "site-vania" || projectId === "hub-hom" || projectId === "vigia-ads" || projectId === "ui-lab-sos") {
+      targetSecId = "sites";
+      let patIdx = 0;
+      if (projectId === "easycode" && rawKey === "sites") patIdx = 1;
+      else if (projectId === "hub-hom") patIdx = 2;
+      else if (projectId === "vigia-ads") patIdx = 3;
+      else if (projectId === "ui-lab-sos") patIdx = 4;
+      if (typeof NS.selectSitePattern === "function") NS.selectSitePattern(patIdx);
+    } else if (rawKey === "video" || rawKey === "traffic" || projectId === "reels-studio") {
+      targetSecId = "videos";
+    } else {
+      targetSecId = "sistemas";
+      let sysKey = "crm";
+      if (rawKey === "orion" || rawKey === "apps" || projectId === "orion" || projectId === "infnet-app") sysKey = "orion";
+      if (rawKey === "win11" || projectId === "pastas-barra") sysKey = "win11";
+      if (rawKey === "ide" || rawKey === "easycode" || projectId === "easycode" || projectId === "radar-vagas") sysKey = "ide";
+      if (projectId === "crm-manu" || rawKey === "crm") sysKey = "crm";
+      if (typeof NS.selectSystemTab === "function") NS.selectSystemTab(sysKey);
+    }
+
+    const sec = document.getElementById(targetSecId);
+    if (sec) sec.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   document.addEventListener("DOMContentLoaded", function () {
-    initPlaygroundController();
-    initSitesAndUxDemo();
-    initCrmDemo();
-    initAppsDemo();
-    initVideoExamplesGallery();
-    initTrafficSimulator();
+    initSitePatternsAndUxLab();
+    initWorkingSystemsStage();
+    initVideoAndTrafficSection();
   });
 })();

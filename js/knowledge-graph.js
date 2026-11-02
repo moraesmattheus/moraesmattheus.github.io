@@ -202,7 +202,7 @@
           "<p style='margin-top:10px;font-size:0.85rem;color:var(--text-secondary);line-height:1.6;'>" +
             "Clique em qualquer nó para inspecionar contexto, período e conexões diretas. Experimente selecionar " +
             "<button type='button' class='kg-inline-jump' data-jump-node='pr_orion' style='color:#E5CFA9;font-weight:700;text-decoration:underline;'>Órion IA</button>, " +
-            "<button type='button' class='kg-inline-jump' data-jump-node='pr_vania' style='color:#FFFFFF;font-weight:700;text-decoration:underline;'>Vania Faria Luxury</button> ou " +
+            "<button type='button' class='kg-inline-jump' data-jump-node='pr_vania' style='color:#FFFFFF;font-weight:700;text-decoration:underline;'>Acervo Quiet Luxury</button> ou " +
             "<button type='button' class='kg-inline-jump' data-jump-node='co_solan' style='color:#38BDF8;font-weight:700;text-decoration:underline;'>PV Operation / Solan Group</button>." +
           "</p>" +
         "</div>" +

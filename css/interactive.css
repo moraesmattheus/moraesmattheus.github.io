@@ -1870,12 +1870,12 @@ body:has(.modal-backdrop.is-open) .custom-cursor-pill {
 }
 
 /* ==========================================================================
-   BLOCO 7 (V4): Barra de Busca Animada (CodeByGaurav), Raio-X UI/UX para
+   BLOCO 7 (V4): Barra de Busca Animada Autoral Studio, Raio-X UI/UX para
    Web Designers, Mini-Apps Reais Funcionando, Galeria de Vídeos Editados Reais
    e Abas Executivas em Neon
    Data/Hora: 02/11/2026 10:42
    O que foi feito e finalidade de cada bloco:
-     1. Barra de Busca Expansível Animada (CodeByGaurav): Transição elástica de
+     1. Barra de Busca Expansível Animada: Transição elástica de
         60px para 100%, giro de 360 graus na lupa, botão limpar (X), tags de
         sugestão clicáveis e lista ao vivo de projetos e seções.
      2. Estúdio Raio-X UI/UX (Web Design): Sobreposição real de Grid 12 colunas
@@ -1890,7 +1890,7 @@ body:has(.modal-backdrop.is-open) .custom-cursor-pill {
      5. Abas Compactas em Neon na seção Sobre & Grafo para evitar página longa.
    ========================================================================== */
 
-/* 1. Barra de Busca Animada Expansível (CodeByGaurav + Neon Glassmorphism) */
+/* 1. Barra de Busca Animada Expansível (Glassmorphism & Neon) */
 .search-modal-card {
   width: min(610px, 100%);
   padding: 50px 26px 28px;
@@ -2553,5 +2553,647 @@ body:has(.modal-backdrop.is-open) .custom-cursor-pill {
   }
   .ux-ds-board {
     grid-template-columns: 1fr;
+  }
+}
+
+
+/* ==========================================================================
+   BLOCO 8 (V6): Fechamento Rápido de Modais (210ms), Abas Limpas Apenas nas
+   Letras em Neon, Galeria de Padrões de Sites Reais, Laboratório Limpo de
+   UI/UX & Acessibilidade WCAG AAA e Palco Direto de Apps & Sistemas
+   Data/Hora: 02/11/2026 12:31
+   O que foi feito e finalidade de cada bloco:
+     1. Animação Rápida de Abertura e Fechamento (210ms): Faz a barra de busca
+        retrair rapidamente e o modal desaparecer com escala + fade suave em
+        vez de sumir em corte seco.
+     2. Abas Limpas em Neon (clean-neon-tabs): Ilumina apenas as letras e um
+        filete sutil inferior em Neon, eliminando caixas pesadas e poluição.
+     3. Vitrine de Referências e Padrões de Sites (#sites): Moldura de navegador
+        com fotos reais dos sites desenvolvidos + sobreposição opcional de Grid
+        12 colunas + ficha de engenharia real com Spotlight 3D (--mouse-x/y).
+     4. Painel UI/UX, Jornada, Acessibilidade WCAG 2.2 AAA & Boas Práticas:
+        Fluxo em 5 etapas, simulador interativo de Daltonismo/Contraste/Tab
+        Order e métricas Core Web Vitals.
+     5. Palco Direto de Sistemas & Apps (#sistemas): CRM completo, Smartphone
+        Órion IA multi-abas, Desktop Windows 11 16:10 e EasyCode IDE + ATS.
+   ========================================================================== */
+
+/* 1. Animação Rápida ao Abrir e Principalmente ao Fechar Modais (210ms) */
+.modal-backdrop.is-open {
+  animation: v6BackdropFadeIn 0.2s ease forwards;
+}
+
+.modal-backdrop.is-open .search-modal-card,
+.modal-backdrop.is-open .project-modal-dialog {
+  animation: v6ModalCardIn 0.24s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.modal-backdrop.is-open.is-closing {
+  pointer-events: none;
+  animation: v6BackdropFadeOut 0.2s ease forwards !important;
+}
+
+.modal-backdrop.is-open.is-closing .search-modal-card,
+.modal-backdrop.is-open.is-closing .project-modal-dialog {
+  animation: v6ModalCardFastOut 0.2s cubic-bezier(0.4, 0, 1, 1) forwards !important;
+}
+
+/* Quando o modal de busca fecha, a pílula retrai rápido em 180ms */
+.modal-backdrop.is-closing .search-box {
+  width: 60px !important;
+  transition: width 0.18s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.modal-backdrop.is-closing .search-box input {
+  opacity: 0 !important;
+  transition: opacity 0.1s ease !important;
+}
+
+@keyframes v6BackdropFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes v6BackdropFadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes v6ModalCardIn {
+  from { opacity: 0; transform: translateY(14px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes v6ModalCardFastOut {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 0; transform: translateY(-12px) scale(0.91); }
+}
+
+/* Ajuste Retina 16:10 100% Responsivo e Alinhado (Estilo Awwwards Site of the Year) */
+.dopamine-media-stage {
+  position: relative;
+  border-radius: 28px;
+  min-height: clamp(320px, 42vw, 440px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: clamp(18px, 2.8vw, 32px);
+  border: 1px solid var(--theme-border) !important;
+  background: radial-gradient(circle at 45% 45%, var(--theme-aura-1), #050711 78%) !important;
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.85),
+    0 0 34px -10px var(--neon-glow) !important;
+  cursor: pointer;
+}
+
+.dopamine-angled-device {
+  width: 100% !important;
+  max-width: 580px !important;
+  border-radius: 18px !important;
+  overflow: hidden !important;
+  background: #03050B !important;
+  border: 1px solid var(--theme-border) !important;
+  box-shadow:
+    0 24px 65px rgba(0, 0, 0, 0.92),
+    0 0 28px -8px var(--neon-soft) !important;
+  transform: none !important;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease, border-color 0.35s ease !important;
+}
+
+.dopamine-media-stage:hover .dopamine-angled-device {
+  transform: translateY(-4px) scale(1.015) !important;
+  border-color: var(--neon-primary) !important;
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.96),
+    0 0 36px -6px var(--neon-glow) !important;
+}
+
+.dopamine-angled-device img {
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 16 / 10 !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  display: block !important;
+  background: #03050B !important;
+}
+
+.dopamine-circle-cta {
+  right: 26px;
+  bottom: 24px;
+  width: 66px !important;
+  height: 66px !important;
+  font-size: 1.35rem !important;
+}
+
+.dopamine-counter-pill {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.dopamine-counter-pill strong {
+  color: var(--neon-primary);
+  font-weight: 700;
+}
+
+/* 2. Barra de Abas Minimalista: APENAS AS LETRAS EM NEON + Filete Inferior */
+.clean-neon-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: clamp(16px, 2.4vw, 32px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 28px;
+  padding-bottom: 4px;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.clean-neon-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.clean-neon-tab {
+  position: relative;
+  padding: 10px 2px 13px;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: rgba(226, 232, 240, 0.62);
+  cursor: pointer;
+  transition: color 0.22s ease, text-shadow 0.22s ease;
+}
+
+.clean-neon-tab::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 2px;
+  border-radius: 99px;
+  background: var(--neon-primary);
+  box-shadow: 0 0 12px var(--neon-primary);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.26s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.clean-neon-tab:hover,
+.clean-neon-tab.active {
+  color: var(--neon-primary) !important;
+  text-shadow:
+    0 0 10px var(--neon-glow),
+    0 0 22px var(--neon-glow);
+}
+
+.clean-neon-tab.active::after {
+  transform: scaleX(1);
+}
+
+/* Card com Spotlight Radial Guiado pelo Mouse (Estilo 26-card-3d-tilt-spotlight) */
+.spotlight-card {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      480px circle at var(--mouse-x, 50%) var(--mouse-y, 20%),
+      var(--theme-aura-1, rgba(56, 189, 248, 0.09)),
+      transparent 55%
+    ),
+    var(--surface-panel, rgba(8, 11, 21, 0.86));
+  border: 1px solid var(--theme-border, rgba(255, 255, 255, 0.09));
+  border-radius: 22px;
+  backdrop-filter: blur(18px);
+  transition: border-color 0.28s ease, box-shadow 0.28s ease;
+}
+
+.spotlight-card:hover {
+  border-color: var(--neon-primary, rgba(56, 189, 248, 0.32));
+  box-shadow: 0 22px 54px rgba(0, 0, 0, 0.72), 0 0 24px -10px var(--neon-glow);
+}
+
+/* 3. Seção #sites: Galeria de Referências de Padrões de Sites & Personalizados */
+.site-pattern-showcase {
+  display: grid;
+  grid-template-columns: 1.28fr 1fr;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.ref-browser-frame {
+  border-radius: 22px;
+  background: rgba(6, 9, 18, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.82);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.ref-browser-bar {
+  padding: 11px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ref-browser-url {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ref-browser-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ref-mini-tool-btn {
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #E2E8F0;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ref-mini-tool-btn:hover,
+.ref-mini-tool-btn.active {
+  border-color: var(--neon-primary);
+  color: var(--neon-primary);
+  box-shadow: 0 0 14px -4px var(--neon-glow);
+}
+
+.ref-screen-viewport {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: #04060C;
+  overflow: hidden;
+}
+
+.ref-screen-viewport img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
+}
+
+.ref-browser-frame:hover .ref-screen-viewport img {
+  transform: scale(1.015);
+}
+
+/* Grade de 12 Colunas Opcional sobre a Referência Real */
+.ref-grid12-overlay {
+  position: absolute;
+  inset: 0;
+  padding-inline: 24px;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 10px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.ref-screen-viewport.show-grid .ref-grid12-overlay {
+  opacity: 1;
+}
+
+.ref-grid12-overlay span {
+  background: var(--theme-aura-1, rgba(56, 189, 248, 0.11));
+  border-inline: 1px dashed var(--neon-primary, rgba(56, 189, 248, 0.38));
+  height: 100%;
+}
+
+.ref-specs-card {
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.ref-pattern-badge {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--neon-primary);
+  background: rgba(56, 189, 248, 0.09);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+}
+
+.ref-tech-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.ref-tech-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: #CBD5E1;
+}
+
+.ref-tech-list li i {
+  color: var(--neon-primary);
+  font-style: normal;
+  font-weight: 800;
+  margin-top: 1px;
+}
+
+/* 4. Painel Limpo de Engenharia UI/UX, Jornada, Acessibilidade WCAG & Boas Práticas */
+.ux-clean-shell {
+  margin-top: 44px;
+  padding: 28px;
+}
+
+.ux-journey-steps {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+}
+
+.ux-step-card {
+  padding: 18px 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color 0.25s ease, transform 0.25s ease;
+}
+
+.ux-step-card:hover {
+  border-color: var(--neon-primary);
+  transform: translateY(-3px);
+}
+
+.ux-step-num {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--neon-primary);
+  letter-spacing: 0.1em;
+}
+
+.ux-step-card strong {
+  font-size: 0.94rem;
+  color: #FFFFFF;
+}
+
+.ux-step-card p {
+  font-size: 0.79rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.ux-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+/* Simulador Interativo de Acessibilidade WCAG 2.2 AAA */
+.a11y-lab-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 20px;
+  align-items: center;
+}
+
+.a11y-preview-card {
+  padding: 22px;
+  border-radius: 18px;
+  background: #060914;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: filter 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+}
+
+.a11y-preview-card.mode-deuteranopia {
+  filter: hue-rotate(42deg) saturate(0.72);
+}
+
+.a11y-preview-card.mode-highcontrast {
+  background: #000000 !important;
+  border: 2px solid #FFFFFF !important;
+}
+
+.a11y-preview-card.mode-highcontrast p,
+.a11y-preview-card.mode-highcontrast strong {
+  color: #FFFFFF !important;
+}
+
+.a11y-tab-badge {
+  display: none;
+  margin-left: 6px;
+  padding: 2px 7px;
+  border-radius: 99px;
+  background: #FACC15;
+  color: #05070E;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-weight: 800;
+}
+
+.a11y-preview-card.mode-tabfocus .a11y-tab-badge {
+  display: inline-block;
+}
+
+.a11y-preview-card.mode-tabfocus .a11y-focusable {
+  outline: 2px solid #FACC15;
+  outline-offset: 3px;
+}
+
+/* 5. Seção #sistemas: Palco Direto de Sistemas & Aplicativos Funcionando */
+.systems-clean-stage {
+  padding: 26px;
+}
+
+.sys-pane {
+  display: none;
+  animation: fadeSlideIn 0.26s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sys-pane.active {
+  display: block;
+}
+
+/* Super App Órion IA: Smartphone Funcionando + Bastidores Reais */
+.orion-stage-grid {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 28px;
+  align-items: center;
+}
+
+.orion-phone-shell {
+  width: 100%;
+  max-width: 350px;
+  margin-inline: auto;
+  border-radius: 34px;
+  padding: 12px;
+  background: linear-gradient(160deg, #1E293B, #070A14);
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 28px 65px rgba(0, 0, 0, 0.88);
+}
+
+.orion-phone-inner {
+  height: 440px;
+  border-radius: 24px;
+  background: #050812;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.orion-bottom-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: #03050C;
+  padding: 6px;
+  gap: 4px;
+}
+
+.orion-nav-btn {
+  padding: 7px 4px;
+  border-radius: 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: transparent;
+  transition: all 0.2s ease;
+}
+
+.orion-nav-btn.active {
+  color: var(--neon-primary);
+  background: rgba(56, 189, 248, 0.1);
+}
+
+/* Desktop Windows 11 16:10 Completo (Pastas na Barra C# / WPF) */
+.win11-desktop-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.win11-monitor {
+  min-height: 390px;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 50% 25%, rgba(56, 189, 248, 0.24), transparent 55%),
+    radial-gradient(circle at 75% 70%, rgba(139, 92, 246, 0.25), transparent 60%),
+    linear-gradient(180deg, #0B132B 0%, #050814 100%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+.win11-active-window {
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(9, 13, 26, 0.84);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+/* EasyCode IDE + Analisador ATS Lado a Lado */
+.ide-ats-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 20px;
+}
+
+/* Gaveta Recolhível Limpa para o Grafo de Carreira (54 Nós) & Trajetória */
+.career-collapsible-drawer {
+  display: none;
+  margin-top: 28px;
+  animation: fadeSlideIn 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.career-collapsible-drawer.is-open {
+  display: block;
+}
+
+@media (max-width: 1040px) {
+  .site-pattern-showcase,
+  .a11y-lab-grid,
+  .orion-stage-grid,
+  .win11-desktop-grid,
+  .ide-ats-grid {
+    grid-template-columns: 1fr;
+  }
+  .ux-journey-steps {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .ux-pillars-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .ux-journey-steps {
+    grid-template-columns: 1fr;
+  }
+  .clean-neon-tabs {
+    gap: 14px;
+  }
+  .clean-neon-tab {
+    font-size: 0.8rem;
+  }
+  .dopamine-angled-device img {
+    height: auto !important;
+    aspect-ratio: 16 / 10 !important;
   }
 }

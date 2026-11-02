@@ -1,20 +1,15 @@
 /* ==========================================================================
    Arquivo: js/motion-3d.js
-   Data/Hora: 02/11/2026 01:28
-   O que é: Motor gráfico 3D e generativo em 60fps do portfólio de Mattheus
-   Moraes, inspirado diretamente nas mecânicas interativas de Marco Madonna,
-   Dopamine Studio, Visuvate e Core-A Studios.
+   Data/Hora: 02/11/2026 12:33
+   O que é: Motor gráfico 3D e generativo em 60fps V6 do portfólio de Mattheus
+   Moraes, unido ao fundo em CSS puro de ondas e órbitas em azul/roxo.
    O que foi feito e finalidade de cada bloco:
-     1. Motor 3D Isométrico Interativo (5 Frentes Comerciais): Renderiza cubos,
-        camadas de UI, órbitas mobile, ondas de vídeo e barras 3D de ROAS em
-        movimento contínuo de 60fps + inclinação 3D reativa ao cursor.
-     2. Player Interativo de Edição de Vídeos & Reels (Antes vs Depois): Simula
-        em tempo real a diferença entre um vídeo bruto sem tratamento e um vídeo
-        editado com Color Grading, corte de silêncio, legenda dinâmica e -14 LUFS.
-     3. Widgets de Estúdio Visuvate (Relógio Analógico Real + Globo 3D): Exibe
-        o horário exato de Florianópolis em mostrador analógico e globo 3D vivo.
-     4. Gaveta de Design Tokens ao Vivo ("TEMA [T]" estilo Marco Madonna):
-        Recolore e ajusta a geometria do site inteiro em tempo real.
+     1. Fundo Orbital 3D em Azul & Roxo/Violeta + Spotlight 3D nos Cartões.
+     2. Vórtice 3D "Minhas Obras" (V6): Telas reais dos sites e apps em corredor
+        elíptico aberto com desaceleração suave no hover para que o texto central
+        "Minhas Obras" permaneça 100% nítido e nunca desapareça.
+     3. Player Comparador de Edição de Vídeos (Antes vs Depois em -14 LUFS).
+     4. Relógio Analógico 24h de Florianópolis, Globo 3D e Gaveta NEON [T].
    ========================================================================== */
 
 (function () {
@@ -47,12 +42,12 @@
 
   function refreshAccentCache() {
     const styles = getComputedStyle(document.documentElement);
-    const rawAccent = styles.getPropertyValue("--accent-gold").trim() || "#8B5CF6";
     const rawNeon = styles.getPropertyValue("--neon-primary").trim() || "#38BDF8";
-    cachedAccentHex = rawAccent;
+    const rawAccent = styles.getPropertyValue("--neon-secondary").trim() || styles.getPropertyValue("--accent-gold").trim() || "#8B5CF6";
     cachedNeonHex = rawNeon;
-    cachedAccentRgb = parseHexRgb(rawAccent, { r: 139, g: 92, b: 246 });
+    cachedAccentHex = rawAccent;
     cachedNeonRgb = parseHexRgb(rawNeon, { r: 56, g: 189, b: 248 });
+    cachedAccentRgb = parseHexRgb(rawAccent, { r: 139, g: 92, b: 246 });
   }
 
   function rgbaAccent(alpha) {
@@ -725,6 +720,21 @@
       }
     });
 
+    try {
+      const savedTheme = localStorage.getItem("mattheus_neon_theme");
+      if (savedTheme) {
+        if (savedTheme === "violet") {
+          document.documentElement.removeAttribute("data-accent-theme");
+        } else {
+          document.documentElement.setAttribute("data-accent-theme", savedTheme);
+        }
+        themeBtns.forEach(function (b) {
+          b.classList.toggle("active", (b.getAttribute("data-set-accent") || "violet") === savedTheme);
+        });
+        refreshAccentCache();
+      }
+    } catch (err) {}
+
     themeBtns.forEach(function (btn) {
       btn.addEventListener("click", function () {
         const theme = btn.getAttribute("data-set-accent") || "violet";
@@ -733,6 +743,9 @@
         } else {
           document.documentElement.setAttribute("data-accent-theme", theme);
         }
+        try {
+          localStorage.setItem("mattheus_neon_theme", theme);
+        } catch (err) {}
         themeBtns.forEach(function (b) { b.classList.toggle("active", b === btn); });
         refreshAccentCache();
         if (NS.sfx) NS.sfx.click();
@@ -921,94 +934,94 @@
 
     const VORTEX_ITEMS = [
       {
+        projectId: "site-vania",
+        studioKey: "sites",
+        pill: "Quiet Luxury · Imóveis",
+        title: "Acervo Quiet Luxury",
+        sub: "Liquid Glass, NDA & Admin WebP",
+        img: "assets/img/site-vania-tela.png",
+        light: false
+      },
+      {
         projectId: "easycode",
-        studioKey: "easycode",
-        pill: "Plataforma no Ar",
-        title: "EasyCode (Pyra)",
-        sub: "Python, JS & SQL no navegador",
+        studioKey: "ide",
+        pill: "SaaS no Ar · WebAssembly",
+        title: "EasyCode",
+        sub: "Python, JS & SQL em 0ms",
         img: "assets/img/easycode.png",
         light: false
       },
       {
-        projectId: "crm-manu",
-        studioKey: "crm",
-        pill: "Fluxo de Caixa & CRM",
-        title: "Previsibilidade de Caixa",
-        sub: "Saiba exatamente quanto entra",
-        customBg: "linear-gradient(155deg, #FFFFFF 0%, #EEF2FF 55%, #DBEAFE 100%)",
-        customTextDark: true,
-        light: true
-      },
-      {
-        projectId: "reels-studio",
-        studioKey: "video",
-        pill: "Motion 3D & Reels 60fps",
-        title: "MADE TO HOLD ATTENTION.",
-        sub: "Edição DaVinci · CTR 6,20%",
-        customBg: "linear-gradient(135deg, #7F1D1D 0%, #DC2626 48%, #9333EA 100%)",
-        light: false
-      },
-      {
-        projectId: "site-vania",
-        studioKey: "sites",
-        pill: "UI/UX Quiet Luxury",
-        title: "Vania Faria Imóveis",
-        sub: "Curadoria Off-Market & Admin",
-        img: "assets/img/vania-faria-perfil.webp",
-        light: false
-      },
-      {
         projectId: "orion",
-        studioKey: "apps",
-        pill: "Super App IA",
-        title: "Órion Mobile & RAG",
-        sub: "React Native + FastAPI",
+        studioKey: "orion",
+        pill: "Super App IA · Mobile",
+        title: "Super App Órion IA",
+        sub: "React Native + FastAPI + DPAPI",
         img: "assets/img/orion-home.png",
         light: false
       },
       {
         projectId: "hub-hom",
-        studioKey: "traffic",
-        pill: "23 Telas · 5 Canais",
-        title: "Hub Corporativo HOM",
-        sub: "Shopify, ML, TikTok & Ads",
+        studioKey: "sites",
+        pill: "23 Telas · Cloudflare KV",
+        title: "Hub Corporativo & BI",
+        sub: "Access OTP & Edição Ao Vivo",
         img: "assets/img/hub-marketing.png",
         light: false
       },
       {
+        projectId: "vigia-ads",
+        studioKey: "sites",
+        pill: "Martech & IA · Z-Score",
+        title: "Portal Martech & Tráfego",
+        sub: "GTM, Google Ads & WhatsApp 120s",
+        img: "assets/img/conecta-dados-tela.png",
+        light: false
+      },
+      {
         projectId: "pastas-barra",
-        studioKey: "apps",
+        studioKey: "win11",
         pill: "Windows 11 Nativo",
         title: "Pastas na Barra",
-        sub: "C# / WPF · UI Acrílica",
+        sub: "C# / WPF · UI Acrílica Fluent",
         img: "assets/img/pastas-barra-1.png",
         light: false
       },
       {
-        projectId: "radar-vagas",
-        studioKey: "apps",
-        pill: "Playwright + IA",
-        title: "Radar ATS 0-100",
-        sub: "Automação em 10 portais",
-        customBg: "linear-gradient(145deg, #0F172A 0%, #1E1B4B 52%, #0284C7 100%)",
+        projectId: "site-vania-acervo",
+        studioKey: "sites",
+        pill: "Curadoria Off-Market",
+        title: "Acervo Residencial",
+        sub: "Design 100% Personalizado",
+        img: "assets/img/site-vania-acervo.png",
+        light: false
+      },
+      {
+        projectId: "crm-manu",
+        studioKey: "crm",
+        pill: "Sistema CRM & Caixa",
+        title: "Pipeline Comercial",
+        sub: "Kanban Comercial Ao Vivo",
+        customBg: "linear-gradient(155deg, rgba(255,255,255,0.08) 0%, rgba(10,14,26,0.95) 100%)",
+        customTextDark: false,
+        light: false
+      },
+      {
+        projectId: "reels-studio",
+        studioKey: "video",
+        pill: "Motion 3D & Reels 60fps",
+        title: "Edição Cinematográfica",
+        sub: "DaVinci · Whisper GPU · -14 LUFS",
+        customBg: "linear-gradient(135deg, rgba(8,11,22,0.92) 0%, rgba(15,23,42,0.95) 100%)",
         light: false
       },
       {
         projectId: "infnet-app",
-        studioKey: "apps",
+        studioKey: "orion",
         pill: "Mobile Acadêmico",
-        title: "Infnet Super App",
+        title: "Super App Acadêmico",
         sub: "Aulas ao vivo & RAG Manual",
         img: "assets/img/hub-rotina.png",
-        light: false
-      },
-      {
-        projectId: "ominivix",
-        studioKey: "sites",
-        pill: "Extensão AI + Foco",
-        title: "Ominivix Focus",
-        sub: "Árvore de abas & Reuniões",
-        img: "assets/img/orion-faz.png",
         light: false
       }
     ];
@@ -1056,13 +1069,18 @@
       return { el: el, item: item, currentLayer: "back" };
     });
 
-    /* Arrasto interativo com inércia */
+    /* Arrasto interativo com inércia + desaceleração suave no hover */
     let orbitPhase = 0.35;
-    let velocity = 0.0042;
+    let velocity = 0.0034;
     let isDragging = false;
+    let isHoveringStage = false;
+    let hoverFactor = 1.0;
     let dragStartX = 0;
     let movedDuringDrag = false;
     let isVisible = true;
+
+    stage.addEventListener("pointerenter", function () { isHoveringStage = true; });
+    stage.addEventListener("pointerleave", function () { isHoveringStage = false; });
 
     stage.addEventListener("pointerdown", function (e) {
       isDragging = true;
@@ -1129,28 +1147,30 @@
         renderWaves(t);
 
         if (!isDragging) {
-          velocity += (0.0038 - velocity) * 0.04;
+          const targetFactor = isHoveringStage ? 0.22 : 1.0;
+          hoverFactor += (targetFactor - hoverFactor) * 0.08;
+          velocity += (0.0033 * hoverFactor - velocity) * 0.05;
           orbitPhase += velocity;
         }
 
         const stRect = stage.getBoundingClientRect();
-        const rx = Math.min(530, stRect.width * 0.41);
-        const ry = Math.min(205, stRect.height * 0.36);
+        const rx = Math.min(545, stRect.width * 0.43);
+        const corridorHalfY = Math.min(235, Math.max(152, stRect.height * 0.37));
         const total = cardEls.length;
 
         cardEls.forEach(function (obj, idx) {
           const ang = orbitPhase + (idx / total) * Math.PI * 2;
-          /* Órbita elíptica 3D inclinada estilo Visuvate: arco superior por trás, arco inferior pela frente */
+          /* Corredor elíptico aberto: arcos passam acima e abaixo de "Minhas Obras" sem apagar o título */
           const rawX = Math.cos(ang) * rx;
-          const depthZ = Math.sin(ang); // -1 (fundo atrás do texto) -> +1 (frente do texto)
-          const rawY = -rawX * 0.28 + depthZ * (ry * 0.66) + Math.sin(ang * 2) * 14;
+          const depthZ = Math.sin(ang); // -1 (arco superior traseiro) -> +1 (arco inferior frontal)
+          const rawY = -rawX * 0.16 + depthZ * corridorHalfY;
 
-          const scale = 0.60 + (depthZ + 1) * 0.24; // 0.60 lá atrás -> 1.08 na frente
-          const rotY = -Math.cos(ang) * 26;
-          const rotZ = -7 + Math.sin(ang) * 6;
-          const opacity = 0.45 + (depthZ + 1) * 0.28;
+          const scale = 0.56 + (depthZ + 1) * 0.22; // 0.56 atrás -> 1.00 na frente
+          const rotY = -Math.cos(ang) * 24;
+          const rotZ = -5 + Math.sin(ang) * 5;
+          const opacity = 0.44 + (depthZ + 1) * 0.28;
 
-          const wantLayer = depthZ >= 0.02 ? "front" : "back";
+          const wantLayer = depthZ >= 0.05 ? "front" : "back";
           if (obj.currentLayer !== wantLayer) {
             obj.currentLayer = wantLayer;
             (wantLayer === "front" ? frontLayer : backLayer).appendChild(obj.el);
@@ -1172,6 +1192,21 @@
     requestAnimationFrame(animateVortex);
   }
 
+  /* ------------------------------------------------------------------------
+     BLOCO 7 (V6): Spotlight Radial 3D Guiado pelo Cursor (Estilo 26-card-3d)
+     Data/Hora: 02/11/2026 12:33
+     Finalidade: Alimentar --mouse-x e --mouse-y nos cartões .spotlight-card.
+     ------------------------------------------------------------------------ */
+  function initSpotlightCards() {
+    document.addEventListener("pointermove", function (e) {
+      const card = e.target && e.target.closest ? e.target.closest(".spotlight-card") : null;
+      if (!card) return;
+      const r = card.getBoundingClientRect();
+      card.style.setProperty("--mouse-x", (e.clientX - r.left).toFixed(0) + "px");
+      card.style.setProperty("--mouse-y", (e.clientY - r.top).toFixed(0) + "px");
+    }, { passive: true });
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     initOrbitalConstellationBg();
     initVisuvate3DVortex();
@@ -1179,5 +1214,6 @@
     initReelsStudioPlayer();
     initVisuvateWidgets();
     initTokensDrawerAndPreview();
+    initSpotlightCards();
   });
 })();
