@@ -551,24 +551,28 @@ section {
 }
 
 /* --------------------------------------------------------------------------
-   BLOCO 6: Composição Artística em CSS para o Retrato de Mattheus Moraes
-   Data/Hora: 02/11/2026 00:24
-   Finalidade: Integrar a foto low-key em #000000 com anéis orbitais, luz de
-   recorte (rim-light), máscara de fusão orgânica e badges flutuantes em 3D.
+   BLOCO 6: Palco de Apresentação de Mattheus Moraes no Setup Real
+   Data/Hora: 02/11/2026 17:35
+   Finalidade: Exibir a foto autêntica 100% inteira (1024x768 - 4:3) com os
+   monitores, código, caneca BMW, estante e iluminação de estúdio sem cortes.
    -------------------------------------------------------------------------- */
 .portrait-stage {
   position: relative;
-  display: grid;
-  place-items: center;
-  min-height: 520px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 580px;
+  margin: 0 auto;
   perspective: 1100px;
 }
 
-/* Halo volumétrico suave e luminoso atrás da cabeça/ombros */
+/* Halo volumétrico suave e luminoso atrás da moldura */
 .portrait-aura {
   position: absolute;
-  width: 480px;
-  height: 480px;
+  width: 520px;
+  height: 420px;
   border-radius: 50%;
   background: radial-gradient(
     circle,
@@ -585,23 +589,25 @@ section {
   display: none !important;
 }
 
-/* Moldura invisível com fusão em preto absoluto (#000000) */
+/* Moldura de luxo 4:3 com vidro glassmorphism e acabamento de galeria */
 .portrait-figure {
   position: relative;
   z-index: 2;
-  width: min(440px, 100%);
-  aspect-ratio: 1 / 1.05;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  border-radius: 26px;
+  width: 100%;
+  aspect-ratio: 4 / 3; /* Proporção exata da foto 1024x768 enviada */
+  display: block;
+  border-radius: 22px;
   overflow: hidden;
+  background: rgba(10, 12, 18, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow:
-    0 24px 60px rgba(0, 0, 0, 0.8),
-    0 0 0 1px rgba(255, 255, 255, 0.12),
-    0 0 32px -8px var(--neon-glow);
+    0 24px 60px rgba(0, 0, 0, 0.85),
+    0 0 40px var(--neon-soft),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
   transform-style: preserve-3d;
-  transition: transform 0.3s ease-out, box-shadow 0.3s ease;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
 }
 
 .portrait-figure::before {
@@ -612,25 +618,28 @@ section {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 18%;
-  filter: contrast(1.04) saturate(1.06) brightness(1.08);
-  border-radius: 26px;
-  transition: filter 0.55s ease, transform 0.55s var(--ease-luxury);
+  object-position: center center; /* Foto 100% inteira sem cortes na lateral ou topo */
+  display: block;
+  filter: contrast(1.03) saturate(1.05) brightness(1.04);
+  border-radius: 20px;
+  transition: filter 0.4s ease, transform 0.4s var(--ease-luxury);
 }
 
-/* Camada extra de gradiente inferior suave na camiseta */
+/* Sem degradê sobrepondo a foto para manter a caneca BMW e casaco 100% nítidos */
 .portrait-bottom-fade {
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 18%;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.65) 0%, transparent 100%);
-  z-index: 3;
-  pointer-events: none;
+  display: none !important;
+}
+
+.portrait-stage:hover .portrait-figure {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.95),
+    0 0 50px var(--neon-glow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 .portrait-stage:hover .portrait-img {
-  filter: contrast(1.12) saturate(1.0) brightness(1.06);
-  transform: scale(1.02);
+  filter: contrast(1.08) saturate(1.06) brightness(1.06);
 }
 
 /* Assinatura tipográfica minimalista na base do retrato */
@@ -1395,64 +1404,97 @@ section {
 .concierge-card {
   padding: clamp(28px, 3.5vw, 42px);
   border-radius: var(--radius-xl);
-  background: linear-gradient(165deg, #0D0F18 0%, #06060A 100%);
-  border: 1px solid rgba(201, 169, 124, 0.3);
+  background: rgba(10, 14, 22, 0.68) !important;
+  backdrop-filter: blur(28px) saturate(150%);
+  -webkit-backdrop-filter: blur(28px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.8),
+    0 0 35px var(--neon-soft),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .concierge-options {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
   margin-block: 18px;
 }
 
 .concierge-chip {
-  padding: 9px 15px;
+  padding: 10px 18px;
   border-radius: var(--radius-pill);
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   font-weight: 600;
-  color: var(--text-secondary);
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border-subtle);
-  transition: all 0.22s ease;
+  color: #E2E8F0;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.22s ease, border-color 0.22s ease, background 0.22s ease, color 0.22s ease;
+}
+
+.concierge-chip:hover {
+  transform: translateY(-2px) scale(1.02);
+  border-color: var(--neon-primary);
+  color: #FFFFFF;
+  box-shadow: 0 4px 20px var(--neon-soft);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.concierge-chip:active {
+  transform: translateY(0) scale(0.97);
 }
 
 .concierge-chip.active {
-  background: var(--accent-gold-light);
-  border-color: var(--accent-gold-light);
-  color: #050507;
+  background: var(--neon-primary) !important;
+  border-color: var(--neon-primary) !important;
+  color: var(--theme-on-primary, #040711) !important;
+  box-shadow: 0 0 24px var(--neon-glow) !important;
+  font-weight: 700;
 }
 
 .concierge-field {
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
 .concierge-field label {
   display: block;
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--text-muted);
-  margin-bottom: 7px;
+  color: var(--neon-primary);
+  margin-bottom: 8px;
+  font-weight: 600;
 }
 
 .concierge-field input,
 .concierge-field textarea {
   width: 100%;
-  padding: 13px 16px;
-  border-radius: 12px;
-  background: #030406;
-  border: 1px solid var(--border-subtle);
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: rgba(4, 6, 12, 0.58);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: #FFFFFF;
-  font-size: 0.92rem;
+  font-family: var(--font-sans);
+  font-size: 0.94rem;
   outline: none;
-  transition: border-color 0.25s ease;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+  transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
 }
 
 .concierge-field input:focus,
 .concierge-field textarea:focus {
-  border-color: var(--accent-gold);
+  border-color: var(--neon-primary);
+  background: rgba(8, 12, 22, 0.75);
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.5),
+    0 0 20px var(--neon-soft);
 }
 
 /* Lista arquitetônica ELSEWHERE estilo Marco Madonna / Aparelho */

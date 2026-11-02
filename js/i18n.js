@@ -30,8 +30,8 @@
      ------------------------------------------------------------------------ */
   NS.UI_STRINGS = {
     pt: {
-      navHome: "Início",
-      navWorks: "Obras",
+      navHome: "Sobre",
+      navWorks: "Projetos",
       navSites: "Sites & UI/UX",
       navSystems: "Apps & Sistemas",
       navVideos: "Vídeos & Ads",
@@ -48,7 +48,7 @@
       kpi3Label: "Performance & WCAG AAA",
 
       vortexKicker: "01 · Galeria Orbital 3D · Passe o mouse para desacelerar ou clique para abrir",
-      vortexTitle: "Minhas <span class='serif-vortex'>Obras</span>",
+      vortexTitle: "Meus <span class='serif-vortex'>Projetos</span>",
       dopamineCounterLabel: "Estudo de Caso",
       toggleAll18Closed: "Ver arquivo completo dos 18 projetos ↓",
       toggleAll18Open: "Recolher arquivo dos 18 projetos ↑",
@@ -81,7 +81,14 @@
       contactKicker: "05 · Atendimento Direto Comigo",
       contactHeading: "Vamos tirar seu projeto <span class='serif-luxury'>do papel?</span>",
       contactDesc: "Escolha o que você precisa e me chame direto no WhatsApp com o escopo já estruturado.",
+      conciergeLabel: "Selecione a frente desejada:",
+      conciergeNameLabel: "Seu Nome ou Empresa",
+      conciergeNamePlaceholder: "Ex.: Rodrigo · Clínica / Construtora / SaaS",
+      conciergeMsgLabel: "Resumo rápido do objetivo (opcional)",
+      conciergeMsgPlaceholder: "Conte em 1 ou 2 linhas o que deseja construir ou escalar...",
       conciergeSubmit: "Enviar Escopo no WhatsApp →",
+      conciergeCopyEmail: "Copiar E-mail",
+      conciergeCopiedEmail: "E-mail Copiado!",
       cvHeader: "Currículos & Deck (PDF)",
       footerCopy: "© 2026 Mattheus Moraes · Web Design UI/UX, Sistemas, Aplicativos, Edição de Vídeos & Tráfego Pago.",
 
@@ -95,8 +102,8 @@
     },
 
     en: {
-      navHome: "Home",
-      navWorks: "Works",
+      navHome: "About",
+      navWorks: "Projects",
       navSites: "Web & UI/UX",
       navSystems: "Apps & Systems",
       navVideos: "Video & Ads",
@@ -113,7 +120,7 @@
       kpi3Label: "Web Performance & WCAG AAA",
 
       vortexKicker: "01 · 3D Orbital Gallery · Hover to slow down or click any screen",
-      vortexTitle: "My <span class='serif-vortex'>Works</span>",
+      vortexTitle: "My <span class='serif-vortex'>Projects</span>",
       dopamineCounterLabel: "Featured Case",
       toggleAll18Closed: "Explore full archive of 18 projects ↓",
       toggleAll18Open: "Collapse 18-project archive ↑",
@@ -146,7 +153,14 @@
       contactKicker: "05 · Direct Contact",
       contactHeading: "Ready to bring your project <span class='serif-luxury'>to life?</span>",
       contactDesc: "Pick what you need and message me directly on WhatsApp with a structured brief.",
+      conciergeLabel: "Select desired scope:",
+      conciergeNameLabel: "Your Name or Company",
+      conciergeNamePlaceholder: "e.g., Alexander · Health Clinic / SaaS / Agency",
+      conciergeMsgLabel: "Quick brief or goal (optional)",
+      conciergeMsgPlaceholder: "Tell me in 1 or 2 lines what you want to build or scale...",
       conciergeSubmit: "Send Brief on WhatsApp →",
+      conciergeCopyEmail: "Copy E-mail",
+      conciergeCopiedEmail: "E-mail Copied!",
       cvHeader: "Resumes & Executive Deck (PDF)",
       footerCopy: "© 2026 Mattheus Moraes · UI/UX Web Design, Custom Systems, Apps, Video Editing & Paid Media.",
 
@@ -160,8 +174,8 @@
     },
 
     es: {
-      navHome: "Inicio",
-      navWorks: "Obras",
+      navHome: "Sobre mí",
+      navWorks: "Proyectos",
       navSites: "Sitios & UI/UX",
       navSystems: "Apps & Sistemas",
       navVideos: "Videos & Ads",
@@ -178,7 +192,7 @@
       kpi3Label: "Rendimiento & WCAG AAA",
 
       vortexKicker: "01 · Galería Orbital 3D · Pasa el cursor para pausar o haz clic",
-      vortexTitle: "Mis <span class='serif-vortex'>Obras</span>",
+      vortexTitle: "Mis <span class='serif-vortex'>Proyectos</span>",
       dopamineCounterLabel: "Caso Destacado",
       toggleAll18Closed: "Ver archivo completo de 18 proyectos ↓",
       toggleAll18Open: "Ocultar archivo de 18 proyectos ↑",
@@ -211,7 +225,14 @@
       contactKicker: "05 · Contacto Directo",
       contactHeading: "¿Llevamos tu proyecto <span class='serif-luxury'>a producción?</span>",
       contactDesc: "Elige lo que necesitas y escríbeme directo por WhatsApp con el alcance listo.",
+      conciergeLabel: "Selecciona el área deseada:",
+      conciergeNameLabel: "Tu Nombre o Empresa",
+      conciergeNamePlaceholder: "Ej.: Rodrigo · Clínica / Constructora / SaaS",
+      conciergeMsgLabel: "Resumen rápido del objetivo (opcional)",
+      conciergeMsgPlaceholder: "Cuéntame en 1 o 2 líneas qué deseas construir o escalar...",
       conciergeSubmit: "Enviar por WhatsApp →",
+      conciergeCopyEmail: "Copiar Correo",
+      conciergeCopiedEmail: "¡Correo Copiado!",
       cvHeader: "Currículums & Presentación (PDF)",
       footerCopy: "© 2026 Mattheus Moraes · Diseño UI/UX, Sitios, Sistemas, Apps, Edición de Video y Tráfico Pago.",
 
@@ -224,6 +245,50 @@
       searchTag5: "Accesibilidad UI/UX"
     }
   };
+
+  /* ------------------------------------------------------------------------
+     BLOCO 1.5: Frentes do Concierge Comercial Trilingue e Múltipla Seleção
+     Data/Hora: 02/11/2026 17:48
+     Finalidade: Permitir seleção múltipla e sincronização total de idioma.
+     ------------------------------------------------------------------------ */
+  NS.CONCIERGE_TOPICS = [
+    {
+      id: "uiux_site",
+      pt: "UI/UX & Site de Alto Padrão",
+      en: "UI/UX & High-End Website",
+      es: "UI/UX & Sitio de Alto Nivel"
+    },
+    {
+      id: "custom_site",
+      pt: "Site 100% Personalizado",
+      en: "100% Custom Website",
+      es: "Sitio 100% Personalizado"
+    },
+    {
+      id: "crm_system",
+      pt: "Sistema Sob Medida / CRM",
+      en: "Custom System / CRM",
+      es: "Sistema a Medida / CRM"
+    },
+    {
+      id: "app",
+      pt: "Aplicativo Mobile ou Desktop",
+      en: "Mobile or Desktop App",
+      es: "Aplicación Móvil o Desktop"
+    },
+    {
+      id: "video",
+      pt: "Edição de Vídeos 60fps",
+      en: "60fps Video Editing & Motion",
+      es: "Edición de Videos 60fps"
+    },
+    {
+      id: "traffic",
+      pt: "Gestão de Tráfego Pago",
+      en: "Paid Media & Performance",
+      es: "Gestión de Tráfico Pago"
+    }
+  ];
 
   /* ------------------------------------------------------------------------
      BLOCO 2: Vitrine Editorial Dopamine Studio (100% Fotos Reais dos Sites/Apps)
@@ -465,6 +530,44 @@
         "HTML5 estático ultrarrápido (LCP < 0,8s) maximizando Índice de Qualidade no Google e Meta Ads"
       ],
       conciergeTopic: "Site 100% Personalizado Sob Medida"
+    },
+    {
+      id: "landing",
+      tabLabel: "05 · Landing Page Alta Conversão",
+      badge: "Padrão Escala & Performance 60fps",
+      refName: "Referência: Landing Page Cinematográfica & Performance",
+      primaryImg: "assets/img/conecta-dados-tela.png",
+      secondaryImg: "",
+      secondaryLabel: "",
+      liveUrl: "",
+      idealFor: "Lançamentos de infoprodutos, captação de leads B2B, infoprodutores e clínicas de alto ticket.",
+      uxSummary: "Storytelling visual progressivo com microinterações em 60fps, gatilhos de prova social em tempo real e CTA flutuante inteligente.",
+      techSpecs: [
+        "Carregamento atômico sem dependências pesadas, LCP < 0.6s e Cumulative Layout Shift (CLS) = 0",
+        "Rastreamento duplo de conversão: Meta Conversions API (CAPI) server-side + Google Tag Manager",
+        "Proteção contra cliques inválidos de bots e formulários dinâmicos com validação de telefone via WhatsApp API",
+        "Design responsivo com tipografia fluida via clamp() e suporte nativo a modo escuro"
+      ],
+      conciergeTopic: "Site 100% Personalizado Sob Medida"
+    },
+    {
+      id: "pwa",
+      tabLabel: "06 · Web App PWA & Membros",
+      badge: "Padrão Plataforma Híbrida & Offline",
+      refName: "Referência: Web App Instalável & Área Privativa",
+      primaryImg: "assets/img/easycode.png",
+      secondaryImg: "",
+      secondaryLabel: "",
+      liveUrl: "https://easy-code.tech/",
+      idealFor: "Plataformas de cursos, comunidades pagas, ferramentas operacionais de equipes de campo e portais de clientes.",
+      uxSummary: "Experiência idêntica a aplicativo nativo sem burocracia de loja: adiciona à tela inicial com 1 clique e funciona offline.",
+      techSpecs: [
+        "Service Worker com cache inteligente e sincronização em segundo plano via Background Sync API",
+        "Autenticação sem senha via Magic Link e tokens JWT armazenados de forma segura",
+        "Banco de dados local via IndexedDB para persistência completa mesmo sem conexão com a internet",
+        "Manifesto PWA com badges dinâmicos, tema adaptativo e suporte a atalhos rápidos de navegação"
+      ],
+      conciergeTopic: "Aplicativo Mobile ou Desktop"
     }
   ];
 

@@ -1376,8 +1376,20 @@ body:has(.modal-backdrop.is-open) .custom-cursor-pill {
 .crm-kpi-box {
   padding: 14px 16px;
   border-radius: 14px;
-  background: #0A0D16;
-  border: 1px solid var(--border-hairline);
+  background: rgba(10, 14, 22, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 10px 25px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.crm-kpi-box:hover {
+  transform: translateY(-2px);
+  border-color: var(--neon-primary);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 20px var(--neon-soft);
 }
 
 .crm-kpi-box small {
@@ -1415,8 +1427,13 @@ body:has(.modal-backdrop.is-open) .custom-cursor-pill {
 .crm-col-box {
   padding: 14px;
   border-radius: 16px;
-  background: #080A12;
-  border: 1px solid var(--border-hairline);
+  background: rgba(8, 11, 18, 0.62);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
   min-height: 250px;
   display: flex;
   flex-direction: column;
@@ -1431,17 +1448,27 @@ body:has(.modal-backdrop.is-open) .custom-cursor-pill {
   font-weight: 700;
   color: var(--text-secondary);
   padding-bottom: 8px;
-  border-bottom: 1px solid var(--border-hairline);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .crm-lead-item {
   padding: 12px;
   border-radius: 12px;
-  background: #0E1220;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(14, 18, 28, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
   display: flex;
   flex-direction: column;
   gap: 6px;
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.crm-lead-item:hover {
+  transform: translateY(-2px);
+  border-color: var(--neon-primary);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 16px var(--neon-soft);
 }
 
 .crm-lead-item strong {
@@ -1890,17 +1917,19 @@ body:has(.modal-backdrop.is-open) .custom-cursor-pill {
      5. Abas Compactas em Neon na seção Sobre & Grafo para evitar página longa.
    ========================================================================== */
 
-/* 1. Barra de Busca Animada Expansível (Glassmorphism & Neon) */
+/* 1. Barra de Busca Animada Expansível (Glassmorphism Escuro Desfocado & Fade para Preto) */
 .search-modal-card {
   width: min(610px, 100%);
   padding: 50px 26px 28px;
   border-radius: 28px;
-  background: rgba(11, 15, 29, 0.96);
-  border: 1px solid var(--neon-primary);
+  background: linear-gradient(180deg, rgba(10, 12, 18, 0.82) 0%, rgba(4, 5, 8, 0.94) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow:
     0 30px 90px rgba(0, 0, 0, 0.95),
-    0 0 38px -8px var(--neon-glow);
-  backdrop-filter: blur(24px);
+    0 0 38px -8px var(--neon-glow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(28px) saturate(140%);
+  -webkit-backdrop-filter: blur(28px) saturate(140%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1918,15 +1947,17 @@ body:has(.modal-backdrop.is-open) .custom-cursor-pill {
 .search-box {
   width: 60px;
   height: 60px;
-  background: #1e293b;
-  border: 2px solid #334155;
+  background: rgba(12, 14, 22, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 30px;
   display: flex;
   align-items: center;
   padding: 6px;
   position: relative;
   transition: width 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55), border-color 0.3s, box-shadow 0.3s;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
   overflow: hidden;
 }
 
@@ -2013,14 +2044,16 @@ body:has(.modal-backdrop.is-open) .custom-cursor-pill {
 }
 
 .tag {
-  background: #1e293b;
+  background: rgba(16, 20, 30, 0.65);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   color: #cbd5e1;
   padding: 6px 14px;
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   transition: all 0.25s ease;
 }
 
@@ -2048,8 +2081,10 @@ body:has(.modal-backdrop.is-open) .custom-cursor-pill {
   width: 100%;
   padding: 10px 14px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(14, 18, 28, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -2466,18 +2501,26 @@ body:has(.modal-backdrop.is-open) .custom-cursor-pill {
 
 .real-video-stage {
   position: relative;
-  height: 340px;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  min-height: 280px;
+  max-height: 480px;
   background: #020308;
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
+  border-radius: 16px;
 }
 
 .real-edited-video {
   width: 100%;
   height: 100%;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
   background: #020308;
+  display: block;
 }
 
 .video-technique-tags {

@@ -796,24 +796,65 @@
       });
     }
 
-    /* Concierge Comercial Trilingue */
-    let selectedTopic = "UI/UX & Site de Alto Padrão";
-    const topicChips = document.querySelectorAll("[data-concierge-topic]");
+    /* ------------------------------------------------------------------------
+       Concierge Comercial Trilingue com Múltipla Seleção e Animação de Mola
+       Data/Hora: 02/11/2026 17:52
+       Finalidade: Permitir selecionar várias frentes simultâneas e alternar idioma.
+       ------------------------------------------------------------------------ */
+    const selectedTopicIds = new Set(["uiux_site"]);
+    const conciergeContainer = document.getElementById("conciergeOptions");
 
-    NS.selectConciergeTopic = function (topicName) {
-      selectedTopic = topicName;
-      topicChips.forEach(function (c) {
-        c.classList.toggle("active", c.getAttribute("data-concierge-topic") === topicName);
-      });
-    };
+    function renderConciergeChips(lang) {
+      if (!conciergeContainer || !Array.isArray(NS.CONCIERGE_TOPICS)) return;
+      const current = lang || NS.currentLang || "pt";
+      conciergeContainer.innerHTML = "";
 
-    topicChips.forEach(function (chip) {
-      chip.addEventListener("click", function () {
-        selectedTopic = chip.textContent.trim() || chip.getAttribute("data-concierge-topic");
-        if (NS.sfx) NS.sfx.click();
-        topicChips.forEach(function (c) { c.classList.toggle("active", c === chip); });
+      NS.CONCIERGE_TOPICS.forEach(function (t) {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "concierge-chip" + (selectedTopicIds.has(t.id) ? " active" : "");
+        chip.setAttribute("data-topic-id", t.id);
+        chip.setAttribute("role", "checkbox");
+        chip.setAttribute("aria-checked", selectedTopicIds.has(t.id) ? "true" : "false");
+        chip.textContent = t[current] || t.pt || t.id;
+
+        chip.addEventListener("click", function () {
+          if (NS.sfx) NS.sfx.click();
+          if (selectedTopicIds.has(t.id)) {
+            /* Permitir desmarcar apenas se houver mais de uma selecionada */
+            if (selectedTopicIds.size > 1) {
+              selectedTopicIds.delete(t.id);
+            }
+          } else {
+            selectedTopicIds.add(t.id);
+          }
+          renderConciergeChips(current);
+        });
+
+        conciergeContainer.appendChild(chip);
       });
+    }
+
+    /* Renderização inicial */
+    renderConciergeChips(NS.currentLang || "pt");
+
+    /* Reatividade a troca de idioma no seletor do cabeçalho */
+    window.addEventListener("mattheus:langchange", function (e) {
+      renderConciergeChips(e.detail ? e.detail.lang : NS.currentLang);
     });
+
+    NS.selectConciergeTopic = function (topicIdOrName) {
+      if (!topicIdOrName) return;
+      /* Encontra o ID correspondente ou adiciona */
+      const found = Array.isArray(NS.CONCIERGE_TOPICS) && NS.CONCIERGE_TOPICS.find(function (t) {
+        return t.id === topicIdOrName || t.pt === topicIdOrName || t.en === topicIdOrName || t.es === topicIdOrName;
+      });
+      if (found) {
+        selectedTopicIds.clear();
+        selectedTopicIds.add(found.id);
+      }
+      renderConciergeChips(NS.currentLang || "pt");
+    };
 
     const waBtn = document.getElementById("conciergeSendWhatsapp");
     if (waBtn) {
@@ -823,16 +864,28 @@
         const name = nameEl ? (nameEl.value || "").trim() : "";
         const note = noteEl ? (noteEl.value || "").trim() : "";
         const lang = NS.currentLang || "pt";
+
+        /* Extrai os nomes traduzidos de todas as frentes selecionadas */
+        const chosenTopics = [];
+        if (Array.isArray(NS.CONCIERGE_TOPICS)) {
+          NS.CONCIERGE_TOPICS.forEach(function (t) {
+            if (selectedTopicIds.has(t.id)) {
+              chosenTopics.push(t[lang] || t.pt);
+            }
+          });
+        }
+        const topicsStr = chosenTopics.length > 0 ? chosenTopics.join(" · ") : "UI/UX & Site de Alto Padrão";
+
         let body = "";
         if (lang === "en") {
           const intro = name ? "Hi Mattheus, I'm " + name + "." : "Hi Mattheus!";
-          body = intro + " I explored your portfolio and want to talk about: *" + selectedTopic + "*." + (note ? "\n\nBrief: " + note : "");
+          body = intro + " I explored your portfolio and want to talk about: *" + topicsStr + "*." + (note ? "\n\nBrief: " + note : "");
         } else if (lang === "es") {
           const intro = name ? "Hola Mattheus, soy " + name + "." : "¡Hola Mattheus!";
-          body = intro + " Vi tu portafolio y quiero conversar sobre: *" + selectedTopic + "*." + (note ? "\n\nAlcance: " + note : "");
+          body = intro + " Vi tu portafolio y quiero conversar sobre: *" + topicsStr + "*." + (note ? "\n\nAlcance: " + note : "");
         } else {
           const intro = name ? "Olá Mattheus, me chamo " + name + "." : "Olá Mattheus!";
-          body = intro + " Vi seu portfólio e quero conversar sobre: *" + selectedTopic + "*." + (note ? "\n\nEscopo: " + note : "");
+          body = intro + " Vi seu portfólio e quero conversar sobre: *" + topicsStr + "*." + (note ? "\n\nEscopo: " + note : "");
         }
         const url = "https://wa.me/" + NS.PROFILE.whatsappNumber + "?text=" + encodeURIComponent(body);
         if (NS.sfx) NS.sfx.success();
@@ -845,6 +898,14 @@
         e.preventDefault();
         navigator.clipboard.writeText(NS.PROFILE.email).then(function () {
           if (NS.sfx) NS.sfx.success();
+          const span = btn.querySelector("span[data-i18n='conciergeCopyEmail']");
+          const originalText = span ? span.textContent : "";
+          if (span && typeof NS.t === "function") {
+            span.textContent = NS.t("conciergeCopiedEmail") || "E-mail Copiado!";
+            setTimeout(function () {
+              span.textContent = NS.t("conciergeCopyEmail") || originalText;
+            }, 2000);
+          }
           NS.showToast("E-mail copiado: " + NS.PROFILE.email);
         });
       });

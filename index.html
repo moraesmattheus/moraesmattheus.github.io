@@ -37,7 +37,7 @@
   <!-- Tipografia Editorial Mista + Font Awesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,600&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,600&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Quicksand:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <!-- Folhas de Estilo Modulares V6 -->
@@ -127,8 +127,8 @@
       </a>
 
       <nav id="mainNavLinks" class="main-nav" aria-label="Navegação Principal">
-        <a href="#topo" class="nav-link is-active" aria-current="location" data-i18n="navHome">Início</a>
-        <a href="#obras" class="nav-link" data-i18n="navWorks">Obras</a>
+        <a href="#obras" class="nav-link is-active" aria-current="location" data-i18n="navWorks">Projetos</a>
+        <a href="#topo" class="nav-link" data-i18n="navHome">Sobre</a>
         <a href="#sites" class="nav-link" data-i18n="navSites">Sites &amp; UI/UX</a>
         <a href="#sistemas" class="nav-link" data-i18n="navSystems">Apps &amp; Sistemas</a>
         <a href="#videos" class="nav-link" data-i18n="navVideos">Vídeos &amp; Ads</a>
@@ -166,7 +166,98 @@
   <main id="conteudo-principal">
 
     <!-- ======================================================================
-         SEÇÃO 01 (#topo): Hero Editorial Limpo + Botões Animados em CSS
+         SEÇÃO 01 (#obras): Vitrine Editorial Dopamine Studio "Meus Projetos"
+         com Captura Real dos Sites e Sistemas + Ficha Técnica e Gaveta dos 18 Projetos
+         ====================================================================== -->
+    <section id="obras" class="visuvate-vortex-section">
+      <canvas id="vortexWaveCanvas" aria-hidden="true"></canvas>
+      <div class="container">
+        <div class="vortex-topbar-hint">
+          <span class="section-kicker" style="margin-bottom:0;" data-i18n="vortexKicker">01 · Galeria Orbital 3D · Passe o mouse para desacelerar ou clique para abrir</span>
+        </div>
+
+        <div id="vortexStage3D" class="vortex-stage-3d" role="region" aria-label="Galeria orbital 3D de obras">
+          <div id="vortexLayerBack" class="vortex-orbit-layer layer-back"></div>
+
+          <!-- Camada Sólida Central (z-index: 5) Sempre Nítida e Sem Duplicação -->
+          <h2 class="vortex-center-heading" data-i18n-html="vortexTitle">
+            Meus <span class="serif-vortex">Projetos</span>
+          </h2>
+
+          <div id="vortexLayerFront" class="vortex-orbit-layer layer-front"></div>
+        </div>
+
+        <!-- Vitrine Editorial Dopamine Studio (Com Captura Real da Interface do Site) -->
+        <div style="margin-top:52px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:10px;">
+            <span class="dopamine-counter-pill">
+              <span data-i18n="dopamineCounterLabel">Estudo de Caso</span> · <strong id="dopamineCounterCurrent">01 / 06</strong>
+            </span>
+            <div class="dopamine-arrows-group">
+              <button type="button" id="dopaminePrevBtn" class="dopamine-nav-arrow" aria-label="Case anterior">&larr;</button>
+              <button type="button" id="dopamineNextBtn" class="dopamine-nav-arrow" aria-label="Próximo case">&rarr;</button>
+            </div>
+          </div>
+
+          <div id="dopamineCasePills" class="clean-neon-tabs" role="tablist" aria-label="Cases em destaque"></div>
+
+          <article class="dopamine-showcase-row reveal">
+            <div class="dopamine-copy-col">
+              <div id="dopamineTagsRow" class="dopamine-pill-tags"></div>
+              <h3 id="dopamineCaseTitle" class="dopamine-case-title">Acervo Imobiliário Quiet Luxury</h3>
+              <p id="dopamineCasePunch" class="dopamine-case-punch">PROJETADO PARA VENDER ALTO PADRÃO. E ACONTECEU.</p>
+              <p id="dopamineCaseDesc" class="dopamine-case-desc"></p>
+
+              <div class="dopamine-inline-actions">
+                <button type="button" id="dopamineTryLiveBtn" class="pg-btn-gold">Explorar Projeto &darr;</button>
+                <button type="button" id="dopamineOpenDossierBtn" class="pg-btn-outline">Ficha Técnica Completa</button>
+              </div>
+            </div>
+
+            <div id="dopamineMediaStage" class="dopamine-media-stage">
+              <div class="dopamine-angled-device">
+                <img id="dopamineCaseImg" src="assets/img/site-vania-tela.png" alt="Interface real do projeto imobiliário de alto padrão" loading="lazy">
+              </div>
+              <button type="button" id="dopamineCircleCta" class="dopamine-circle-cta" aria-label="Explorar este projeto">
+                &#8599;
+              </button>
+            </div>
+          </article>
+
+          <!-- Gaveta Sob Demanda para os 18 Projetos -->
+          <div class="catalog-collapse-trigger-wrap">
+            <button type="button" id="toggleAllProjectsBtn" class="btn-toggle-all-projects" aria-expanded="false" data-i18n="toggleAll18Closed">
+              Ver arquivo completo dos 18 projetos &darr;
+            </button>
+          </div>
+
+          <div id="catalogCollapsibleDrawer" class="catalog-collapsible-drawer">
+            <div class="catalog-toolbar">
+              <div class="filter-pills" role="tablist" aria-label="Filtrar projetos">
+                <button type="button" class="filter-pill active" data-proj-filter="all">Todos (18)</button>
+                <button type="button" class="filter-pill" data-proj-filter="web">Sites &amp; UI/UX</button>
+                <button type="button" class="filter-pill" data-proj-filter="mobile">Apps &amp; Vídeo</button>
+                <button type="button" class="filter-pill" data-proj-filter="ia">IA &amp; Automação</button>
+                <button type="button" class="filter-pill" data-proj-filter="growth">CRMs &amp; BI</button>
+              </div>
+              <div class="catalog-right-controls">
+                <div class="catalog-search">
+                  <input id="catalogSearchInput" type="search" placeholder="Filtrar nos 18 projetos..." aria-label="Filtrar nos 18 projetos">
+                </div>
+                <div class="view-mode-switch" role="group" aria-label="Visualização">
+                  <button type="button" class="view-mode-btn active" data-view-mode="grid">Grade</button>
+                  <button type="button" class="view-mode-btn" data-view-mode="list">Lista</button>
+                </div>
+              </div>
+            </div>
+            <div id="projectsCatalogGrid" class="projects-grid"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SEÇÃO 02 (#topo / #sobre): Sobre Mim, Setup Real & Engenharia
          ====================================================================== -->
     <section id="topo" class="hero-section">
       <div class="container">
@@ -281,13 +372,13 @@
             </div>
           </div>
 
-          <!-- Retrato Chiaroscuro Integrado -->
+          <!-- Retrato Chiaroscuro Integrado com Foto 100% Inteira no Setup -->
           <div id="heroPortraitStage" class="portrait-stage">
             <div class="portrait-aura" aria-hidden="true"></div>
             <div class="portrait-editorial-frame" aria-hidden="true"></div>
             <figure id="heroPortraitFigure" class="portrait-figure">
               <img src="assets/img/mattheus-portrait.png"
-                   alt="Retrato de estúdio de Mattheus Moraes"
+                   alt="Retrato de estúdio de Mattheus Moraes no seu setup com monitores e código"
                    class="portrait-img"
                    loading="eager">
               <div class="portrait-bottom-fade" aria-hidden="true"></div>
@@ -313,97 +404,6 @@
           <div class="proof-item">
             <div class="proof-number">99/100</div>
             <p class="proof-caption" data-i18n="kpi3Label">Performance &amp; WCAG AAA</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ======================================================================
-         SEÇÃO 02 (#obras): Vórtice 3D "Minhas Obras" (Texto Sempre Nítido) +
-         Vitrine Editorial Dopamine Studio com Fotos Reais dos Sites
-         ====================================================================== -->
-    <section id="obras" class="visuvate-vortex-section">
-      <canvas id="vortexWaveCanvas" aria-hidden="true"></canvas>
-      <div class="container">
-        <div class="vortex-topbar-hint">
-          <span class="section-kicker" style="margin-bottom:0;" data-i18n="vortexKicker">01 · Galeria Orbital 3D · Passe o mouse para desacelerar ou clique para abrir</span>
-        </div>
-
-        <div id="vortexStage3D" class="vortex-stage-3d" role="region" aria-label="Galeria orbital 3D de obras">
-          <div id="vortexLayerBack" class="vortex-orbit-layer layer-back"></div>
-
-          <!-- Camada Sólida Central (z-index: 5) Sempre Nítida e Sem Duplicação -->
-          <h2 class="vortex-center-heading" data-i18n-html="vortexTitle">
-            Minhas <span class="serif-vortex">Obras</span>
-          </h2>
-
-          <div id="vortexLayerFront" class="vortex-orbit-layer layer-front"></div>
-        </div>
-
-        <!-- Vitrine Editorial Dopamine Studio (Com Captura Real da Interface do Site) -->
-        <div style="margin-top:52px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:10px;">
-            <span class="dopamine-counter-pill">
-              <span data-i18n="dopamineCounterLabel">Estudo de Caso</span> · <strong id="dopamineCounterCurrent">01 / 06</strong>
-            </span>
-            <div class="dopamine-arrows-group">
-              <button type="button" id="dopaminePrevBtn" class="dopamine-nav-arrow" aria-label="Case anterior">&larr;</button>
-              <button type="button" id="dopamineNextBtn" class="dopamine-nav-arrow" aria-label="Próximo case">&rarr;</button>
-            </div>
-          </div>
-
-          <div id="dopamineCasePills" class="clean-neon-tabs" role="tablist" aria-label="Cases em destaque"></div>
-
-          <article class="dopamine-showcase-row reveal">
-            <div class="dopamine-copy-col">
-              <div id="dopamineTagsRow" class="dopamine-pill-tags"></div>
-              <h3 id="dopamineCaseTitle" class="dopamine-case-title">Acervo Imobiliário Quiet Luxury</h3>
-              <p id="dopamineCasePunch" class="dopamine-case-punch">PROJETADO PARA VENDER ALTO PADRÃO. E ACONTECEU.</p>
-              <p id="dopamineCaseDesc" class="dopamine-case-desc"></p>
-
-              <div class="dopamine-inline-actions">
-                <button type="button" id="dopamineTryLiveBtn" class="pg-btn-gold">Explorar Projeto &darr;</button>
-                <button type="button" id="dopamineOpenDossierBtn" class="pg-btn-outline">Ficha Técnica Completa</button>
-              </div>
-            </div>
-
-            <div id="dopamineMediaStage" class="dopamine-media-stage">
-              <div class="dopamine-angled-device">
-                <img id="dopamineCaseImg" src="assets/img/site-vania-tela.png" alt="Interface real do projeto imobiliário de alto padrão" loading="lazy">
-              </div>
-              <button type="button" id="dopamineCircleCta" class="dopamine-circle-cta" aria-label="Explorar este projeto">
-                &#8599;
-              </button>
-            </div>
-          </article>
-
-          <!-- Gaveta Sob Demanda para os 18 Projetos -->
-          <div class="catalog-collapse-trigger-wrap">
-            <button type="button" id="toggleAllProjectsBtn" class="btn-toggle-all-projects" aria-expanded="false" data-i18n="toggleAll18Closed">
-              Ver arquivo completo dos 18 projetos &darr;
-            </button>
-          </div>
-
-          <div id="catalogCollapsibleDrawer" class="catalog-collapsible-drawer">
-            <div class="catalog-toolbar">
-              <div class="filter-pills" role="tablist" aria-label="Filtrar projetos">
-                <button type="button" class="filter-pill active" data-proj-filter="all">Todos (18)</button>
-                <button type="button" class="filter-pill" data-proj-filter="web">Sites &amp; UI/UX</button>
-                <button type="button" class="filter-pill" data-proj-filter="mobile">Apps &amp; Vídeo</button>
-                <button type="button" class="filter-pill" data-proj-filter="ia">IA &amp; Automação</button>
-                <button type="button" class="filter-pill" data-proj-filter="growth">CRMs &amp; BI</button>
-              </div>
-              <div class="catalog-right-controls">
-                <div class="catalog-search">
-                  <input id="catalogSearchInput" type="search" placeholder="Filtrar nos 18 projetos..." aria-label="Filtrar nos 18 projetos">
-                </div>
-                <div class="view-mode-switch" role="group" aria-label="Visualização">
-                  <button type="button" class="view-mode-btn active" data-view-mode="grid">Grade</button>
-                  <button type="button" class="view-mode-btn" data-view-mode="list">Lista</button>
-                </div>
-              </div>
-            </div>
-            <div id="projectsCatalogGrid" class="projects-grid"></div>
           </div>
         </div>
       </div>
@@ -1050,27 +1050,20 @@ print('ROAS auditado: 4.65x')</textarea>
 
         <div class="closing-grid">
           <div class="concierge-card spotlight-card reveal">
-            <span style="font-family:var(--font-mono);font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--neon-primary);">
+            <span style="font-family:var(--font-mono);font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--neon-primary);" data-i18n="conciergeLabel">
               Selecione a frente desejada:
             </span>
 
-            <div class="concierge-options" role="group" aria-label="Serviço desejado">
-              <button type="button" class="concierge-chip active" data-concierge-topic="UI/UX & Site de Alto Padrão">UI/UX &amp; Site de Alto Padrão</button>
-              <button type="button" class="concierge-chip" data-concierge-topic="Site 100% Personalizado">Site 100% Personalizado</button>
-              <button type="button" class="concierge-chip" data-concierge-topic="Sistema Sob Medida / CRM">Sistema Sob Medida / CRM</button>
-              <button type="button" class="concierge-chip" data-concierge-topic="Aplicativo Mobile ou Desktop">Aplicativo Mobile ou Desktop</button>
-              <button type="button" class="concierge-chip" data-concierge-topic="Edição de Vídeos 60fps">Edição de Vídeos 60fps</button>
-              <button type="button" class="concierge-chip" data-concierge-topic="Gestão de Tráfego Pago">Gestão de Tráfego Pago</button>
+            <div id="conciergeOptions" class="concierge-options" role="group" aria-label="Serviço desejado"></div>
+
+            <div class="concierge-field">
+              <label for="conciergeName" data-i18n="conciergeNameLabel">Seu Nome ou Empresa</label>
+              <input id="conciergeName" type="text" placeholder="Ex.: Rodrigo · Clínica / Construtora / SaaS" data-i18n-placeholder="conciergeNamePlaceholder">
             </div>
 
             <div class="concierge-field">
-              <label for="conciergeName">Seu Nome ou Empresa</label>
-              <input id="conciergeName" type="text" placeholder="Ex.: Rodrigo · Clínica / Construtora / SaaS">
-            </div>
-
-            <div class="concierge-field">
-              <label for="conciergeMessage">Resumo rápido do objetivo (opcional)</label>
-              <textarea id="conciergeMessage" rows="3" placeholder="Conte em 1 ou 2 linhas o que deseja construir ou escalar..."></textarea>
+              <label for="conciergeMessage" data-i18n="conciergeMsgLabel">Resumo rápido do objetivo (opcional)</label>
+              <textarea id="conciergeMessage" rows="3" placeholder="Conte em 1 ou 2 linhas o que deseja construir ou escalar..." data-i18n-placeholder="conciergeMsgPlaceholder"></textarea>
             </div>
 
             <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:20px;">
@@ -1078,7 +1071,7 @@ print('ROAS auditado: 4.65x')</textarea>
                 <span data-i18n="conciergeSubmit">Enviar Escopo no WhatsApp &rarr;</span>
               </button>
               <button type="button" data-copy-email="true" class="btn-luxury-secondary">
-                <span>Copiar E-mail</span>
+                <span data-i18n="conciergeCopyEmail">Copiar E-mail</span>
               </button>
             </div>
           </div>
