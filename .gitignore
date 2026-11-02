@@ -1,0 +1,31 @@
+# ==============================================================================
+# Arquivo: .gitignore
+# Data/Hora: 01/11/2026 23:41
+# O que é: Configuração de exclusão de arquivos do controle de versão Git.
+# Finalidade: Proteger segredos (.env, tokens), ambientes virtuais (.venv),
+# dependências pesadas (node_modules) e caches de sistema operacional.
+# ==============================================================================
+
+# Variáveis de ambiente, chaves e segredos
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*token*
+*secret*
+vault.bin
+
+# Dependências e ambientes
+node_modules/
+.venv/
+venv/
+__pycache__/
+
+# Arquivos temporários do sistema operacional e editores
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vscode/
+.idea/
+*.log

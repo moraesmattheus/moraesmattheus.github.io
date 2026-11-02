@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 130" fill="none" stroke="#C8A97E">
+  <!-- 
+    ==============================================================================
+    PROJETO: Ecossistema Digital de Luxo - Vania Faria Consultora de Imóveis
+    ARQUIVO: public/images/logo-va.svg
+    DATA/HORA: 31/10/2026 15:06
+    FINALIDADE: Vetor SVG de alta precisão do monograma VA extraído geometricamente
+                do cartão de visitas oficial. Cor champagne clássica (#C8A97E).
+    ==============================================================================
+  -->
+  <g stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Perna esquerda do V: inicia mais alta e desce em ângulo agudo -->
+    <line x1="22" y1="44" x2="60" y2="114" />
+    
+    <!-- Perna direita do V: sobe contínua até o ápice superior do A -->
+    <line x1="60" y1="114" x2="98" y2="14" />
+    
+    <!-- Linha diagonal paralela interna do A -->
+    <line x1="72" y1="74" x2="92" y2="28" />
+    
+    <!-- Perna direita descendente do A -->
+    <line x1="98" y1="14" x2="136" y2="78" />
+    
+    <!-- Base horizontal do A conectando a haste interna até a lateral direita -->
+    <line x1="75" y1="78" x2="136" y2="78" />
+  </g>
+</svg>

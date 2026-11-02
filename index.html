@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<!-- ==========================================================================
+     Arquivo: index.html
+     Data/Hora: 02/11/2026 01:40
+     O que é: Página principal V3 do portfólio comercial e técnico de alto
+     padrão de Mattheus Moraes.
+     O que foi feito e finalidade de cada bloco:
+       1. Navbar Flutuante em Pílula de Vidro (Visuvate): Navegação limpa sem
+          corte lateral, relógio ao vivo de Florianópolis, Busca Ctrl+K e CTA.
+       2. Hero Editorial + Retrato Chiaroscuro em CSS + Dock Social 3D:
+          Apresenta imediatamente as 5 frentes comerciais ativas (Sites,
+          Sistemas/CRM, Aplicativos, Edição de Vídeos e Gestão de Tráfego).
+       3. 5 Pilares Comerciais com Canvas 3D Interativo em 60fps (Marco Madonna
+          + Dopamine): Geometrias 3D vivas que se mexem continuamente e reagem
+          ao mouse, com atalho direto para testar cada frente.
+       4. Palco Interativo Intuitivo ("Teste na Prática"): 5 experiências
+          visuais limpas e autoexplicativas (Site Vania + EasyCode, Kanban CRM,
+          Mockup de Apps Reais, Player Antes/Depois de Vídeo e Simulador Ads).
+       5. Vitrine 3D Horizontal (Visuvate/Core-A/Aparelho) + Bento de Resultados
+          Animados (Dopamine) + 18 Projetos com Preview Hover (Fabian) + Grafo
+          de Carreira + Relógio/Globo 3D + Gaveta de Design Tokens ("TEMA [T]").
+     ========================================================================== -->
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mattheus Moraes · Sites, Sistemas &amp; CRMs, Apps, Edição de Vídeos &amp; Tráfego Pago</title>
+  <meta name="description" content="Portfólio oficial de Mattheus Moraes. Criação de sites de alto padrão, sistemas sob medida e CRMs, aplicativos mobile/desktop, edição cinematográfica de vídeos e gestão de tráfego pago.">
+  <meta name="theme-color" content="#000000">
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+
+  <!-- Tipografia Editorial Mista -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,600&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Folhas de Estilo Modulares com Cache-Busting V4 -->
+  <link rel="stylesheet" href="css/tokens.css?v=4">
+  <link rel="stylesheet" href="css/layout.css?v=4">
+  <link rel="stylesheet" href="css/interactive.css?v=4">
+</head>
+<body>
+
+  <!-- BLOCO 1: Preloader Minimalista de Estúdio (02/11/2026) -->
+  <div id="studioPreloader" class="studio-preloader" aria-hidden="true">
+    <div class="preloader-monogram">MM</div>
+    <div class="preloader-name">Mattheus Moraes</div>
+    <div class="preloader-bar-wrap">
+      <div id="preloaderBarFill" class="preloader-bar-fill"></div>
+    </div>
+  </div>
+
+  <!-- Camadas Globais Flutuantes: Grão, Cursor, Preview Hover, Toasts e Gaveta TEMA [T] -->
+  <div class="studio-grain" aria-hidden="true"></div>
+  <div id="customCursorPill" class="custom-cursor-pill" aria-hidden="true">EXPLORAR</div>
+  <div id="floatingProjPreview" class="floating-proj-preview" aria-hidden="true">
+    <img id="floatingProjPreviewImg" src="assets/img/easycode.png" alt="">
+  </div>
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <!-- Aba Lateral "TEMA [T]" estilo Marco Madonna Design Tokens -->
+  <button type="button" id="tokensDrawerTrigger" class="tokens-side-trigger" aria-label="Personalizar cores e estilo do site">
+    <span>TEMA · T</span>
+  </button>
+
+  <aside id="tokensDrawerPanel" class="tokens-drawer-panel" aria-label="Painel de Design Tokens ao Vivo">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
+      <strong style="font-size:0.95rem;color:#FFFFFF;">Design Tokens Ao Vivo</strong>
+      <button type="button" id="tokensDrawerClose" style="color:var(--text-muted);font-size:1.2rem;line-height:1;" aria-label="Fechar painel">&times;</button>
+    </div>
+    <p style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;line-height:1.45;">
+      Teste diferentes identidades visuais neste portfólio em tempo real (atalho tecla <strong>T</strong>):
+    </p>
+
+    <div class="token-swatch-list">
+      <button type="button" class="token-swatch-btn active" data-set-accent="gold">
+        <span class="token-dot" style="background:#C9A97C;"></span>
+        <span>Champagne</span>
+      </button>
+      <button type="button" class="token-swatch-btn" data-set-accent="violet">
+        <span class="token-dot" style="background:#8B5CF6;"></span>
+        <span>Violeta 3D</span>
+      </button>
+      <button type="button" class="token-swatch-btn" data-set-accent="lime">
+        <span class="token-dot" style="background:#C8FF2E;"></span>
+        <span>Dopamine</span>
+      </button>
+      <button type="button" class="token-swatch-btn" data-set-accent="cobalt">
+        <span class="token-dot" style="background:#38BDF8;"></span>
+        <span>Visuvate</span>
+      </button>
+      <button type="button" class="token-swatch-btn" data-set-accent="mono" style="grid-column:1/-1;">
+        <span class="token-dot" style="background:#FFFFFF;"></span>
+        <span>Monocromático Puro</span>
+      </button>
+    </div>
+
+    <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border-hairline);">
+      <span style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);">Geometria dos Cantos</span>
+      <div class="token-swatch-list" style="margin-top:8px;">
+        <button type="button" class="token-swatch-btn active" data-set-corners="soft">Suave</button>
+        <button type="button" class="token-swatch-btn" data-set-corners="sharp">Arquitetônico</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Pílula Rápida de Fechamento (Estilo Dopamine Studio) -->
+  <a href="#contato" class="quick-float-cta" aria-label="Solicitar orçamento rápido">
+    <span>Fechar Projeto Comigo</span>
+    <span aria-hidden="true">&rarr;</span>
+  </a>
+
+  <!-- BLOCO 2: Cabeçalho Flutuante em Pílula de Vidro (Estilo Visuvate) -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="#topo" class="personal-brand" aria-label="Mattheus Moraes Início">
+        <span class="brand-mark">MM</span>
+        <span class="brand-text-wrap">
+          <span class="brand-fullname">Mattheus Moraes</span>
+          <span id="liveFloripaClock" class="brand-city-clock">FLN · BRT</span>
+        </span>
+      </a>
+
+      <nav id="mainNavLinks" class="main-nav" aria-label="Navegação Principal">
+        <a href="#pilares" class="nav-link">Serviços</a>
+        <a href="#estudio-interativo" class="nav-link">Teste Ao Vivo</a>
+        <a href="#resultados" class="nav-link">Resultados</a>
+        <a href="#acervo-projetos" class="nav-link">18 Projetos</a>
+        <a href="#grafo-carreira" class="nav-link">Grafo</a>
+        <a href="#contato" class="nav-link">Contato</a>
+      </nav>
+
+      <div class="header-actions">
+        <button type="button" id="openCmdkBtn" class="util-btn" aria-label="Busca rápida de projetos">
+          <span>Buscar</span>
+          <kbd class="kbd-tag">Ctrl K</kbd>
+        </button>
+        <button type="button" id="soundToggleBtn" class="util-btn" aria-label="Ativar ou desativar som tátil">
+          <span>Som</span>
+        </button>
+        <a href="#contato" class="btn-header-cta">Orçar Projeto &rarr;</a>
+        <button type="button" id="mobileMenuBtn" class="mobile-menu-toggle" aria-label="Abrir menu">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="7" x2="21" y2="7"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="17" x2="21" y2="17"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="topo">
+
+    <!-- BLOCO 3: Hero Monumental + Retrato Chiaroscuro em CSS + Dock Social 3D -->
+    <section class="hero-section">
+      <div class="container">
+        <div class="hero-layout">
+
+          <!-- Coluna Esquerda: Posicionamento Comercial Completo -->
+          <div>
+            <div class="eyebrow-tag">
+              <span class="live-pulse-dot"></span>
+              <span>Disponível para Novos Projetos · Florianópolis, SC &amp; Remoto</span>
+            </div>
+
+            <h1 class="hero-headline">
+              Sites, sistemas, apps, <span class="serif-luxury">vídeos</span> e tráfego que fazem sua marca vender mais.
+            </h1>
+
+            <p class="hero-subcopy">
+              Uno <strong>Engenharia de Software (INFNET)</strong>, design de alto padrão, edição cinematográfica e gestão de tráfego pago em um único lugar. Da identidade visual e do <strong>CRM sob medida</strong> aos anúncios que colocam clientes reais no seu caixa.
+            </p>
+
+            <!-- Pílulas Diretas das 5 Frentes Ativas -->
+            <div class="hero-services-ribbon">
+              <a href="#estudio-interativo" data-jump-studio="sites" class="hero-service-chip"><i></i>Criação de Sites</a>
+              <a href="#estudio-interativo" data-jump-studio="crm" class="hero-service-chip"><i></i>Sistemas &amp; CRMs</a>
+              <a href="#estudio-interativo" data-jump-studio="apps" class="hero-service-chip"><i></i>Aplicativos Mobile &amp; Desktop</a>
+              <a href="#estudio-interativo" data-jump-studio="video" class="hero-service-chip"><i></i>Edição de Vídeos</a>
+              <a href="#estudio-interativo" data-jump-studio="traffic" class="hero-service-chip"><i></i>Marketing &amp; Tráfego Pago</a>
+            </div>
+
+            <div class="hero-cta-group">
+              <a href="#estudio-interativo" class="btn-luxury-primary" data-cursor="TESTAR">
+                <span>Testar Meu Trabalho Ao Vivo</span>
+                <span aria-hidden="true">&darr;</span>
+              </a>
+              <a href="#contato" class="btn-luxury-secondary" data-cursor="ORÇAR">
+                <span>Solicitar Proposta no WhatsApp</span>
+              </a>
+            </div>
+
+            <!-- Dock Social 3D Glassmorphism Expansível -->
+            <div class="social-dock-section">
+              <span class="social-dock-label">Redes Oficiais, GitHub &amp; Contato Direto · Passe o mouse</span>
+              <div class="social-3d-dock">
+
+                <a href="https://github.com/moraesmattheus" target="_blank" rel="noopener noreferrer"
+                   class="social-3d-tile"
+                   style="--brand-clr:#FFFFFF; --brand-glow:rgba(255,255,255,0.45); --expand-w:216px;"
+                   aria-label="GitHub de Mattheus Moraes">
+                  <span class="tile-icon">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.09 3.29 9.4 7.86 10.92.58.1.79-.25.79-.56v-2.02c-3.2.7-3.87-1.39-3.87-1.39-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.23-1.28-5.23-5.68 0-1.25.45-2.28 1.18-3.08-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11.02 11.02 0 0 1 5.78 0c2.2-1.49 3.16-1.18 3.16-1.18.63 1.59.24 2.76.12 3.05.74.8 1.18 1.83 1.18 3.08 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/>
+                    </svg>
+                  </span>
+                  <span class="tile-meta">
+                    <strong>GitHub Oficial</strong>
+                    <span>@moraesmattheus</span>
+                  </span>
+                </a>
+
+                <a href="https://www.linkedin.com/in/mattheusmoraes/" target="_blank" rel="noopener noreferrer"
+                   class="social-3d-tile"
+                   style="--brand-clr:#38BDF8; --brand-glow:rgba(56,189,248,0.5); --expand-w:218px;"
+                   aria-label="LinkedIn de Mattheus Moraes">
+                  <span class="tile-icon">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M19 3A2 2 0 0 1 21 5v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77Z"/>
+                    </svg>
+                  </span>
+                  <span class="tile-meta">
+                    <strong>LinkedIn</strong>
+                    <span>/in/mattheusmoraes</span>
+                  </span>
+                </a>
+
+                <a href="https://wa.me/5561982106653?text=Ol%C3%A1%20Mattheus!%20Vi%20seu%20portf%C3%B3lio%20e%20quero%20conversar%20sobre%20um%20projeto."
+                   target="_blank" rel="noopener noreferrer"
+                   class="social-3d-tile"
+                   style="--brand-clr:#34D399; --brand-glow:rgba(52,211,153,0.5); --expand-w:222px;"
+                   aria-label="WhatsApp Direto">
+                  <span class="tile-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                    </svg>
+                  </span>
+                  <span class="tile-meta">
+                    <strong>WhatsApp Direto</strong>
+                    <span>(61) 98210-6653</span>
+                  </span>
+                </a>
+
+                <button type="button" data-copy-email="true"
+                        class="social-3d-tile"
+                        style="--brand-clr:#E5CFA9; --brand-glow:rgba(229,207,169,0.5); --expand-w:268px;"
+                        aria-label="Copiar endereço de e-mail">
+                  <span class="tile-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <rect x="2" y="4" width="20" height="16" rx="3"/>
+                      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                    </svg>
+                  </span>
+                  <span class="tile-meta">
+                    <strong>Copiar E-mail (1 clique)</strong>
+                    <span>moraes_trabalho@outlook.com.br</span>
+                  </span>
+                </button>
+
+                <a href="assets/docs/Mattheus-Moraes-Engenharia-Software.pdf" target="_blank" rel="noopener"
+                   class="social-3d-tile"
+                   style="--brand-clr:#A78BFA; --brand-glow:rgba(167,139,250,0.5); --expand-w:222px;"
+                   aria-label="Baixar Currículo em PDF">
+                  <span class="tile-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                      <polyline points="14 2 14 8 20 8"/>
+                      <line x1="12" y1="18" x2="12" y2="12"/>
+                      <polyline points="9 15 12 18 15 15"/>
+                    </svg>
+                  </span>
+                  <span class="tile-meta">
+                    <strong>Currículo &amp; Deck</strong>
+                    <span>Abrir PDF Verificado</span>
+                  </span>
+                </a>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Coluna Direita: Retrato Chiaroscuro Integrado com CSS Puro -->
+          <div id="heroPortraitStage" class="portrait-stage">
+            <div class="portrait-aura" aria-hidden="true"></div>
+            <div class="portrait-editorial-frame" aria-hidden="true"></div>
+
+            <figure id="heroPortraitFigure" class="portrait-figure">
+              <img src="assets/img/mattheus-portrait.png"
+                   alt="Retrato de estúdio de Mattheus Moraes"
+                   class="portrait-img"
+                   loading="eager">
+              <div class="portrait-bottom-fade" aria-hidden="true"></div>
+            </figure>
+
+            <div class="portrait-nameplate">
+              <strong>Mattheus Moraes</strong>
+              <span>Sites · CRM · Apps · Vídeo · Ads</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Faixa Executiva de Indicadores Reais -->
+        <div class="proof-strip reveal">
+          <div class="proof-item">
+            <div class="proof-number">18 <em>projetos</em></div>
+            <p class="proof-caption">Sites, CRMs, aplicativos mobile/desktop, automações de vídeo e painéis reais construídos.</p>
+          </div>
+          <div class="proof-item">
+            <div class="proof-number">4,65x <em>ROAS</em></div>
+            <p class="proof-caption">1º lugar orgânico no Google em loja própria e queda de CPC de R$ 0,74 para R$ 0,11.</p>
+          </div>
+          <div class="proof-item">
+            <div class="proof-number">72 mil <em>views</em></div>
+            <p class="proof-caption">Retenção orgânica em vídeo e CTR de 6,20% em criativos editados com método próprio.</p>
+          </div>
+          <div class="proof-item">
+            <div class="proof-number">608 <em>leads/mês</em></div>
+            <p class="proof-caption">Geração constante de demanda comercial com CPL entre R$ 2,20 e R$ 4,23.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- BLOCO 4: Marquee Contínuo das 5 Frentes & Tecnologias (Estilo Visuvate) -->
+    <div class="marquee-band" aria-hidden="true">
+      <div class="marquee-track">
+        <span class="marquee-item"><i></i>Criação de Sites de Alto Padrão</span>
+        <span class="marquee-item"><i></i>Sistemas Sob Medida &amp; CRMs</span>
+        <span class="marquee-item"><i></i>Aplicativos iOS, Android &amp; Windows</span>
+        <span class="marquee-item"><i></i>Edição de Vídeos &amp; Reels 60fps</span>
+        <span class="marquee-item"><i></i>Gestão de Tráfego · Meta, Google &amp; TikTok Ads</span>
+        <span class="marquee-item"><i></i>Python · React Native · TypeScript · DaVinci Resolve</span>
+        <span class="marquee-item"><i></i>Criação de Sites de Alto Padrão</span>
+        <span class="marquee-item"><i></i>Sistemas Sob Medida &amp; CRMs</span>
+        <span class="marquee-item"><i></i>Aplicativos iOS, Android &amp; Windows</span>
+        <span class="marquee-item"><i></i>Edição de Vídeos &amp; Reels 60fps</span>
+        <span class="marquee-item"><i></i>Gestão de Tráfego · Meta, Google &amp; TikTok Ads</span>
+        <span class="marquee-item"><i></i>Python · React Native · TypeScript · DaVinci Resolve</span>
+      </div>
+    </div>
+
+    <!-- BLOCO 5: As 5 Frentes Comerciais com Arte 3D Interativa Viva (Marco Madonna + Dopamine) -->
+    <section id="pilares">
+      <div class="container">
+        <div class="section-head reveal">
+          <div class="section-head-left">
+            <span class="section-kicker">O Que Eu Faço Hoje</span>
+            <h2 class="section-heading">
+              Cinco frentes integradas para <span class="serif-luxury">escalar seu negócio.</span>
+            </h2>
+            <p class="section-desc">
+              Passe o mouse sobre as estruturas 3D abaixo ou clique em qualquer cartão para testar um exemplo funcionando ao vivo logo em seguida.
+            </p>
+          </div>
+        </div>
+
+        <div class="pillars-5-grid">
+
+          <!-- 01: Criação de Sites -->
+          <article class="pillar-3d-card reveal">
+            <span class="pillar-watermark">01</span>
+            <div>
+              <h3>Criação de Sites</h3>
+              <span class="pillar-pill-sub">Institucionais · Landing Pages · Lojas</span>
+            </div>
+
+            <div class="pillar-iso-canvas">
+              <canvas class="iso-3d-canvas" data-iso-scene="sites" aria-label="Animação 3D de camadas de site"></canvas>
+              <span class="iso-live-hint">3D Interativo</span>
+            </div>
+
+            <div>
+              <p>Sites rápidos, responsivos e com visual de alto valor percebido para fazer o cliente confiar na sua marca nos primeiros segundos.</p>
+              <ul class="pillar-list" style="margin-top:14px;">
+                <li>Design exclusivo (sem cara de template genérico)</li>
+                <li>Alta velocidade no celular e SEO para o Google</li>
+                <li>Painel simples para você atualizar fotos e textos</li>
+              </ul>
+              <button type="button" class="pillar-try-btn" data-jump-studio="sites">
+                <span>Ver site funcionando</span>
+                <span>&darr;</span>
+              </button>
+            </div>
+          </article>
+
+          <!-- 02: Sistemas & CRMs -->
+          <article class="pillar-3d-card reveal">
+            <span class="pillar-watermark">02</span>
+            <div>
+              <h3>Sistemas &amp; CRMs</h3>
+              <span class="pillar-pill-sub">Pipeline · Caixa · Portais Internos</span>
+            </div>
+
+            <div class="pillar-iso-canvas">
+              <canvas class="iso-3d-canvas" data-iso-scene="crm" aria-label="Animação 3D de cubos conectados de CRM"></canvas>
+              <span class="iso-live-hint">3D Interativo</span>
+            </div>
+
+            <div>
+              <p>Substituo planilhas confusas por CRMs personalizados, controle de clientes, alertas de retorno e painéis feitos sob medida para sua rotina.</p>
+              <ul class="pillar-list" style="margin-top:14px;">
+                <li>Funil comercial visual de leads e propostas</li>
+                <li>Alerta automático de clientes sumidos p/ reativar</li>
+                <li>Integração direta com WhatsApp e automações</li>
+              </ul>
+              <button type="button" class="pillar-try-btn" data-jump-studio="crm">
+                <span>Testar CRM interativo</span>
+                <span>&darr;</span>
+              </button>
+            </div>
+          </article>
+
+          <!-- 03: Aplicativos Mobile & Desktop -->
+          <article class="pillar-3d-card reveal">
+            <span class="pillar-watermark">03</span>
+            <div>
+              <h3>Aplicativos &amp; IA</h3>
+              <span class="pillar-pill-sub">iOS · Android · Windows Nativo</span>
+            </div>
+
+            <div class="pillar-iso-canvas">
+              <canvas class="iso-3d-canvas" data-iso-scene="apps" aria-label="Animação 3D de aplicativo e órbitas"></canvas>
+              <span class="iso-live-hint">3D Interativo</span>
+            </div>
+
+            <div>
+              <p>Aplicativos para celular e programas para computador com experiência fluida, modo offline, notificações e inteligência artificial integrada.</p>
+              <ul class="pillar-list" style="margin-top:14px;">
+                <li>Apps Android e iOS em React Native / Kotlin / SwiftUI</li>
+                <li>Programas leves para Windows em C#/WPF e Rust</li>
+                <li>Assistentes de IA confiáveis conectados aos seus dados</li>
+              </ul>
+              <button type="button" class="pillar-try-btn" data-jump-studio="apps">
+                <span>Navegar pelos apps</span>
+                <span>&darr;</span>
+              </button>
+            </div>
+          </article>
+
+          <!-- 04: Edição de Vídeos & Criativos (Wide Card) -->
+          <article class="pillar-3d-card pillar-wide reveal">
+            <span class="pillar-watermark">04</span>
+            <div>
+              <h3>Edição de Vídeos &amp; Reels</h3>
+              <span class="pillar-pill-sub">Anúncios · Reels · Color DaVinci · Motion 60fps</span>
+            </div>
+
+            <div class="pillar-iso-canvas">
+              <canvas class="iso-3d-canvas" data-iso-scene="video" aria-label="Animação 3D de lente e ondas de vídeo"></canvas>
+              <span class="iso-live-hint">60 FPS Ao Vivo</span>
+            </div>
+
+            <div>
+              <p>Edição pensada para prender a atenção nos primeiros 3 segundos: ritmo dinâmico, legendas animadas, tratamento de cor cinematográfico e áudio limpo.</p>
+              <ul class="pillar-list" style="margin-top:14px;">
+                <li>Reels, Shorts, institucionais e criativos campeões para Ads</li>
+                <li>Corte cirúrgico de pausas, sound design e masterização -14 LUFS</li>
+                <li>Animações de interface e motion graphics em 60 quadros por segundo</li>
+              </ul>
+              <button type="button" class="pillar-try-btn" data-jump-studio="video">
+                <span>Comparar Antes vs Depois</span>
+                <span>&darr;</span>
+              </button>
+            </div>
+          </article>
+
+          <!-- 05: Marketing & Gestão de Tráfego (Wide Card) -->
+          <article class="pillar-3d-card pillar-wide reveal">
+            <span class="pillar-watermark">05</span>
+            <div>
+              <h3>Marketing &amp; Gestão de Tráfego</h3>
+              <span class="pillar-pill-sub">Meta Ads · Google Ads · TikTok Ads · Funil</span>
+            </div>
+
+            <div class="pillar-iso-canvas">
+              <canvas class="iso-3d-canvas" data-iso-scene="traffic" aria-label="Animação 3D de crescimento de receita e ROAS"></canvas>
+              <span class="iso-live-hint">3D Interativo</span>
+            </div>
+
+            <div>
+              <p>Não basta ter um ótimo site ou vídeo se ninguém vê: gerencio suas campanhas pagas focando em custo por lead baixo, vendas reais e retorno claro sobre o investimento.</p>
+              <ul class="pillar-list" style="margin-top:14px;">
+                <li>Campanhas de captação no WhatsApp, Pesquisa Google e E-commerce</li>
+                <li>Teste contínuo de criativos, públicos e páginas de destino</li>
+                <li>Relatórios claros para você saber exatamente quanto voltou pro caixa</li>
+              </ul>
+              <button type="button" class="pillar-try-btn" data-jump-studio="traffic">
+                <span>Simular retorno de tráfego</span>
+                <span>&darr;</span>
+              </button>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOCO 6: Palco Interativo Intuitivo ("Teste na Prática" em 1 Clique) -->
+    <section id="estudio-interativo">
+      <div class="container">
+        <div class="section-head reveal">
+          <div class="section-head-left">
+            <span class="section-kicker">Experiência Prática Intuitiva</span>
+            <h2 class="section-heading">
+              Clique em uma área e <span class="serif-luxury">teste na hora.</span>
+            </h2>
+            <p class="section-desc">
+              Sem menus complicados: escolha abaixo o que você procura para sua empresa e interaja diretamente com uma demonstração real.
+            </p>
+          </div>
+        </div>
+
+        <!-- 5 Abas Grandes, Claras e Autoexplicativas -->
+        <div class="playground-tabs-bar reveal" role="tablist" aria-label="Demonstrador interativo por serviço">
+          <button type="button" class="playground-big-tab active" data-pg-tab="sites">
+            <span class="pg-tab-step">01 · Web</span>
+            <span class="pg-tab-title">Sites de Alto Padrão</span>
+            <span class="pg-tab-sub">Vitrine de luxo + EasyCode</span>
+          </button>
+
+          <button type="button" class="playground-big-tab" data-pg-tab="crm">
+            <span class="pg-tab-step">02 · Gestão</span>
+            <span class="pg-tab-title">Sistemas &amp; CRM</span>
+            <span class="pg-tab-sub">Mova clientes e veja o caixa</span>
+          </button>
+
+          <button type="button" class="playground-big-tab" data-pg-tab="apps">
+            <span class="pg-tab-step">03 · Mobile &amp; PC</span>
+            <span class="pg-tab-title">Aplicativos Reais</span>
+            <span class="pg-tab-sub">Celular, Windows &amp; IA</span>
+          </button>
+
+          <button type="button" class="playground-big-tab" data-pg-tab="video">
+            <span class="pg-tab-step">04 · Audiovisual</span>
+            <span class="pg-tab-title">Edição de Vídeos</span>
+            <span class="pg-tab-sub">Teste Antes vs Depois</span>
+          </button>
+
+          <button type="button" class="playground-big-tab" data-pg-tab="traffic">
+            <span class="pg-tab-step">05 · Vendas</span>
+            <span class="pg-tab-title">Tráfego &amp; Marketing</span>
+            <span class="pg-tab-sub">Simule leads e ROAS</span>
+          </button>
+        </div>
+
+        <!-- Janela Visual Principal -->
+        <div class="playground-window reveal">
+          <div class="playground-browser-top">
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+              <div class="studio-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+              <div class="pg-url-pill">
+                <span class="live-pulse-dot" style="width:6px;height:6px;"></span>
+                <span id="pgUrlLabel">vaniafariaimoveis.com · Site Institucional &amp; EasyCode Ao Vivo</span>
+              </div>
+            </div>
+
+            <div class="site-subpill-group" role="group" aria-label="Tamanho da tela">
+              <button type="button" class="site-subpill active" data-pg-device="desktop">Computador</button>
+              <button type="button" class="site-subpill" data-pg-device="mobile">Celular</button>
+            </div>
+          </div>
+
+          <div class="pg-stage-canvas">
+            <div id="pgViewport" class="pg-viewport">
+
+              <!-- PANE 01: SITES DE ALTO PADRÃO -->
+              <div class="pg-pane active" data-pg-pane="sites">
+                <div class="site-demo-switcher">
+                  <div class="site-subpill-group">
+                    <button type="button" class="site-subpill active" data-site-subdemo="vania">Exemplo 1: Site Imobiliário de Luxo</button>
+                    <button type="button" class="site-subpill" data-site-subdemo="easycode">Exemplo 2: Plataforma EasyCode (Rodar Código)</button>
+                  </div>
+                  <a href="https://moraesmattheus.github.io/pyra/" target="_blank" rel="noopener" style="font-size:0.78rem;color:var(--accent-gold-light);font-weight:700;">
+                    Abrir EasyCode em tela cheia &#8599;
+                  </a>
+                </div>
+
+                <!-- Sub-demo visual 1: Vania Faria Imóveis -->
+                <div id="subdemoVania" class="vania-visual-site">
+                  <div class="vania-site-nav">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                      <img src="assets/img/logo-va.svg" alt="Logo Vania Faria" style="height:24px;">
+                      <strong style="font-family:var(--font-serif);font-size:1.15rem;letter-spacing:0.04em;">VANIA FARIA IMÓVEIS</strong>
+                    </div>
+                    <span style="font-family:var(--font-mono);font-size:0.68rem;color:#C9A97C;">CURADORIA DE ALTO PADRÃO · CRECI 12.083</span>
+                  </div>
+
+                  <div class="vania-site-hero">
+                    <div>
+                      <span style="font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.16em;text-transform:uppercase;color:#C9A97C;">Arquitetura Quiet Luxury</span>
+                      <h4 style="font-family:var(--font-serif);font-size:clamp(1.5rem,2.5vw,2.15rem);font-weight:500;line-height:1.12;margin-top:6px;">
+                        Imóveis singulares apresentados com a sofisticação que o ticket exige.
+                      </h4>
+                      <p style="font-size:0.84rem;color:#C9BFB5;margin-top:8px;">
+                        Filtre as propriedades abaixo ou clique em <strong>Agendar Visita</strong> para sentir a fluidez da experiência do cliente final.
+                      </p>
+                    </div>
+
+                    <div class="vania-broker-badge">
+                      <img src="assets/img/vania-faria-perfil.webp" alt="Vania Faria">
+                      <div>
+                        <strong style="display:block;font-size:0.9rem;color:#FAF7F2;">Atendimento Concierge</strong>
+                        <span style="font-size:0.75rem;color:#C9A97C;">Painel Admin próprio c/ upload de fotos pelo celular</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="vania-filter-bar">
+                    <button type="button" class="vania-filter-btn active" data-vania-filter="all">Todos os Imóveis (3)</button>
+                    <button type="button" class="vania-filter-btn" data-vania-filter="mansao">Mansões</button>
+                    <button type="button" class="vania-filter-btn" data-vania-filter="cobertura">Coberturas</button>
+                    <button type="button" class="vania-filter-btn" data-vania-filter="offmarket">Sigilo Off-Market</button>
+                  </div>
+
+                  <div id="vaniaPropsGrid" class="vania-cards-row"></div>
+                </div>
+
+                <!-- Sub-demo visual 2: EasyCode Live Runner -->
+                <div id="subdemoEasycode" style="display:none;">
+                  <div style="border-radius:18px;background:#080B14;border:1px solid var(--border-subtle);padding:18px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+                      <div class="site-subpill-group">
+                        <button type="button" class="site-subpill active" data-easy-lang="python">Python</button>
+                        <button type="button" class="site-subpill" data-easy-lang="js">JavaScript</button>
+                        <button type="button" class="site-subpill" data-easy-lang="sql">SQL</button>
+                      </div>
+                      <div style="display:flex;align-items:center;gap:10px;">
+                        <span id="easyXpCount" style="font-family:var(--font-mono);font-size:0.78rem;color:#34D399;font-weight:700;">120 XP</span>
+                        <button type="button" id="easyRunBtn" class="pg-btn-gold" style="padding:8px 16px;">&#9654; Executar Código</button>
+                      </div>
+                    </div>
+
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                      <textarea id="easyCodeInput" rows="6" style="width:100%;padding:14px;border-radius:12px;background:#04060B;border:1px solid var(--border-hairline);font-family:var(--font-mono);font-size:0.8rem;color:#E2E8F0;resize:vertical;"># Python no navegador (WebAssembly)
+vendas = [4200, 6800, 9500]
+total = sum(vendas)
+print(f'Receita acumulada: R$ {total}')
+print('Status: Meta batida!')</textarea>
+                      <pre id="easyCodeOutput" style="margin:0;padding:14px;border-radius:12px;background:#04060B;border:1px solid var(--border-hairline);font-family:var(--font-mono);font-size:0.8rem;color:#34D399;white-space:pre-wrap;">Clique em "Executar Código" para testar na hora.</pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- PANE 02: SISTEMAS & CRM SOB MEDIDA -->
+              <div class="pg-pane" data-pg-pane="crm">
+                <div class="crm-kpi-strip">
+                  <div class="crm-kpi-box">
+                    <small>Faturamento no Mês</small>
+                    <strong id="crmKpiRevenue" style="color:#34D399;">R$ 48.900</strong>
+                  </div>
+                  <div class="crm-kpi-box">
+                    <small>Negociações Abertas</small>
+                    <strong id="crmKpiOpen">3</strong>
+                  </div>
+                  <div class="crm-kpi-box">
+                    <small>Taxa de Retorno</small>
+                    <strong>68%</strong>
+                  </div>
+                  <div class="crm-kpi-box">
+                    <small>Clientes p/ Reativar</small>
+                    <strong id="crmKpiInactive" style="color:var(--accent-gold-light);">5</strong>
+                  </div>
+                </div>
+
+                <div class="crm-toolbar">
+                  <span style="font-size:0.83rem;color:var(--text-secondary);">
+                    <strong>Experimente:</strong> clique nos botões dos cartões abaixo para avançar uma venda e ver o caixa subir na hora.
+                  </span>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button type="button" id="crmAddLeadBtn" class="pg-btn-outline" style="padding:7px 14px;font-size:0.78rem;">+ Simular Novo Lead WhatsApp</button>
+                    <button type="button" id="crmReactivateBtn" class="pg-btn-gold" style="padding:7px 14px;font-size:0.78rem;">Reativar Clientes Sumidos</button>
+                  </div>
+                </div>
+
+                <div class="crm-kanban-cols">
+                  <div class="crm-col-box">
+                    <div class="crm-col-head">
+                      <span>1. Novos Contatos</span>
+                      <span id="crmCountNew">2</span>
+                    </div>
+                    <div id="crmColNew" style="display:flex;flex-direction:column;gap:10px;"></div>
+                  </div>
+
+                  <div class="crm-col-box">
+                    <div class="crm-col-head">
+                      <span>2. Proposta em Negociação</span>
+                      <span id="crmCountNeg">1</span>
+                    </div>
+                    <div id="crmColNeg" style="display:flex;flex-direction:column;gap:10px;"></div>
+                  </div>
+
+                  <div class="crm-col-box">
+                    <div class="crm-col-head">
+                      <span>3. Fechado no Caixa</span>
+                      <span id="crmCountWon">1</span>
+                    </div>
+                    <div id="crmColWon" style="display:flex;flex-direction:column;gap:10px;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- PANE 03: APLICATIVOS MOBILE & DESKTOP -->
+              <div class="pg-pane" data-pg-pane="apps">
+                <div class="apps-demo-layout">
+                  <div class="device-mockup-frame">
+                    <div class="device-notch" aria-hidden="true"></div>
+                    <img id="appMockupImg" src="assets/img/orion-home.png" alt="Tela real do aplicativo" class="device-screen-img">
+                    <div class="device-tab-dock">
+                      <button type="button" class="device-dock-btn active" data-app-screen="orionHome">Órion App</button>
+                      <button type="button" class="device-dock-btn" data-app-screen="orionCapabilities">IA &amp; Voz</button>
+                      <button type="button" class="device-dock-btn" data-app-screen="hubMobile">Hub Equipe</button>
+                      <button type="button" class="device-dock-btn" data-app-screen="winDesktop">Windows 11</button>
+                    </div>
+                  </div>
+
+                  <div style="display:flex;flex-direction:column;gap:14px;">
+                    <span class="section-kicker" style="margin-bottom:0;">Telas Reais Construídas por Mim</span>
+                    <h4 id="appActiveTitle" style="font-size:1.45rem;font-weight:700;color:#FFFFFF;">
+                      Órion • Super App Mobile com IA Soberana
+                    </h4>
+                    <p id="appActiveDesc" style="font-size:0.92rem;color:var(--text-secondary);line-height:1.6;">
+                      Desenvolvido em React Native + Expo com backend Python FastAPI. Zero dados falsos, memória inteligente e cofre criptografado.
+                    </p>
+
+                    <div style="padding:14px;border-radius:14px;background:#080B14;border:1px solid var(--border-hairline);">
+                      <small style="display:block;font-family:var(--font-mono);font-size:0.68rem;color:var(--accent-gold);margin-bottom:8px;">
+                        TESTE UM COMANDO NO APP:
+                      </small>
+                      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+                        <button type="button" class="pg-btn-outline" style="padding:6px 12px;font-size:0.75rem;" data-app-prompt="✓ Agenda sincronizada: 3 reuniões confirmadas hoje e 0 pendências críticas.">Consultar Agenda</button>
+                        <button type="button" class="pg-btn-outline" style="padding:6px 12px;font-size:0.75rem;" data-app-prompt="✓ Áudio de reunião transcrito e resumido em tópicos práticos em 4,2s.">Resumir Reunião por Voz</button>
+                        <button type="button" class="pg-btn-outline" style="padding:6px 12px;font-size:0.75rem;" data-app-prompt="✓ 46 testes automatizados aprovados · Chaves protegidas no cofre local.">Verificar Segurança</button>
+                      </div>
+                      <div id="appInteractiveResponse" style="font-family:var(--font-mono);font-size:0.78rem;color:#34D399;">
+                        Clique nas abas abaixo do celular ou nos botões acima para interagir.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- PANE 04: EDIÇÃO DE VÍDEOS & REELS -->
+              <div class="pg-pane" data-pg-pane="video">
+                <div class="video-studio-layout">
+                  <div class="video-player-box">
+                    <div class="video-canvas-stage">
+                      <canvas id="reelsPreviewCanvas"></canvas>
+                    </div>
+                    <div class="video-controls-bar">
+                      <div class="ba-toggle-group" role="group" aria-label="Comparar vídeo bruto e editado">
+                        <button type="button" class="ba-toggle-btn" data-video-mode="before">Antes: Vídeo Bruto</button>
+                        <button type="button" class="ba-toggle-btn active" data-video-mode="after">Depois: Editado p/ Reter</button>
+                      </div>
+                      <button type="button" id="videoPlayToggleBtn" class="pg-btn-outline" style="padding:6px 13px;font-size:0.75rem;">Pausar Preview</button>
+                    </div>
+                  </div>
+
+                  <div class="nle-timeline-box">
+                    <div>
+                      <span style="font-family:var(--font-mono);font-size:0.68rem;color:var(--accent-gold);text-transform:uppercase;letter-spacing:0.12em;">Pipeline Audiovisual</span>
+                      <h4 style="font-size:1.18rem;font-weight:700;color:#FFFFFF;margin-top:4px;">O que muda no seu vídeo quando eu edito:</h4>
+                    </div>
+
+                    <div style="display:flex;flex-direction:column;gap:8px;">
+                      <div class="nle-track">
+                        <strong>V1 · Corte de Pausas &amp; Ritmo</strong>
+                        <span style="color:#34D399;font-family:var(--font-mono);font-size:0.72rem;">+Retenção 3s</span>
+                      </div>
+                      <div class="nle-track">
+                        <strong>C1 · Legendas Dinâmicas Animadas</strong>
+                        <span style="color:var(--accent-gold-light);font-family:var(--font-mono);font-size:0.72rem;">GPU / Whisper</span>
+                      </div>
+                      <div class="nle-track">
+                        <strong>FX · Motion UI &amp; Zooms em 60fps</strong>
+                        <span style="color:#38BDF8;font-family:var(--font-mono);font-size:0.72rem;">CTR 6,20%</span>
+                      </div>
+                      <div class="nle-track">
+                        <strong>A1 · Áudio Limpo &amp; Color Grading</strong>
+                        <span id="videoLufsReadout" style="color:#A78BFA;font-family:var(--font-mono);font-size:0.72rem;">-14.0 LUFS · Color DaVinci</span>
+                      </div>
+                    </div>
+
+                    <p style="font-size:0.78rem;color:var(--text-muted);">
+                      Ideal para Reels de autoridade, criativos de tráfego pago, vídeos institucionais e lançamentos.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- PANE 05: MARKETING & GESTÃO DE TRÁFEGO PAGO -->
+              <div class="pg-pane" data-pg-pane="traffic">
+                <div class="traffic-sim-layout">
+                  <div class="traffic-panel-card">
+                    <div>
+                      <span style="font-family:var(--font-mono);font-size:0.68rem;color:var(--accent-gold);text-transform:uppercase;">Calculadora de Cenário</span>
+                      <h4 style="font-size:1.15rem;font-weight:700;color:#FFFFFF;margin-top:4px;">Qual é o foco da sua operação?</h4>
+                    </div>
+
+                    <div class="site-subpill-group">
+                      <button type="button" class="site-subpill active" data-traffic-mode="leads">Negócio Local / Leads WhatsApp</button>
+                      <button type="button" class="site-subpill" data-traffic-mode="ecom">E-commerce / Vendas Online</button>
+                    </div>
+
+                    <div>
+                      <div style="display:flex;justify-content:space-between;font-size:0.84rem;margin-bottom:6px;">
+                        <span style="color:var(--text-secondary);">Investimento em Anúncios:</span>
+                        <strong id="trafficBudgetDisplay" style="color:#FFFFFF;">R$ 6.000/mês</strong>
+                      </div>
+                      <input id="trafficBudgetSlider" type="range" min="1500" max="30000" step="500" value="6000" class="budget-range-input" aria-label="Investimento mensal em anúncios">
+                    </div>
+
+                    <p style="font-size:0.76rem;color:var(--text-muted);line-height:1.45;">
+                      Projeção calculada sobre médias reais já operadas (CPL entre R$ 2,20 e R$ 4,23 em captação e ROAS 4,4x a 4,65x em loja virtual).
+                    </p>
+                  </div>
+
+                  <div class="traffic-panel-card" style="justify-content:space-between;">
+                    <div class="traffic-out-grid">
+                      <div class="traffic-out-box">
+                        <small>Volume Mensal Est.</small>
+                        <strong id="trafficOutLeads">1.579 leads</strong>
+                      </div>
+                      <div class="traffic-out-box">
+                        <small>Eficiência Média</small>
+                        <strong id="trafficOutCpl">R$ 3,80 méd.</strong>
+                      </div>
+                      <div class="traffic-out-box">
+                        <small>Potencial Gerado</small>
+                        <strong id="trafficOutRev" style="color:#34D399;">R$ 81.900</strong>
+                      </div>
+                    </div>
+
+                    <div style="padding:12px;border-radius:14px;background:#05070D;border:1px solid var(--border-hairline);">
+                      <svg viewBox="0 0 370 124" style="width:100%;height:110px;overflow:visible;">
+                        <line x1="10" y1="112" x2="360" y2="112" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                        <line x1="10" y1="62" x2="360" y2="62" stroke="rgba(255,255,255,0.06)" stroke-dasharray="4 4"/>
+                        <polyline id="trafficSimPolyline" fill="none" stroke="var(--accent-gold)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="10,112 90,101 180,91 270,84 360,77"/>
+                      </svg>
+                      <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:0.66rem;color:var(--text-dim);">
+                        <span>Mês 1 · Setup &amp; Pixel</span>
+                        <span>Mês 2 · Teste Criativos</span>
+                        <span>Mês 3 · Otimização</span>
+                        <span>Escala Previsível</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Barra Inferior Direta sem Excesso de Texto -->
+          <div class="playground-bottom-bar">
+            <div class="pg-bottom-summary">
+              <strong id="pgSummaryTitle">Criação de Sites que Vendem pelo Valor Percebido</strong>
+              <span id="pgSummaryCopy">Sites institucionais de alto padrão, landing pages rápidas e plataformas interativas pensadas para converter visitantes em clientes.</span>
+            </div>
+            <div class="pg-bottom-actions">
+              <button type="button" id="pgDetailBtn" class="pg-btn-outline">Ficha Técnica Completa</button>
+              <button type="button" id="pgQuoteBtn" class="pg-btn-gold">Quero um Site Nesse Padrão &rarr;</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- BLOCO 7: Vitrine Visual 3D (Visuvate/Core-A) + Bento de Resultados (Dopamine Studio) -->
+    <section id="resultados">
+      <div class="container">
+        <div class="section-head reveal">
+          <div class="section-head-left">
+            <span class="section-kicker">Resultados Reais &amp; Entregas Visuais</span>
+            <h2 class="section-heading">
+              Design que impressiona. <span class="serif-luxury">Números que provam.</span>
+            </h2>
+            <p class="section-desc">
+              Cada projeto abaixo foi construído e operado no mundo real, unindo acabamento estético e impacto direto em faturamento, leads ou produtividade.
+            </p>
+          </div>
+        </div>
+
+        <!-- Faixa Horizontal em Perspectiva 3D (Clique abre o estudo completo) -->
+        <div class="perspective-reel-wrap reveal">
+          <div class="perspective-reel-track">
+
+            <article class="reel-card-3d" data-open-project="easycode" data-cursor="VER PROJETO">
+              <div class="reel-card-thumb">
+                <img src="assets/img/easycode.png" alt="EasyCode Pyra" loading="lazy">
+                <span class="reel-card-badge">No Ar · Plataforma Web</span>
+              </div>
+              <div class="reel-card-info">
+                <h3>EasyCode (Pyra)</h3>
+                <p>32 aulas interativas rodando Python, JS e SQL direto no navegador.</p>
+              </div>
+            </article>
+
+            <article class="reel-card-3d" data-open-project="hub-hom" data-cursor="VER PROJETO">
+              <div class="reel-card-thumb">
+                <img src="assets/img/hub-marketing.png" alt="Hub HOM" loading="lazy">
+                <span class="reel-card-badge">Sistema &amp; BI · 23 Telas</span>
+              </div>
+              <div class="reel-card-info">
+                <h3>Hub Corporativo HOM</h3>
+                <p>Portal completo e painel multicanal unificando 5 canais de venda.</p>
+              </div>
+            </article>
+
+            <article class="reel-card-3d" data-open-project="orion" data-cursor="VER PROJETO">
+              <div class="reel-card-thumb">
+                <img src="assets/img/orion-home.png" alt="App Órion" style="object-fit:contain;background:#05060B;" loading="lazy">
+                <span class="reel-card-badge">App Mobile &amp; IA</span>
+              </div>
+              <div class="reel-card-info">
+                <h3>Órion Super App</h3>
+                <p>Aplicativo mobile React Native + FastAPI com 46 testes automatizados.</p>
+              </div>
+            </article>
+
+            <article class="reel-card-3d" data-open-project="site-vania" data-cursor="VER PROJETO">
+              <div class="reel-card-thumb">
+                <img src="assets/img/vania-faria-perfil.webp" alt="Vania Faria Imóveis" loading="lazy">
+                <span class="reel-card-badge">Site Quiet Luxury</span>
+              </div>
+              <div class="reel-card-info">
+                <h3>Vania Faria Imóveis</h3>
+                <p>Portal imobiliário de alto padrão com painel admin Drag &amp; Drop.</p>
+              </div>
+            </article>
+
+            <article class="reel-card-3d" data-open-project="pastas-barra" data-cursor="VER PROJETO">
+              <div class="reel-card-thumb">
+                <img src="assets/img/pastas-barra-1.png" alt="Pastas na Barra Windows 11" loading="lazy">
+                <span class="reel-card-badge">App Desktop Windows 11</span>
+              </div>
+              <div class="reel-card-info">
+                <h3>Pastas na Barra</h3>
+                <p>Software nativo em C#/WPF com visual acrílico para Windows 11.</p>
+              </div>
+            </article>
+
+          </div>
+        </div>
+
+        <!-- Bento de Métricas Animadas em Grade Pontilhada (Inspirado em Dopamine Studio) -->
+        <div class="results-dopamine-grid reveal" style="margin-top:24px;">
+          <div class="dopamine-metric-card">
+            <div>
+              <div class="dopamine-big-num"><span>4,65</span>x</div>
+              <div class="dopamine-metric-title">Retorno em <span>Tráfego &amp; E-commerce</span></div>
+              <p class="dopamine-metric-copy" style="margin-top:6px;">
+                Operação própria estruturada do zero em Shopify: 1º lugar orgânico no Google e criativos em vídeo com 6,20% de CTR.
+              </p>
+            </div>
+
+            <svg class="dopamine-chart-svg" viewBox="0 0 460 110">
+              <polyline class="dopamine-line-anim" fill="none" stroke="var(--accent-gold)" stroke-width="3" points="10,96 105,82 195,74 290,46 440,16"/>
+              <circle cx="105" cy="82" r="4" fill="#FFFFFF"/>
+              <circle cx="290" cy="46" r="4" fill="#FFFFFF"/>
+              <circle cx="440" cy="16" r="5.5" fill="var(--accent-gold)"/>
+            </svg>
+          </div>
+
+          <div class="dopamine-metric-card">
+            <div>
+              <div class="dopamine-big-num">R$ <span>0,11</span></div>
+              <div class="dopamine-metric-title">Custo por Clique <span>(-85% de queda)</span></div>
+              <p class="dopamine-metric-copy" style="margin-top:6px;">
+                Redução real de R$ 0,74 para R$ 0,11 através de testes de janela horária e renovação estratégica de anúncios em vídeo.
+              </p>
+            </div>
+
+            <div style="padding:16px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid var(--border-hairline);display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:0.8rem;color:var(--text-muted);">Antes: R$ 0,74</span>
+              <strong style="font-family:var(--font-grotesk);font-size:1.35rem;color:var(--accent-gold-light);">&rarr; R$ 0,11 / clique</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="results-dopamine-subgrid reveal">
+          <div class="dopamine-metric-card">
+            <div class="dopamine-big-num"><span>608</span>/mês</div>
+            <div>
+              <div class="dopamine-metric-title">Leads Qualificados</div>
+              <p class="dopamine-metric-copy">Captação recorrente com CPL entre R$ 2,20 e R$ 4,23 em campanhas auditadas.</p>
+            </div>
+          </div>
+
+          <div class="dopamine-metric-card">
+            <div class="dopamine-big-num"><span>79</span> mil</div>
+            <div>
+              <div class="dopamine-metric-title">Contatos em CRM</div>
+              <p class="dopamine-metric-copy">Segmentação em 13+ listas por perfil de cliente, subindo abertura de 7% para 19%.</p>
+            </div>
+          </div>
+
+          <div class="dopamine-metric-card">
+            <div class="dopamine-big-num"><span>100</span>%</div>
+            <div>
+              <div class="dopamine-metric-title">Execução Ponta a Ponta</div>
+              <p class="dopamine-metric-copy">Você não precisa contratar 4 fornecedores desconectados: entrego código, vídeo e tráfego falando a mesma língua.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- BLOCO 8: Acervo Completo dos 18 Sistemas & Produtos Reais -->
+    <section id="acervo-projetos">
+      <div class="container">
+        <div class="section-head reveal">
+          <div class="section-head-left">
+            <span class="section-kicker">Portfólio Completo Auditável</span>
+            <h2 class="section-heading">
+              Todos os <span class="serif-luxury">18 Projetos Construídos.</span>
+            </h2>
+            <p class="section-desc">
+              Passe o mouse para pré-visualizar ou clique em qualquer item para abrir os detalhes de negócio, telas e tecnologias utilizadas.
+            </p>
+          </div>
+        </div>
+
+        <div class="catalog-toolbar reveal">
+          <div class="filter-pills" role="tablist" aria-label="Filtrar projetos por especialidade">
+            <button type="button" class="filter-pill active" data-proj-filter="all">Todos (18)</button>
+            <button type="button" class="filter-pill" data-proj-filter="web">Sites &amp; Sistemas Web</button>
+            <button type="button" class="filter-pill" data-proj-filter="mobile">Apps Mobile, Desktop &amp; Vídeo</button>
+            <button type="button" class="filter-pill" data-proj-filter="ia">IA &amp; Automação</button>
+            <button type="button" class="filter-pill" data-proj-filter="growth">CRMs, Tráfego &amp; BI</button>
+          </div>
+
+          <div class="catalog-right-controls">
+            <div class="catalog-search">
+              <input id="catalogSearchInput" type="search" placeholder="Buscar por CRM, vídeo, site, app, Python..." aria-label="Pesquisar nos 18 projetos">
+            </div>
+            <div class="view-mode-switch" role="group" aria-label="Alternar visualização">
+              <button type="button" class="view-mode-btn active" data-view-mode="grid">Grade</button>
+              <button type="button" class="view-mode-btn" data-view-mode="list">Lista Rápida</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="projectsCatalogGrid" class="projects-grid"></div>
+      </div>
+    </section>
+
+    <!-- BLOCO 9: Career Knowledge Graph Interativo (55 Nós Conectados) -->
+    <section id="grafo-carreira">
+      <div class="container">
+        <div class="section-head reveal">
+          <div class="section-head-left">
+            <span class="section-kicker">Mapa Vivo de Competências</span>
+            <h2 class="section-heading">
+              Grafo Interativo de <span class="serif-luxury">Carreira &amp; Projetos.</span>
+            </h2>
+            <p class="section-desc">
+              Clique em qualquer esfera para ver como minha experiência em empresas, edição de vídeo, tráfego e engenharia se conecta a cada sistema entregue.
+            </p>
+          </div>
+        </div>
+
+        <div class="kg-shell reveal">
+          <div class="kg-topbar">
+            <div class="kg-title-wrap">
+              <h3>Career Knowledge Graph</h3>
+              <span>· arraste os nós ou clique em "Tour Guiado"</span>
+            </div>
+
+            <div class="kg-top-controls">
+              <div class="kg-mode-pill" role="tablist">
+                <button type="button" class="kg-mode-btn active" data-kg-view="graph">Grafo</button>
+                <button type="button" class="kg-mode-btn" data-kg-view="timeline">Linha do Tempo</button>
+              </div>
+              <button type="button" id="kgTourBtn" class="kg-tour-btn">&#9654; Tour Guiado</button>
+              <button type="button" id="kgResetBtn" class="kg-reset-btn">Resetar</button>
+            </div>
+          </div>
+
+          <div class="kg-filters-row">
+            <div class="kg-search-box">
+              <input id="kgSearchInput" type="search" placeholder="Buscar nó... ex: Vídeo, CRM, Solan, ROAS, Órion" aria-label="Buscar nó no grafo">
+            </div>
+            <button type="button" class="kg-cat-btn active" data-kg-cat="all">Todos</button>
+            <button type="button" class="kg-cat-btn" data-kg-cat="company"><i class="kg-cat-dot" style="background:#38BDF8;"></i>Empresas <span class="kg-cat-count">4</span></button>
+            <button type="button" class="kg-cat-btn" data-kg-cat="domain"><i class="kg-cat-dot" style="background:#FB923C;"></i>Domínios <span class="kg-cat-count">6</span></button>
+            <button type="button" class="kg-cat-btn" data-kg-cat="skill"><i class="kg-cat-dot" style="background:#F472B6;"></i>Habilidades <span class="kg-cat-count">7</span></button>
+            <button type="button" class="kg-cat-btn" data-kg-cat="tool"><i class="kg-cat-dot" style="background:#2DD4BF;"></i>Ferramentas <span class="kg-cat-count">12</span></button>
+            <button type="button" class="kg-cat-btn" data-kg-cat="project"><i class="kg-cat-dot" style="background:#FACC15;"></i>Projetos <span class="kg-cat-count">12</span></button>
+            <button type="button" class="kg-cat-btn" data-kg-cat="education"><i class="kg-cat-dot" style="background:#34D399;"></i>Formação <span class="kg-cat-count">2</span></button>
+            <button type="button" class="kg-cat-btn" data-kg-cat="impact"><i class="kg-cat-dot" style="background:#A78BFA;"></i>Impacto <span class="kg-cat-count">6</span></button>
+          </div>
+
+          <div class="kg-trace-row">
+            <span>Descobrir conexão entre</span>
+            <select id="kgTraceFrom" class="kg-select" aria-label="Nó de origem"></select>
+            <span>e</span>
+            <select id="kgTraceTo" class="kg-select" aria-label="Nó de destino"></select>
+            <button type="button" id="kgTraceBtn" class="kg-trace-submit">Traçar Rota</button>
+          </div>
+
+          <div class="kg-stage-grid">
+            <div class="kg-canvas-wrap">
+              <div id="kgTourBanner" class="kg-tour-banner">
+                <div>
+                  <strong id="kgTourTitle" style="color:var(--accent-gold-light);font-size:0.86rem;display:block;"></strong>
+                  <span id="kgTourText" style="color:var(--text-secondary);font-size:0.8rem;"></span>
+                </div>
+                <button type="button" id="kgTourNextBtn" class="kg-trace-submit">Próximo &rarr;</button>
+              </div>
+
+              <canvas id="careerGraphCanvas"></canvas>
+              <div id="kgTimelineView" class="kg-timeline-view"></div>
+
+              <div class="kg-zoom-controls">
+                <button type="button" id="kgZoomIn" class="kg-zoom-btn" aria-label="Aumentar zoom">+</button>
+                <button type="button" id="kgZoomOut" class="kg-zoom-btn" aria-label="Reduzir zoom">-</button>
+              </div>
+            </div>
+
+            <aside id="kgInspectorPanel" class="kg-inspector" aria-live="polite"></aside>
+          </div>
+
+          <div class="kg-footer-hint">
+            Arraste qualquer esfera · role para dar zoom · clique para ler detalhes à direita
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOCO 10: Sobre Mattheus Moraes, Relógio/Globo de Estúdio & Experiência -->
+    <section id="sobre-trajetoria">
+      <div class="container">
+        <div class="section-head reveal">
+          <div class="section-head-left">
+            <span class="section-kicker">Sobre Mim &amp; Experiência</span>
+            <h2 class="section-heading">
+              Visão comercial de dono. <span class="serif-luxury">Execução técnica completa.</span>
+            </h2>
+          </div>
+        </div>
+
+        <div class="about-editorial-grid">
+          <aside class="about-manifesto-card reveal">
+            <div class="about-mini-portrait-row">
+              <div class="about-avatar-ring">
+                <img src="assets/img/mattheus-portrait.png" alt="Mattheus Moraes" loading="lazy">
+              </div>
+              <div>
+                <strong style="font-size:1.08rem;color:#fff;display:block;">Mattheus Moraes</strong>
+                <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--accent-gold-light);">Florianópolis, SC · INFNET &amp; UNICV</span>
+              </div>
+            </div>
+
+            <h3>Por que clientes fecham comigo?</h3>
+            <p>
+              Porque resolvo a cadeia inteira de crescimento digital sem telefone sem fio: crio o <strong>site ou aplicativo</strong>, construo o <strong>CRM</strong> para sua equipe não perder vendas, <strong>edito os vídeos</strong> que chamam atenção e opero o <strong>tráfego pago</strong> que traz clientes todos os dias.
+            </p>
+            <p>
+              Formado em <strong>Marketing Digital (UNICV)</strong>, graduando em <strong>Engenharia de Software (Instituto Infnet)</strong>, gestor de performance e fundador de operação própria que alcançou o 1º lugar orgânico no Google.
+            </p>
+
+            <!-- Widgets Visuvate: Relógio Analógico Ao Vivo + Globo 3D -->
+            <div class="visuvate-widgets-row">
+              <div class="visuvate-mini-widget">
+                <canvas id="studioAnalogClock" aria-label="Relógio analógico de Florianópolis"></canvas>
+                <small>Horário Local · FLN</small>
+              </div>
+              <div class="visuvate-mini-widget">
+                <canvas id="studioGlobeCanvas" aria-label="Globo 3D interativo de atendimento remoto"></canvas>
+                <small>Brasil &amp; Exterior</small>
+              </div>
+            </div>
+          </aside>
+
+          <div id="experienceStack" class="experience-stack"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOCO 11: Fechamento Comercial Direto (Concierge das 5 Frentes + Canais) -->
+    <section id="contato">
+      <div class="container">
+        <div class="section-head reveal">
+          <div class="section-head-left">
+            <span class="section-kicker">Vamos Conversar</span>
+            <h2 class="section-heading">
+              Tem um projeto em mente? <span class="serif-luxury">Vamos tirar do papel.</span>
+            </h2>
+            <p class="section-desc">
+              Escolha abaixo o que você precisa hoje e me chame direto no WhatsApp com a mensagem pronta, ou acesse meu GitHub, LinkedIn e currículos ao lado.
+            </p>
+          </div>
+        </div>
+
+        <div class="closing-grid">
+
+          <div class="concierge-card reveal">
+            <span style="font-family:var(--font-mono);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent-gold-light);">
+              01 · O que você precisa hoje?
+            </span>
+
+            <div class="concierge-options" role="group" aria-label="Serviço desejado">
+              <button type="button" class="concierge-chip active" data-concierge-topic="Criação de Site de Alto Padrão">Criação de Site</button>
+              <button type="button" class="concierge-chip" data-concierge-topic="Sistema Sob Medida / CRM">Sistema ou CRM</button>
+              <button type="button" class="concierge-chip" data-concierge-topic="Aplicativo Mobile ou Desktop">Aplicativo (App)</button>
+              <button type="button" class="concierge-chip" data-concierge-topic="Edição de Vídeos & Criativos">Edição de Vídeos</button>
+              <button type="button" class="concierge-chip" data-concierge-topic="Marketing & Gestão de Tráfego Pago">Marketing &amp; Tráfego</button>
+              <button type="button" class="concierge-chip" data-concierge-topic="Pacote Completo (Estrutura + Vídeos + Tráfego)">Pacote Completo</button>
+            </div>
+
+            <div class="concierge-field">
+              <label for="conciergeName">Seu Nome ou Empresa</label>
+              <input id="conciergeName" type="text" placeholder="Ex.: Rodrigo · Clínica / Construtora / Loja">
+            </div>
+
+            <div class="concierge-field">
+              <label for="conciergeMessage">Me conte rapidamente sua ideia ou meta (opcional)</label>
+              <textarea id="conciergeMessage" rows="3" placeholder="Ex.: Preciso de um site novo, organizar os leads num CRM e rodar anúncios..."></textarea>
+            </div>
+
+            <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:20px;">
+              <button type="button" id="conciergeSendWhatsapp" class="btn-luxury-primary" style="border:none;">
+                <span>Chamar no WhatsApp Agora</span>
+                <span aria-hidden="true">&#8599;</span>
+              </button>
+              <button type="button" data-copy-email="true" class="btn-luxury-secondary">
+                <span>Copiar E-mail</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="elsewhere-panel reveal">
+            <div class="elsewhere-list">
+              <a href="https://github.com/moraesmattheus" target="_blank" rel="noopener noreferrer" class="elsewhere-row">
+                <strong>GitHub</strong>
+                <span>github.com/moraesmattheus &#8599;</span>
+              </a>
+              <a href="https://www.linkedin.com/in/mattheusmoraes/" target="_blank" rel="noopener noreferrer" class="elsewhere-row">
+                <strong>LinkedIn</strong>
+                <span>/in/mattheusmoraes &#8599;</span>
+              </a>
+              <a href="https://wa.me/5561982106653" target="_blank" rel="noopener noreferrer" class="elsewhere-row">
+                <strong>WhatsApp Direto</strong>
+                <span>(61) 98210-6653 &#8599;</span>
+              </a>
+              <button type="button" data-copy-email="true" class="elsewhere-row">
+                <strong>E-mail Oficial</strong>
+                <span>moraes_trabalho@outlook.com.br · Copiar</span>
+              </button>
+              <a href="https://moraesmattheus.github.io/pyra/" target="_blank" rel="noopener noreferrer" class="elsewhere-row">
+                <strong>EasyCode (Plataforma no Ar)</strong>
+                <span>moraesmattheus.github.io/pyra &#8599;</span>
+              </a>
+            </div>
+
+            <div class="qr-cv-card">
+              <div class="qr-frame">
+                <img src="assets/img/qr-linkedin.png" alt="QR Code oficial para o LinkedIn de Mattheus Moraes" loading="lazy">
+              </div>
+              <div class="cv-links-stack">
+                <div style="font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent-gold);margin-bottom:2px;">
+                  Currículos &amp; Apresentação (PDF)
+                </div>
+                <a href="assets/docs/Mattheus-Moraes-Engenharia-Software.pdf" target="_blank" rel="noopener" class="cv-dl-row">
+                  <span>CV · Engenharia de Software</span>
+                  <span>PDF &#8599;</span>
+                </a>
+                <a href="assets/docs/Mattheus-Moraes-Performance-Growth.pdf" target="_blank" rel="noopener" class="cv-dl-row">
+                  <span>CV · Marketing &amp; Tráfego Pago</span>
+                  <span>PDF &#8599;</span>
+                </a>
+                <a href="assets/docs/Mattheus-Moraes-Deck-Executivo.pdf" target="_blank" rel="noopener" class="cv-dl-row">
+                  <span>Apresentação Executiva Completa</span>
+                  <span>PDF &#8599;</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Rodapé Minimalista -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <span>&copy; 2026 Mattheus Moraes · Sites, Sistemas, Apps, Edição de Vídeos &amp; Tráfego Pago.</span>
+      <span style="font-family:var(--font-mono);font-size:0.75rem;">Florianópolis, SC · moraesmattheus.github.io</span>
+    </div>
+  </footer>
+
+  <!-- Modal Deep-Dive de Projeto -->
+  <div id="projectDetailModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Dossiê completo do projeto">
+    <div class="project-modal-dialog">
+      <button type="button" id="closeProjectModalBtn" class="modal-close-btn" aria-label="Fechar modal">&times;</button>
+      <div id="projectModalContent"></div>
+    </div>
+  </div>
+
+  <!-- Command Palette Executiva (Ctrl+K) -->
+  <div id="cmdkModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Busca rápida de comandos e projetos">
+    <div class="cmdk-dialog">
+      <div class="cmdk-input-wrap">
+        <input id="cmdkInput" type="search" placeholder="Digite um serviço, projeto ou tecnologia (CRM, Vídeo, Site, Python, ROAS)..." autocomplete="off">
+        <kbd class="kbd-tag">ESC</kbd>
+      </div>
+      <div id="cmdkResults" class="cmdk-results"></div>
+    </div>
+  </div>
+
+  <!-- Scripts Modulares Defer V4 -->
+  <script defer src="js/data.js?v=4"></script>
+  <script defer src="js/audio-cursor.js?v=4"></script>
+  <script defer src="js/motion-3d.js?v=4"></script>
+  <script defer src="js/sandboxes.js?v=4"></script>
+  <script defer src="js/knowledge-graph.js?v=4"></script>
+  <script defer src="js/app.js?v=4"></script>
+</body>
+</html>

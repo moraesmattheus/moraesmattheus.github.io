@@ -1,0 +1,744 @@
+/* ==========================================================================
+   Arquivo: js/motion-3d.js
+   Data/Hora: 02/11/2026 01:28
+   O que é: Motor gráfico 3D e generativo em 60fps do portfólio de Mattheus
+   Moraes, inspirado diretamente nas mecânicas interativas de Marco Madonna,
+   Dopamine Studio, Visuvate e Core-A Studios.
+   O que foi feito e finalidade de cada bloco:
+     1. Motor 3D Isométrico Interativo (5 Frentes Comerciais): Renderiza cubos,
+        camadas de UI, órbitas mobile, ondas de vídeo e barras 3D de ROAS em
+        movimento contínuo de 60fps + inclinação 3D reativa ao cursor.
+     2. Player Interativo de Edição de Vídeos & Reels (Antes vs Depois): Simula
+        em tempo real a diferença entre um vídeo bruto sem tratamento e um vídeo
+        editado com Color Grading, corte de silêncio, legenda dinâmica e -14 LUFS.
+     3. Widgets de Estúdio Visuvate (Relógio Analógico Real + Globo 3D): Exibe
+        o horário exato de Florianópolis em mostrador analógico e globo 3D vivo.
+     4. Gaveta de Design Tokens ao Vivo ("TEMA [T]" estilo Marco Madonna):
+        Recolore e ajusta a geometria do site inteiro em tempo real.
+   ========================================================================== */
+
+(function () {
+  "use strict";
+
+  const NS = (window.MattheusPortfolio = window.MattheusPortfolio || {});
+
+  /* ------------------------------------------------------------------------
+     Utilitário: Leitura dinâmica da cor de destaque ativa nos Design Tokens
+     Data/Hora: 02/11/2026 01:28
+     Finalidade: Sincronizar todas as cenas 3D em Canvas quando o visitante
+     troca o tema na gaveta "TEMA [T]".
+     ------------------------------------------------------------------------ */
+  let cachedAccentHex = "#C9A97C";
+  let cachedAccentRgb = { r: 201, g: 169, b: 124 };
+
+  function refreshAccentCache() {
+    const raw = getComputedStyle(document.documentElement)
+      .getPropertyValue("--accent-gold")
+      .trim() || "#C9A97C";
+    cachedAccentHex = raw;
+    const clean = raw.replace("#", "");
+    if (clean.length === 6) {
+      cachedAccentRgb = {
+        r: parseInt(clean.slice(0, 2), 16) || 201,
+        g: parseInt(clean.slice(2, 4), 16) || 169,
+        b: parseInt(clean.slice(4, 6), 16) || 124
+      };
+    }
+  }
+
+  function rgbaAccent(alpha) {
+    return "rgba(" + cachedAccentRgb.r + "," + cachedAccentRgb.g + "," + cachedAccentRgb.b + "," + alpha + ")";
+  }
+
+  /* ------------------------------------------------------------------------
+     BLOCO 1: Motor 3D Isométrico Vivo para os 5 Cartões de Serviço
+     Data/Hora: 02/11/2026 01:28
+     Finalidade: Garantir movimento contínuo suave e resposta tridimensional ao
+     mouse em todos os 5 pilares ("Sites", "CRM", "Apps", "Vídeo", "Tráfego").
+     ------------------------------------------------------------------------ */
+  function project3D(x, y, z, rotX, rotY, cx, cy, scale) {
+    const cosY = Math.cos(rotY);
+    const sinY = Math.sin(rotY);
+    const x1 = x * cosY - z * sinY;
+    const z1 = x * sinY + z * cosY;
+
+    const cosX = Math.cos(rotX);
+    const sinX = Math.sin(rotX);
+    const y2 = y * cosX - z1 * sinX;
+    const z2 = y * sinX + z1 * cosX;
+
+    return {
+      x: cx + x1 * scale,
+      y: cy + y2 * scale,
+      z: z2
+    };
+  }
+
+  function drawIsoBox(ctx, cx, cy, scale, rotX, rotY, bx, by, bz, w, h, d, fillAlpha, strokeAlpha, highlightTop) {
+    const hw = w / 2;
+    const hh = h / 2;
+    const hd = d / 2;
+
+    const verts = [
+      [bx - hw, by - hh, bz - hd],
+      [bx + hw, by - hh, bz - hd],
+      [bx + hw, by - hh, bz + hd],
+      [bx - hw, by - hh, bz + hd],
+      [bx - hw, by + hh, bz - hd],
+      [bx + hw, by + hh, bz - hd],
+      [bx + hw, by + hh, bz + hd],
+      [bx - hw, by + hh, bz + hd]
+    ].map(function (v) {
+      return project3D(v[0], v[1], v[2], rotX, rotY, cx, cy, scale);
+    });
+
+    const faces = [
+      { idx: [4, 5, 6, 7], shade: 0.35 },
+      { idx: [0, 3, 7, 4], shade: 0.65 },
+      { idx: [1, 2, 6, 5], shade: 0.5 },
+      { idx: [2, 3, 7, 6], shade: 0.72 },
+      { idx: [0, 1, 5, 4], shade: 0.45 },
+      { idx: [0, 1, 2, 3], shade: 1.0, isTop: true }
+    ];
+
+    faces.sort(function (a, b) {
+      const za = a.idx.reduce(function (s, i) { return s + verts[i].z; }, 0) / 4;
+      const zb = b.idx.reduce(function (s, i) { return s + verts[i].z; }, 0) / 4;
+      return za - zb;
+    });
+
+    faces.forEach(function (f) {
+      ctx.beginPath();
+      f.idx.forEach(function (vi, k) {
+        if (k === 0) ctx.moveTo(verts[vi].x, verts[vi].y);
+        else ctx.lineTo(verts[vi].x, verts[vi].y);
+      });
+      ctx.closePath();
+
+      if (f.isTop && highlightTop) {
+        ctx.fillStyle = rgbaAccent(fillAlpha * 1.45);
+      } else {
+        ctx.fillStyle = rgbaAccent(fillAlpha * f.shade);
+      }
+      ctx.fill();
+
+      ctx.strokeStyle = f.isTop && highlightTop
+        ? "#FFFFFF"
+        : rgbaAccent(strokeAlpha);
+      ctx.lineWidth = f.isTop && highlightTop ? 1.35 : 1;
+      ctx.stroke();
+    });
+  }
+
+  function initIsometric3DCards() {
+    const canvases = document.querySelectorAll(".iso-3d-canvas");
+    if (!canvases.length) return;
+
+    const instances = [];
+
+    canvases.forEach(function (canvas) {
+      const ctx = canvas.getContext("2d");
+      const scene = canvas.getAttribute("data-iso-scene") || "sites";
+      const wrap = canvas.parentElement;
+
+      const state = {
+        canvas: canvas,
+        ctx: ctx,
+        scene: scene,
+        w: 300,
+        h: 220,
+        dpr: Math.min(window.devicePixelRatio || 1, 2),
+        mouseX: 0,
+        mouseY: 0,
+        targetX: 0,
+        targetY: 0,
+        hovered: false,
+        visible: true
+      };
+
+      function resize() {
+        const rect = wrap.getBoundingClientRect();
+        state.w = Math.max(220, rect.width);
+        state.h = Math.max(180, rect.height);
+        state.dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = state.w * state.dpr;
+        canvas.height = state.h * state.dpr;
+      }
+
+      resize();
+      window.addEventListener("resize", resize);
+
+      wrap.addEventListener("pointermove", function (e) {
+        const r = wrap.getBoundingClientRect();
+        state.targetX = ((e.clientX - r.left) / r.width - 0.5) * 2;
+        state.targetY = ((e.clientY - r.top) / r.height - 0.5) * 2;
+        state.hovered = true;
+      });
+
+      wrap.addEventListener("pointerleave", function () {
+        state.targetX = 0;
+        state.targetY = 0;
+        state.hovered = false;
+      });
+
+      instances.push(state);
+    });
+
+    if ("IntersectionObserver" in window) {
+      const io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          const match = instances.find(function (it) { return it.canvas === entry.target; });
+          if (match) match.visible = entry.isIntersecting;
+        });
+      }, { threshold: 0.05 });
+      instances.forEach(function (it) { io.observe(it.canvas); });
+    }
+
+    function renderFrame(now) {
+      const t = now * 0.001;
+
+      instances.forEach(function (st) {
+        if (!st.visible) return;
+        const ctx = st.ctx;
+        const w = st.w;
+        const h = st.h;
+
+        st.mouseX += (st.targetX - st.mouseX) * 0.08;
+        st.mouseY += (st.targetY - st.mouseY) * 0.08;
+
+        ctx.save();
+        ctx.scale(st.dpr, st.dpr);
+        ctx.clearRect(0, 0, w, h);
+
+        const cx = w / 2;
+        const cy = h / 2 + 6;
+        const baseRotX = 0.56 + st.mouseY * 0.28 + Math.sin(t * 1.1) * 0.05;
+        const baseRotY = 0.78 + st.mouseX * 0.45 + Math.cos(t * 0.85) * 0.14;
+
+        if (st.scene === "sites") {
+          // 01: Pilha 3D de camadas de interface flutuando (estilo Marco Madonna Stack)
+          const spread = st.hovered ? 0.52 : 0.38;
+          for (let i = 3; i >= 0; i--) {
+            const wave = Math.sin(t * 2.1 + i * 0.7) * 0.09;
+            const yPos = (i - 1.5) * spread + wave;
+            drawIsoBox(
+              ctx, cx, cy, 48, baseRotX, baseRotY,
+              0, yPos, 0,
+              2.3, 0.09, 1.65,
+              i === 0 ? 0.28 : 0.09,
+              i === 0 ? 0.85 : 0.38,
+              i === 0
+            );
+          }
+          // Bloco Hero destacado no topo
+          const topFloat = -1.5 * spread + Math.sin(t * 2.1) * 0.09 - 0.14;
+          drawIsoBox(ctx, cx, cy, 48, baseRotX, baseRotY, -0.45, topFloat, -0.22, 1.05, 0.12, 0.75, 0.35, 0.95, true);
+          drawIsoBox(ctx, cx, cy, 48, baseRotX, baseRotY, 0.58, topFloat, 0.22, 0.75, 0.1, 0.75, 0.18, 0.65, false);
+        } else if (st.scene === "crm") {
+          // 02: Base + Cubo central de dados + 4 módulos satélites conectados com pulsos
+          const rotY = baseRotY + t * 0.38;
+          drawIsoBox(ctx, cx, cy + 16, 44, baseRotX, rotY, 0, 0.55, 0, 2.8, 0.08, 2.8, 0.06, 0.3, false);
+
+          const sats = [
+            [-0.95, 0.2, -0.95],
+            [0.95, 0.2, -0.95],
+            [0.95, 0.2, 0.95],
+            [-0.95, 0.2, 0.95]
+          ];
+
+          sats.forEach(function (pos, idx) {
+            const bob = Math.sin(t * 2.4 + idx * 1.4) * 0.12;
+            const pCenter = project3D(0, -0.1, 0, baseRotX, rotY, cx, cy + 8, 44);
+            const pSat = project3D(pos[0], pos[1] + bob, pos[2], baseRotX, rotY, cx, cy + 8, 44);
+
+            ctx.beginPath();
+            ctx.setLineDash([3, 3]);
+            ctx.moveTo(pCenter.x, pCenter.y);
+            ctx.lineTo(pSat.x, pSat.y);
+            ctx.strokeStyle = rgbaAccent(0.5);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            const pulseProg = (t * 0.8 + idx * 0.25) % 1;
+            const px = pCenter.x + (pSat.x - pCenter.x) * pulseProg;
+            const py = pCenter.y + (pSat.y - pCenter.y) * pulseProg;
+            ctx.beginPath();
+            ctx.arc(px, py, 2.8, 0, Math.PI * 2);
+            ctx.fillStyle = "#FFFFFF";
+            ctx.fill();
+
+            drawIsoBox(ctx, cx, cy + 8, 44, baseRotX, rotY, pos[0], pos[1] + bob, pos[2], 0.52, 0.42, 0.52, 0.16, 0.65, false);
+          });
+
+          const mainBob = Math.sin(t * 1.9) * 0.1;
+          drawIsoBox(ctx, cx, cy + 8, 44, baseRotX, rotY, 0, -0.15 + mainBob, 0, 1.05, 0.95, 1.05, 0.26, 0.92, true);
+        } else if (st.scene === "apps") {
+          // 03: Monólito Mobile 3D girando + anéis orbitais com nós vivos
+          const rotY = baseRotY + t * 0.55;
+          drawIsoBox(ctx, cx, cy, 46, baseRotX * 0.7, rotY, 0, Math.sin(t * 2) * 0.12, 0, 1.05, 1.85, 0.22, 0.25, 0.9, true);
+
+          for (let ring = 0; ring < 2; ring++) {
+            ctx.beginPath();
+            for (let a = 0; a <= 48; a++) {
+              const ang = (a / 48) * Math.PI * 2;
+              const rx = Math.cos(ang) * (1.75 + ring * 0.35);
+              const rz = Math.sin(ang) * (1.75 + ring * 0.35);
+              const ry = Math.sin(ang * 2 + ring) * 0.32;
+              const pt = project3D(rx, ry, rz, baseRotX, t * (ring === 0 ? 0.5 : -0.4), cx, cy, 44);
+              if (a === 0) ctx.moveTo(pt.x, pt.y);
+              else ctx.lineTo(pt.x, pt.y);
+            }
+            ctx.strokeStyle = ring === 0 ? rgbaAccent(0.65) : "rgba(255,255,255,0.22)";
+            ctx.lineWidth = 1.1;
+            ctx.stroke();
+
+            const orbAng = t * (ring === 0 ? 1.5 : -1.2) + ring * 2;
+            const orbPt = project3D(
+              Math.cos(orbAng) * (1.75 + ring * 0.35),
+              Math.sin(orbAng * 2 + ring) * 0.32,
+              Math.sin(orbAng) * (1.75 + ring * 0.35),
+              baseRotX,
+              t * (ring === 0 ? 0.5 : -0.4),
+              cx, cy, 44
+            );
+            ctx.beginPath();
+            ctx.arc(orbPt.x, orbPt.y, 4, 0, Math.PI * 2);
+            ctx.fillStyle = ring === 0 ? cachedAccentHex : "#FFFFFF";
+            ctx.fill();
+          }
+        } else if (st.scene === "video") {
+          // 04: Lente cinética 3D + ondas de frequência em 60fps (estilo Dopamine Studio)
+          const rings = 14;
+          for (let r = 0; r < rings; r++) {
+            const rad = 22 + r * 5.2;
+            const offX = Math.cos(t * 1.8 + r * 0.35) * (8 + st.mouseX * 10);
+            const offY = Math.sin(t * 1.8 + r * 0.35) * (6 + st.mouseY * 10);
+            ctx.beginPath();
+            ctx.ellipse(
+              cx + offX,
+              cy - 6 + offY,
+              rad,
+              rad * 0.72,
+              t * 0.25 + r * 0.08,
+              0,
+              Math.PI * 2
+            );
+            ctx.strokeStyle = r % 3 === 0 ? rgbaAccent(0.62 - r * 0.03) : "rgba(255,255,255," + (0.24 - r * 0.012) + ")";
+            ctx.lineWidth = 1.1;
+            ctx.stroke();
+          }
+          // Triângulo Play central pulsante
+          const pulse = 1 + Math.sin(t * 3.2) * 0.08;
+          ctx.save();
+          ctx.translate(cx, cy - 6);
+          ctx.scale(pulse, pulse);
+          ctx.beginPath();
+          ctx.moveTo(-7, -10);
+          ctx.lineTo(12, 0);
+          ctx.lineTo(-7, 10);
+          ctx.closePath();
+          ctx.fillStyle = "#FFFFFF";
+          ctx.fill();
+          ctx.restore();
+        } else if (st.scene === "traffic") {
+          // 05: Colunas 3D ascendentes de receita e ROAS + curva luminosa
+          const heights = [0.45, 0.72, 1.05, 1.42, 1.88];
+          const rotY = 0.65 + st.mouseX * 0.38 + Math.sin(t * 0.7) * 0.08;
+          drawIsoBox(ctx, cx, cy + 28, 42, baseRotX, rotY, 0, 0.45, 0, 3.2, 0.07, 1.8, 0.06, 0.28, false);
+
+          const topPoints = [];
+          heights.forEach(function (bh, idx) {
+            const dynH = bh + Math.sin(t * 2.2 + idx * 0.6) * 0.12 + (st.hovered ? idx * 0.05 : 0);
+            const xPos = (idx - 2) * 0.62;
+            const yCenter = 0.4 - dynH / 2;
+            drawIsoBox(
+              ctx, cx, cy + 28, 42, baseRotX, rotY,
+              xPos, yCenter, 0,
+              0.42, dynH, 0.48,
+              idx === 4 ? 0.34 : 0.14 + idx * 0.03,
+              idx === 4 ? 0.95 : 0.55,
+              idx >= 3
+            );
+            topPoints.push(project3D(xPos, 0.4 - dynH - 0.18, 0, baseRotX, rotY, cx, cy + 28, 42));
+          });
+
+          ctx.beginPath();
+          topPoints.forEach(function (pt, idx) {
+            if (idx === 0) ctx.moveTo(pt.x, pt.y);
+            else ctx.lineTo(pt.x, pt.y);
+          });
+          ctx.strokeStyle = "#FFFFFF";
+          ctx.lineWidth = 1.8;
+          ctx.stroke();
+
+          const last = topPoints[topPoints.length - 1];
+          ctx.beginPath();
+          ctx.arc(last.x, last.y, 4.2, 0, Math.PI * 2);
+          ctx.fillStyle = cachedAccentHex;
+          ctx.fill();
+        }
+
+        ctx.restore();
+      });
+
+      requestAnimationFrame(renderFrame);
+    }
+
+    refreshAccentCache();
+    requestAnimationFrame(renderFrame);
+  }
+
+  /* ------------------------------------------------------------------------
+     BLOCO 2: Player Interativo de Edição de Vídeos & Reels (Antes vs Depois)
+     Data/Hora: 02/11/2026 01:28
+     Finalidade: Demonstrar visualmente em 60fps o salto de retenção entre um
+     vídeo cru e uma edição profissional com legenda dinâmica, corte e cor.
+     ------------------------------------------------------------------------ */
+  function initReelsStudioPlayer() {
+    const canvas = document.getElementById("reelsPreviewCanvas");
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    const playBtn = document.getElementById("videoPlayToggleBtn");
+    const modeBtns = document.querySelectorAll("[data-video-mode]");
+    const lufsLabel = document.getElementById("videoLufsReadout");
+
+    let isPlaying = true;
+    let mode = "after"; // "before" | "after"
+    let simTime = 0;
+    let lastTs = performance.now();
+
+    const words = [
+      "VÍDEOS,", "SITES", "E", "SISTEMAS",
+      "FEITOS", "PARA", "VENDER", "TODOS", "OS", "DIAS."
+    ];
+
+    modeBtns.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        mode = btn.getAttribute("data-video-mode") || "after";
+        if (NS.sfx) NS.sfx.click();
+        modeBtns.forEach(function (b) { b.classList.toggle("active", b === btn); });
+        if (lufsLabel) {
+          lufsLabel.textContent = mode === "after"
+            ? "-14.0 LUFS · Color DaVinci + Legenda IA"
+            : "-24.8 LUFS · Áudio Baixo · Sem Tratamento";
+        }
+      });
+    });
+
+    if (playBtn) {
+      playBtn.addEventListener("click", function () {
+        isPlaying = !isPlaying;
+        if (NS.sfx) NS.sfx.click();
+        playBtn.textContent = isPlaying ? "Pausar Preview" : "Reproduzir Preview";
+      });
+    }
+
+    function drawVideo(now) {
+      const dt = Math.min(0.05, (now - lastTs) / 1000);
+      lastTs = now;
+      if (isPlaying) simTime += dt;
+
+      const rect = canvas.parentElement.getBoundingClientRect();
+      const w = Math.max(260, rect.width);
+      const h = Math.max(220, rect.height);
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      if (canvas.width !== Math.floor(w * dpr) || canvas.height !== Math.floor(h * dpr)) {
+        canvas.width = Math.floor(w * dpr);
+        canvas.height = Math.floor(h * dpr);
+      }
+
+      ctx.save();
+      ctx.scale(dpr, dpr);
+      ctx.clearRect(0, 0, w, h);
+
+      if (mode === "before") {
+        // Cena crua: lavada, sem contraste, sem legendas e com pausas longas
+        ctx.fillStyle = "#1E2024";
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.fillStyle = "rgba(255,255,255,0.06)";
+        ctx.beginPath();
+        ctx.arc(w / 2, h / 2 - 14, 48, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "#9CA3AF";
+        ctx.font = "600 13px 'JetBrains Mono', monospace";
+        ctx.textAlign = "center";
+        ctx.fillText("ARQUIVO BRUTO DE CÂMERA (LOG / SEM CORTE)", w / 2, h / 2 - 6);
+        ctx.font = "400 12px 'Plus Jakarta Sans', sans-serif";
+        ctx.fillText("Pausas de respiração longas • Sem legenda • Cor lavada", w / 2, h / 2 + 18);
+
+        // Onda de áudio baixa e falha
+        for (let i = 0; i < 28; i++) {
+          const bx = w / 2 - 140 + i * 10;
+          const bh = i % 5 === 0 ? 3 : 5 + Math.abs(Math.sin(simTime * 2 + i)) * 6;
+          ctx.fillStyle = "rgba(156,163,175,0.35)";
+          ctx.fillRect(bx, h - 32 - bh, 6, bh);
+        }
+      } else {
+        // Cena Editada: Color Grading rico, zoom dinâmico, legenda animada e espectro vivo
+        const grad = ctx.createRadialGradient(
+          w * (0.5 + Math.sin(simTime * 0.9) * 0.14),
+          h * 0.42,
+          10,
+          w * 0.5,
+          h * 0.5,
+          w * 0.72
+        );
+        grad.addColorStop(0, rgbaAccent(0.34));
+        grad.addColorStop(0.55, "#0B0E18");
+        grad.addColorStop(1, "#030407");
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
+
+        // Anéis de motion graphics 60fps
+        ctx.strokeStyle = rgbaAccent(0.25);
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.arc(w / 2, h / 2 - 18, 62 + Math.sin(simTime * 2.5) * 6, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Selo superior de retenção
+        ctx.fillStyle = "rgba(0,0,0,0.62)";
+        ctx.fillRect(14, 14, 196, 26);
+        ctx.fillStyle = cachedAccentHex;
+        ctx.font = "700 11px 'JetBrains Mono', monospace";
+        ctx.textAlign = "left";
+        ctx.fillText("● REC 60FPS · COLOR DAVINCI", 24, 31);
+
+        // Legenda dinâmica palavra por palavra (estilo Reels de alta retenção)
+        const activeIdx = Math.floor(simTime * 2.8) % words.length;
+        const pairStart = Math.floor(activeIdx / 2) * 2;
+        const w1 = words[pairStart] || "";
+        const w2 = words[pairStart + 1] || "";
+
+        ctx.textAlign = "center";
+        ctx.font = "800 26px 'Plus Jakarta Sans', sans-serif";
+        const combined = (w1 + " " + w2).trim();
+
+        ctx.shadowColor = "rgba(0,0,0,0.85)";
+        ctx.shadowBlur = 16;
+        ctx.fillStyle = activeIdx % 2 === 0 ? cachedAccentHex : "#FFFFFF";
+        ctx.fillText(combined, w / 2, h / 2 + 4);
+        ctx.shadowBlur = 0;
+
+        ctx.font = "600 12px 'Plus Jakarta Sans', sans-serif";
+        ctx.fillStyle = "rgba(255,255,255,0.72)";
+        ctx.fillText("Silêncios cortados via IA • Gancho de 3s • CTR 6,20%", w / 2, h / 2 + 30);
+
+        // Espectro de áudio masterizado -14 LUFS + barra de progresso
+        for (let i = 0; i < 32; i++) {
+          const bx = w / 2 - 160 + i * 10;
+          const bh = 8 + Math.abs(Math.sin(simTime * 7.5 + i * 0.55)) * 24;
+          ctx.fillStyle = i % 3 === 0 ? cachedAccentHex : "rgba(255,255,255,0.75)";
+          ctx.fillRect(bx, h - 26 - bh, 6, bh);
+        }
+
+        const prog = (simTime % 6) / 6;
+        ctx.fillStyle = cachedAccentHex;
+        ctx.fillRect(0, h - 4, w * prog, 4);
+      }
+
+      ctx.restore();
+      requestAnimationFrame(drawVideo);
+    }
+
+    requestAnimationFrame(drawVideo);
+  }
+
+  /* ------------------------------------------------------------------------
+     BLOCO 3: Relógio Analógico 24h de Estúdio + Globo 3D Pontilhado (Visuvate)
+     Data/Hora: 02/11/2026 01:28
+     Finalidade: Trazer o acabamento técnico de Visuvate para a seção Sobre.
+     ------------------------------------------------------------------------ */
+  function initVisuvateWidgets() {
+    const clockCanvas = document.getElementById("studioAnalogClock");
+    const globeCanvas = document.getElementById("studioGlobeCanvas");
+
+    if (clockCanvas) {
+      const cCtx = clockCanvas.getContext("2d");
+      clockCanvas.width = 272;
+      clockCanvas.height = 272;
+
+      function renderClock() {
+        cCtx.clearRect(0, 0, 272, 272);
+        const cx = 136;
+        const cy = 136;
+        const r = 118;
+
+        cCtx.beginPath();
+        cCtx.arc(cx, cy, r, 0, Math.PI * 2);
+        cCtx.fillStyle = "#06070C";
+        cCtx.fill();
+        cCtx.strokeStyle = "rgba(255,255,255,0.16)";
+        cCtx.lineWidth = 2;
+        cCtx.stroke();
+
+        for (let i = 0; i < 12; i++) {
+          const a = (i / 12) * Math.PI * 2 - Math.PI / 2;
+          cCtx.beginPath();
+          cCtx.moveTo(cx + Math.cos(a) * (r - 14), cy + Math.sin(a) * (r - 14));
+          cCtx.lineTo(cx + Math.cos(a) * (r - 4), cy + Math.sin(a) * (r - 4));
+          cCtx.strokeStyle = i % 3 === 0 ? cachedAccentHex : "rgba(255,255,255,0.35)";
+          cCtx.lineWidth = i % 3 === 0 ? 3 : 1.5;
+          cCtx.stroke();
+        }
+
+        const now = new Date();
+        const sec = now.getSeconds() + now.getMilliseconds() / 1000;
+        const min = now.getMinutes() + sec / 60;
+        const hr = (now.getHours() % 12) + min / 60;
+
+        function hand(angle, len, width, color) {
+          cCtx.beginPath();
+          cCtx.moveTo(cx, cy);
+          cCtx.lineTo(cx + Math.cos(angle) * len, cy + Math.sin(angle) * len);
+          cCtx.strokeStyle = color;
+          cCtx.lineWidth = width;
+          cCtx.lineCap = "round";
+          cCtx.stroke();
+        }
+
+        hand((hr / 12) * Math.PI * 2 - Math.PI / 2, 62, 5, "#FFFFFF");
+        hand((min / 60) * Math.PI * 2 - Math.PI / 2, 88, 3.5, "rgba(255,255,255,0.85)");
+        hand((sec / 60) * Math.PI * 2 - Math.PI / 2, 96, 1.8, cachedAccentHex);
+
+        cCtx.beginPath();
+        cCtx.arc(cx, cy, 5, 0, Math.PI * 2);
+        cCtx.fillStyle = cachedAccentHex;
+        cCtx.fill();
+
+        requestAnimationFrame(renderClock);
+      }
+      requestAnimationFrame(renderClock);
+    }
+
+    if (globeCanvas) {
+      const gCtx = globeCanvas.getContext("2d");
+      globeCanvas.width = 272;
+      globeCanvas.height = 272;
+
+      const dots = [];
+      for (let lat = -70; lat <= 70; lat += 14) {
+        const ringCount = Math.max(6, Math.floor(Math.cos((lat * Math.PI) / 180) * 26));
+        for (let j = 0; j < ringCount; j++) {
+          dots.push({
+            lat: (lat * Math.PI) / 180,
+            lon: (j / ringCount) * Math.PI * 2
+          });
+        }
+      }
+
+      function renderGlobe(now) {
+        const rot = now * 0.00055;
+        gCtx.clearRect(0, 0, 272, 272);
+        const cx = 136;
+        const cy = 136;
+        const R = 112;
+
+        gCtx.beginPath();
+        gCtx.arc(cx, cy, R, 0, Math.PI * 2);
+        gCtx.strokeStyle = "rgba(255,255,255,0.12)";
+        gCtx.lineWidth = 1.5;
+        gCtx.stroke();
+
+        dots.forEach(function (d) {
+          const lon = d.lon + rot;
+          const x = Math.cos(d.lat) * Math.sin(lon);
+          const y = -Math.sin(d.lat);
+          const z = Math.cos(d.lat) * Math.cos(lon);
+          if (z > -0.1) {
+            const alpha = Math.max(0.12, z * 0.85);
+            gCtx.beginPath();
+            gCtx.arc(cx + x * R, cy + y * R, 2.1, 0, Math.PI * 2);
+            gCtx.fillStyle = "rgba(255,255,255," + alpha.toFixed(2) + ")";
+            gCtx.fill();
+          }
+        });
+
+        // Marcador luminoso de Florianópolis (-27.59, -48.54)
+        const flnLat = (-27.6 * Math.PI) / 180;
+        const flnLon = (-48.5 * Math.PI) / 180 + rot;
+        const fx = Math.cos(flnLat) * Math.sin(flnLon);
+        const fy = -Math.sin(flnLat);
+        const fz = Math.cos(flnLat) * Math.cos(flnLon);
+        if (fz > 0) {
+          gCtx.beginPath();
+          gCtx.arc(cx + fx * R, cy + fy * R, 5.5, 0, Math.PI * 2);
+          gCtx.fillStyle = cachedAccentHex;
+          gCtx.fill();
+        }
+
+        requestAnimationFrame(renderGlobe);
+      }
+      requestAnimationFrame(renderGlobe);
+    }
+  }
+
+  /* ------------------------------------------------------------------------
+     BLOCO 4: Gaveta de Design Tokens ao Vivo ("TEMA [T]" estilo Marco Madonna)
+     e Preview Flutuante na Lista de Projetos (estilo Fabian / Aparelho)
+     Data/Hora: 02/11/2026 01:28
+     Finalidade: Permitir experimentação estética instantânea e navegação visual.
+     ------------------------------------------------------------------------ */
+  function initTokensDrawerAndPreview() {
+    const trigger = document.getElementById("tokensDrawerTrigger");
+    const panel = document.getElementById("tokensDrawerPanel");
+    const closeBtn = document.getElementById("tokensDrawerClose");
+    const themeBtns = document.querySelectorAll("[data-set-accent]");
+    const cornerBtns = document.querySelectorAll("[data-set-corners]");
+
+    function toggleDrawer(force) {
+      if (!panel) return;
+      const next = typeof force === "boolean" ? force : !panel.classList.contains("is-open");
+      panel.classList.toggle("is-open", next);
+      if (NS.sfx) NS.sfx.click();
+    }
+
+    if (trigger) trigger.addEventListener("click", function () { toggleDrawer(); });
+    if (closeBtn) closeBtn.addEventListener("click", function () { toggleDrawer(false); });
+
+    window.addEventListener("keydown", function (e) {
+      const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : "";
+      if (tag === "input" || tag === "textarea" || tag === "select") return;
+      if ((e.key === "t" || e.key === "T") && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        toggleDrawer();
+      }
+    });
+
+    themeBtns.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        const theme = btn.getAttribute("data-set-accent") || "gold";
+        if (theme === "gold") {
+          document.documentElement.removeAttribute("data-accent-theme");
+        } else {
+          document.documentElement.setAttribute("data-accent-theme", theme);
+        }
+        themeBtns.forEach(function (b) { b.classList.toggle("active", b === btn); });
+        refreshAccentCache();
+        if (NS.sfx) NS.sfx.click();
+      });
+    });
+
+    cornerBtns.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        const style = btn.getAttribute("data-set-corners") || "soft";
+        if (style === "soft") {
+          document.documentElement.removeAttribute("data-corner-style");
+        } else {
+          document.documentElement.setAttribute("data-corner-style", style);
+        }
+        cornerBtns.forEach(function (b) { b.classList.toggle("active", b === btn); });
+        if (NS.sfx) NS.sfx.click();
+      });
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    initIsometric3DCards();
+    initReelsStudioPlayer();
+    initVisuvateWidgets();
+    initTokensDrawerAndPreview();
+  });
+})();
