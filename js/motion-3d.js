@@ -23,31 +23,44 @@
   const NS = (window.MattheusPortfolio = window.MattheusPortfolio || {});
 
   /* ------------------------------------------------------------------------
-     Utilitário: Leitura dinâmica da cor de destaque ativa nos Design Tokens
-     Data/Hora: 02/11/2026 01:28
-     Finalidade: Sincronizar todas as cenas 3D em Canvas quando o visitante
-     troca o tema na gaveta "TEMA [T]".
+     Utilitário: Leitura dinâmica das cores Neon e Destaque nos Design Tokens
+     Data/Hora: 02/11/2026 10:47
+     Finalidade: Sincronizar o fundo orbital 3D, o vórtice Visuvate e as 5 cenas
+     isométricas quando o visitante seleciona um tema Neon em "NEON · T".
      ------------------------------------------------------------------------ */
-  let cachedAccentHex = "#C9A97C";
-  let cachedAccentRgb = { r: 201, g: 169, b: 124 };
+  let cachedAccentHex = "#8B5CF6";
+  let cachedAccentRgb = { r: 139, g: 92, b: 246 };
+  let cachedNeonHex = "#38BDF8";
+  let cachedNeonRgb = { r: 56, g: 189, b: 248 };
 
-  function refreshAccentCache() {
-    const raw = getComputedStyle(document.documentElement)
-      .getPropertyValue("--accent-gold")
-      .trim() || "#C9A97C";
-    cachedAccentHex = raw;
-    const clean = raw.replace("#", "");
+  function parseHexRgb(hex, fallback) {
+    const clean = (hex || "").replace("#", "").trim();
     if (clean.length === 6) {
-      cachedAccentRgb = {
-        r: parseInt(clean.slice(0, 2), 16) || 201,
-        g: parseInt(clean.slice(2, 4), 16) || 169,
-        b: parseInt(clean.slice(4, 6), 16) || 124
+      return {
+        r: parseInt(clean.slice(0, 2), 16) || fallback.r,
+        g: parseInt(clean.slice(2, 4), 16) || fallback.g,
+        b: parseInt(clean.slice(4, 6), 16) || fallback.b
       };
     }
+    return fallback;
+  }
+
+  function refreshAccentCache() {
+    const styles = getComputedStyle(document.documentElement);
+    const rawAccent = styles.getPropertyValue("--accent-gold").trim() || "#8B5CF6";
+    const rawNeon = styles.getPropertyValue("--neon-primary").trim() || "#38BDF8";
+    cachedAccentHex = rawAccent;
+    cachedNeonHex = rawNeon;
+    cachedAccentRgb = parseHexRgb(rawAccent, { r: 139, g: 92, b: 246 });
+    cachedNeonRgb = parseHexRgb(rawNeon, { r: 56, g: 189, b: 248 });
   }
 
   function rgbaAccent(alpha) {
     return "rgba(" + cachedAccentRgb.r + "," + cachedAccentRgb.g + "," + cachedAccentRgb.b + "," + alpha + ")";
+  }
+
+  function rgbaNeon(alpha) {
+    return "rgba(" + cachedNeonRgb.r + "," + cachedNeonRgb.g + "," + cachedNeonRgb.b + "," + alpha + ")";
   }
 
   /* ------------------------------------------------------------------------
@@ -158,8 +171,8 @@
 
       function resize() {
         const rect = wrap.getBoundingClientRect();
-        state.w = Math.max(220, rect.width);
-        state.h = Math.max(180, rect.height);
+        state.w = Math.max(170, rect.width);
+        state.h = Math.max(100, rect.height);
         state.dpr = Math.min(window.devicePixelRatio || 1, 2);
         canvas.width = state.w * state.dpr;
         canvas.height = state.h * state.dpr;
@@ -212,6 +225,11 @@
 
         const cx = w / 2;
         const cy = h / 2 + 6;
+        if (h < 160) {
+          ctx.translate(cx, h / 2);
+          ctx.scale(0.64, 0.64);
+          ctx.translate(-cx, -(h / 2));
+        }
         const baseRotX = 0.56 + st.mouseY * 0.28 + Math.sin(t * 1.1) * 0.05;
         const baseRotY = 0.78 + st.mouseX * 0.45 + Math.cos(t * 0.85) * 0.14;
 
@@ -709,8 +727,8 @@
 
     themeBtns.forEach(function (btn) {
       btn.addEventListener("click", function () {
-        const theme = btn.getAttribute("data-set-accent") || "gold";
-        if (theme === "gold") {
+        const theme = btn.getAttribute("data-set-accent") || "violet";
+        if (theme === "violet") {
           document.documentElement.removeAttribute("data-accent-theme");
         } else {
           document.documentElement.setAttribute("data-accent-theme", theme);
@@ -735,7 +753,428 @@
     });
   }
 
+  /* ------------------------------------------------------------------------
+     BLOCO 5 (V4): Fundo Orbital 3D em Azul & Roxo/Violeta em Movimento Contínuo
+     Data/Hora: 02/11/2026 10:48
+     O que é: Rede tridimensional de órbitas elípticas curvas entrelaçadas,
+     núcleo luminoso central, anéis de mira concêntricos e partículas de luz
+     viajantes, inspirada exatamente na referência enviada por Mattheus e
+     colorida em Azul Elétrico + Roxo/Violeta.
+     ------------------------------------------------------------------------ */
+  function initOrbitalConstellationBg() {
+    const canvas = document.getElementById("orbitalConstellationCanvas");
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    let w = window.innerWidth;
+    let h = window.innerHeight;
+    let dpr = Math.min(window.devicePixelRatio || 1, 1.75);
+    let pointerX = 0;
+    let pointerY = 0;
+
+    function resizeBg() {
+      w = window.innerWidth;
+      h = window.innerHeight;
+      dpr = Math.min(window.devicePixelRatio || 1, 1.75);
+      canvas.width = Math.floor(w * dpr);
+      canvas.height = Math.floor(h * dpr);
+    }
+
+    resizeBg();
+    window.addEventListener("resize", resizeBg);
+    window.addEventListener("pointermove", function (e) {
+      pointerX = (e.clientX / Math.max(1, w) - 0.5) * 0.25;
+      pointerY = (e.clientY / Math.max(1, h) - 0.5) * 0.18;
+    });
+
+    /* Gera 26 órbitas 3D inclinadas com diferentes raios, velocidades e nós */
+    const orbits = [];
+    for (let i = 0; i < 26; i++) {
+      const isInner = i < 10;
+      orbits.push({
+        rx: isInner ? (120 + i * 22) : (260 + (i - 10) * 32),
+        rz: isInner ? (85 + i * 16) : (165 + (i - 10) * 20),
+        tiltX: -0.95 + (i % 7) * 0.31,
+        tiltZ: -0.8 + ((i * 3) % 9) * 0.21,
+        speed: (0.14 + (i % 5) * 0.055) * (i % 2 === 0 ? 1 : -1),
+        phase: (i * 0.87) % (Math.PI * 2),
+        hasRingNode: i % 2 === 0,
+        useCyan: i % 3 !== 0
+      });
+    }
+
+    function rot3D(x, y, z, rx, ry, rz) {
+      /* Rotação Z */
+      const cz = Math.cos(rz);
+      const sz = Math.sin(rz);
+      const x1 = x * cz - y * sz;
+      const y1 = x * sz + y * cz;
+      /* Rotação X */
+      const cx = Math.cos(rx);
+      const sx = Math.sin(rx);
+      const y2 = y1 * cx - z * sx;
+      const z2 = y1 * sx + z * cx;
+      /* Rotação Y global */
+      const cy = Math.cos(ry);
+      const sy = Math.sin(ry);
+      const x3 = x1 * cy - z2 * sy;
+      const z3 = x1 * sy + z2 * cy;
+      return { x: x3, y: y2, z: z3 };
+    }
+
+    function renderConstellation(now) {
+      const t = now * 0.001;
+      ctx.save();
+      ctx.scale(dpr, dpr);
+      ctx.clearRect(0, 0, w, h);
+
+      const cx = w * 0.5;
+      const cy = h * 0.48;
+      const responsiveScale = Math.min(1.08, Math.max(0.54, w / 1360));
+      const globalRotY = t * 0.09 + pointerX;
+      const globalRotX = 0.24 + pointerY;
+
+      /* Brilho energético central azul/roxo (núcleo da constelação) */
+      const coreGrad = ctx.createRadialGradient(cx, cy, 4, cx, cy, 290 * responsiveScale);
+      coreGrad.addColorStop(0, rgbaNeon(0.28));
+      coreGrad.addColorStop(0.42, rgbaAccent(0.18));
+      coreGrad.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = coreGrad;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 290 * responsiveScale, 0, Math.PI * 2);
+      ctx.fill();
+
+      /* Desenha os arcos elípticos curvos e os cometas viajantes */
+      orbits.forEach(function (orb, idx) {
+        ctx.beginPath();
+        const segs = 40;
+        const arcSpan = Math.PI * 1.45;
+        const startAng = orb.phase + t * orb.speed * 0.45;
+
+        for (let s = 0; s <= segs; s++) {
+          const a = startAng + (s / segs) * arcSpan;
+          const lx = Math.cos(a) * orb.rx * responsiveScale;
+          const lz = Math.sin(a) * orb.rz * responsiveScale;
+          const p = rot3D(lx, 0, lz, orb.tiltX + globalRotX, globalRotY, orb.tiltZ);
+          const persp = 900 / (900 + p.z * 0.55);
+          const sx = cx + p.x * persp;
+          const sy = cy + p.y * persp;
+          if (s === 0) ctx.moveTo(sx, sy);
+          else ctx.lineTo(sx, sy);
+        }
+
+        ctx.strokeStyle = orb.useCyan ? rgbaNeon(0.31) : rgbaAccent(0.34);
+        ctx.lineWidth = idx < 8 ? 1.35 : 0.98;
+        ctx.stroke();
+
+        /* Partícula/cometa e anel concêntrico ◎ na ponta viva da órbita */
+        const headAng = startAng + arcSpan * ((0.5 + 0.5 * Math.sin(t * orb.speed * 1.7 + idx)) % 1);
+        const hx = Math.cos(headAng) * orb.rx * responsiveScale;
+        const hz = Math.sin(headAng) * orb.rz * responsiveScale;
+        const hp = rot3D(hx, 0, hz, orb.tiltX + globalRotX, globalRotY, orb.tiltZ);
+        const hPersp = 900 / (900 + hp.z * 0.55);
+        const px = cx + hp.x * hPersp;
+        const py = cy + hp.y * hPersp;
+
+        if (orb.hasRingNode) {
+          const rOuter = (5.5 + (idx % 3) * 1.8) * hPersp;
+          ctx.beginPath();
+          ctx.arc(px, py, rOuter, 0, Math.PI * 2);
+          ctx.strokeStyle = "rgba(226, 232, 240, 0.52)";
+          ctx.lineWidth = 1.1;
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.arc(px, py, Math.max(1.6, rOuter * 0.36), 0, Math.PI * 2);
+          ctx.fillStyle = orb.useCyan ? cachedNeonHex : "#FFFFFF";
+          ctx.fill();
+        } else {
+          ctx.beginPath();
+          ctx.arc(px, py, 2.2 * hPersp, 0, Math.PI * 2);
+          ctx.fillStyle = cachedAccentHex;
+          ctx.fill();
+        }
+      });
+
+      ctx.restore();
+      requestAnimationFrame(renderConstellation);
+    }
+
+    refreshAccentCache();
+    requestAnimationFrame(renderConstellation);
+  }
+
+  /* ------------------------------------------------------------------------
+     BLOCO 6 (V4): Vórtice 3D de Projetos "Minhas Obras" (Estilo Visuvate)
+     Data/Hora: 02/11/2026 10:48
+     O que é: Palco 3D interativo onde 10 telas de projetos orbitam em um anel
+     diagonal inclinado, passando por trás (z < 0) e pela frente (z >= 0) do
+     título monumental "Minhas Obras", sobre ondas energéticas azuis/roxas.
+     ------------------------------------------------------------------------ */
+  function initVisuvate3DVortex() {
+    const stage = document.getElementById("vortexStage3D");
+    const backLayer = document.getElementById("vortexLayerBack");
+    const frontLayer = document.getElementById("vortexLayerFront");
+    const waveCanvas = document.getElementById("vortexWaveCanvas");
+
+    if (!stage || !backLayer || !frontLayer) return;
+
+    const VORTEX_ITEMS = [
+      {
+        projectId: "easycode",
+        studioKey: "easycode",
+        pill: "Plataforma no Ar",
+        title: "EasyCode (Pyra)",
+        sub: "Python, JS & SQL no navegador",
+        img: "assets/img/easycode.png",
+        light: false
+      },
+      {
+        projectId: "crm-manu",
+        studioKey: "crm",
+        pill: "Fluxo de Caixa & CRM",
+        title: "Previsibilidade de Caixa",
+        sub: "Saiba exatamente quanto entra",
+        customBg: "linear-gradient(155deg, #FFFFFF 0%, #EEF2FF 55%, #DBEAFE 100%)",
+        customTextDark: true,
+        light: true
+      },
+      {
+        projectId: "reels-studio",
+        studioKey: "video",
+        pill: "Motion 3D & Reels 60fps",
+        title: "MADE TO HOLD ATTENTION.",
+        sub: "Edição DaVinci · CTR 6,20%",
+        customBg: "linear-gradient(135deg, #7F1D1D 0%, #DC2626 48%, #9333EA 100%)",
+        light: false
+      },
+      {
+        projectId: "site-vania",
+        studioKey: "sites",
+        pill: "UI/UX Quiet Luxury",
+        title: "Vania Faria Imóveis",
+        sub: "Curadoria Off-Market & Admin",
+        img: "assets/img/vania-faria-perfil.webp",
+        light: false
+      },
+      {
+        projectId: "orion",
+        studioKey: "apps",
+        pill: "Super App IA",
+        title: "Órion Mobile & RAG",
+        sub: "React Native + FastAPI",
+        img: "assets/img/orion-home.png",
+        light: false
+      },
+      {
+        projectId: "hub-hom",
+        studioKey: "traffic",
+        pill: "23 Telas · 5 Canais",
+        title: "Hub Corporativo HOM",
+        sub: "Shopify, ML, TikTok & Ads",
+        img: "assets/img/hub-marketing.png",
+        light: false
+      },
+      {
+        projectId: "pastas-barra",
+        studioKey: "apps",
+        pill: "Windows 11 Nativo",
+        title: "Pastas na Barra",
+        sub: "C# / WPF · UI Acrílica",
+        img: "assets/img/pastas-barra-1.png",
+        light: false
+      },
+      {
+        projectId: "radar-vagas",
+        studioKey: "apps",
+        pill: "Playwright + IA",
+        title: "Radar ATS 0-100",
+        sub: "Automação em 10 portais",
+        customBg: "linear-gradient(145deg, #0F172A 0%, #1E1B4B 52%, #0284C7 100%)",
+        light: false
+      },
+      {
+        projectId: "infnet-app",
+        studioKey: "apps",
+        pill: "Mobile Acadêmico",
+        title: "Infnet Super App",
+        sub: "Aulas ao vivo & RAG Manual",
+        img: "assets/img/hub-rotina.png",
+        light: false
+      },
+      {
+        projectId: "ominivix",
+        studioKey: "sites",
+        pill: "Extensão AI + Foco",
+        title: "Ominivix Focus",
+        sub: "Árvore de abas & Reuniões",
+        img: "assets/img/orion-faz.png",
+        light: false
+      }
+    ];
+
+    /* Cria os 10 cartões DOM do vórtice */
+    const cardEls = VORTEX_ITEMS.map(function (item) {
+      const el = document.createElement("article");
+      el.className = "vortex-card-3d" + (item.light ? " is-light-ui" : "");
+      el.setAttribute("data-cursor", "TESTAR OBRA");
+
+      let mediaHtml = "";
+      if (item.img) {
+        mediaHtml = "<img class='vortex-bg-img' src='" + item.img + "' alt='" + item.title + "' loading='lazy'>";
+      }
+
+      const bgStyle = item.customBg ? "style='background:" + item.customBg + ";'" : "";
+      const titleClr = item.customTextDark ? "style='color:#0F172A;'" : "";
+      const subClr = item.customTextDark ? "style='color:#334155;font-weight:600;'" : "";
+      const shadeStyle = item.customTextDark ? "style='background:linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.65) 100%);'" : "";
+
+      el.innerHTML =
+        "<div class='vortex-card-inner' " + bgStyle + ">" +
+          mediaHtml +
+          "<div class='vortex-card-shade' " + shadeStyle + "></div>" +
+          "<div class='vortex-card-top'>" +
+            "<span class='vortex-card-pill'>" + item.pill + "</span>" +
+          "</div>" +
+          "<div class='vortex-card-bottom'>" +
+            "<strong " + titleClr + ">" + item.title + "</strong>" +
+            "<span " + subClr + ">" + item.sub + "</span>" +
+          "</div>" +
+        "</div>";
+
+      el.addEventListener("click", function () {
+        if (movedDuringDrag) return;
+        if (NS.sfx) NS.sfx.click();
+        if (item.studioKey && typeof NS.jumpToLiveDemo === "function") {
+          NS.jumpToLiveDemo(item.studioKey, item.projectId);
+        } else if (typeof NS.openProjectModal === "function") {
+          NS.openProjectModal(item.projectId);
+        }
+      });
+
+      backLayer.appendChild(el);
+      return { el: el, item: item, currentLayer: "back" };
+    });
+
+    /* Arrasto interativo com inércia */
+    let orbitPhase = 0.35;
+    let velocity = 0.0042;
+    let isDragging = false;
+    let dragStartX = 0;
+    let movedDuringDrag = false;
+    let isVisible = true;
+
+    stage.addEventListener("pointerdown", function (e) {
+      isDragging = true;
+      dragStartX = e.clientX;
+      movedDuringDrag = false;
+    });
+
+    window.addEventListener("pointermove", function (e) {
+      if (!isDragging) return;
+      const dx = e.clientX - dragStartX;
+      if (Math.abs(dx) > 6) movedDuringDrag = true;
+      orbitPhase += dx * 0.0055;
+      velocity = dx * 0.00045;
+      dragStartX = e.clientX;
+    });
+
+    window.addEventListener("pointerup", function () {
+      if (!isDragging) return;
+      isDragging = false;
+      setTimeout(function () { movedDuringDrag = false; }, 60);
+    });
+
+    if ("IntersectionObserver" in window) {
+      const obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) { isVisible = en.isIntersecting; });
+      }, { threshold: 0.04 });
+      obs.observe(stage);
+    }
+
+    /* Ondas energéticas azuis/roxas estilo Visuvate no fundo do palco */
+    let wCtx = waveCanvas ? waveCanvas.getContext("2d") : null;
+    function renderWaves(t) {
+      if (!wCtx || !waveCanvas) return;
+      const rect = waveCanvas.parentElement.getBoundingClientRect();
+      const cw = Math.max(300, Math.floor(rect.width));
+      const ch = Math.max(360, Math.floor(rect.height));
+      if (waveCanvas.width !== cw || waveCanvas.height !== ch) {
+        waveCanvas.width = cw;
+        waveCanvas.height = ch;
+      }
+
+      wCtx.clearRect(0, 0, cw, ch);
+      for (let k = 0; k < 7; k++) {
+        wCtx.beginPath();
+        for (let x = 0; x <= cw; x += 22) {
+          const y = ch * (0.18 + k * 0.11) +
+            Math.sin(x * 0.0045 + t * (0.7 + k * 0.12) + k) * 62 +
+            Math.cos(x * 0.0022 - t * 0.5 + k * 1.7) * 36;
+          if (x === 0) wCtx.moveTo(x, y);
+          else wCtx.lineTo(x, y);
+        }
+        wCtx.strokeStyle = k % 2 === 0 ? rgbaNeon(0.34) : rgbaAccent(0.28);
+        wCtx.lineWidth = k === 3 ? 2.6 : 1.5;
+        wCtx.shadowColor = cachedNeonHex;
+        wCtx.shadowBlur = 20;
+        wCtx.stroke();
+        wCtx.shadowBlur = 0;
+      }
+    }
+
+    function animateVortex(now) {
+      const t = now * 0.001;
+      if (isVisible) {
+        renderWaves(t);
+
+        if (!isDragging) {
+          velocity += (0.0038 - velocity) * 0.04;
+          orbitPhase += velocity;
+        }
+
+        const stRect = stage.getBoundingClientRect();
+        const rx = Math.min(530, stRect.width * 0.41);
+        const ry = Math.min(205, stRect.height * 0.36);
+        const total = cardEls.length;
+
+        cardEls.forEach(function (obj, idx) {
+          const ang = orbitPhase + (idx / total) * Math.PI * 2;
+          /* Órbita elíptica 3D inclinada estilo Visuvate: arco superior por trás, arco inferior pela frente */
+          const rawX = Math.cos(ang) * rx;
+          const depthZ = Math.sin(ang); // -1 (fundo atrás do texto) -> +1 (frente do texto)
+          const rawY = -rawX * 0.28 + depthZ * (ry * 0.66) + Math.sin(ang * 2) * 14;
+
+          const scale = 0.60 + (depthZ + 1) * 0.24; // 0.60 lá atrás -> 1.08 na frente
+          const rotY = -Math.cos(ang) * 26;
+          const rotZ = -7 + Math.sin(ang) * 6;
+          const opacity = 0.45 + (depthZ + 1) * 0.28;
+
+          const wantLayer = depthZ >= 0.02 ? "front" : "back";
+          if (obj.currentLayer !== wantLayer) {
+            obj.currentLayer = wantLayer;
+            (wantLayer === "front" ? frontLayer : backLayer).appendChild(obj.el);
+          }
+
+          obj.el.style.zIndex = String(Math.round((depthZ + 1) * 100));
+          obj.el.style.opacity = Math.min(1, opacity).toFixed(2);
+          obj.el.style.transform =
+            "translate3d(" + rawX.toFixed(1) + "px," + rawY.toFixed(1) + "px,0) " +
+            "scale(" + scale.toFixed(3) + ") " +
+            "rotateY(" + rotY.toFixed(1) + "deg) " +
+            "rotateZ(" + rotZ.toFixed(1) + "deg)";
+        });
+      }
+
+      requestAnimationFrame(animateVortex);
+    }
+
+    requestAnimationFrame(animateVortex);
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
+    initOrbitalConstellationBg();
+    initVisuvate3DVortex();
     initIsometric3DCards();
     initReelsStudioPlayer();
     initVisuvateWidgets();
